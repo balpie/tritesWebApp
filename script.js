@@ -9,7 +9,9 @@ let tetramino = [ // tetramino in caduta libera
     {riga: undefined, colonna: undefined},
     {riga: undefined, colonna: undefined}
 ];
+let tipoCorrente;
 
+let intervalId;
 
 const TETRA_T = "T"; // tipi di tetramini
 const TETRA_L = "L";
@@ -30,6 +32,12 @@ const POSIZIONI_TETRAMINI = {
     "Z": [[0, 0], [0, 1], [1, 1], [1, 2]]
 }
 
+function getCell(row, col)
+{
+    return document.getElementById(`cell-${row}-${col}`);
+    
+}
+
 function coloraCella(row, col, color)
 {
     document.getElementById(`cell-${row}-${col}`).classList.add(color);
@@ -38,6 +46,11 @@ function coloraCella(row, col, color)
 function svuotaCella(row, col)
 {
     document.getElementById(`cell-${row}-${col}`).className = "cell";
+}
+
+function toggleInMovimento(row, col)
+{
+    document.getElementById(`cell-${row}-${col}`).classList.toggle("inMovimento");
 }
 
 function killTetra()
@@ -50,12 +63,14 @@ function killTetra()
 
 function nuovoTetramino(tipo)
 {
+    tipoCorrente = tipo;
     const coordinate = POSIZIONI_TETRAMINI[tipo];
     for(let i = 0; i < 4; i++)
     {
-        tetramino[i].riga = coordinate[i][0];
+        tetramino[i].riga = coordinate[i][0] + 1;
         tetramino[i].colonna = coordinate[i][1] + 3;
         coloraCella(tetramino[i].riga, tetramino[i].colonna, tipo);
+        toggleInMovimento(tetramino[i].riga, tetramino[i].colonna);
     }
 }
 
@@ -79,8 +94,24 @@ function generateBoard()
     }
 }
 
+// TODO: collision detection
+// ottimizza sta robaaaaa
+function down()
+{
+    for(let sqr of tetramino)
+    {
+        svuotaCella(sqr.riga, sqr.colonna);
+        sqr.riga++;
+    }
+    for(let sqr of tetramino)
+    {
+        coloraCella(sqr.riga, sqr.colonna, tipoCorrente);
+    }
+}
+
 function startGame()
 {
     document.getElementById("Start").disabled = true;
     nuovoTetramino(TETRA_J);
+    intervalId = setInterval(down, 200)
 }
