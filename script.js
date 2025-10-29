@@ -10,6 +10,7 @@ let tetramino = [ // tetramino in caduta libera
     {riga: undefined, colonna: undefined}
 ];
 
+
 const TETRA_T = "T"; // tipi di tetramini
 const TETRA_L = "L";
 const TETRA_J = "J";
@@ -18,88 +19,43 @@ const TETRA_O = "O";
 const TETRA_S = "S";
 const TETRA_Z = "Z";
 
+// posizione dei tetramini (relative)
+const POSIZIONI_TETRAMINI = {
+    "I": [[0, 0], [0, 1], [0, 2], [0, 3]],
+    "L": [[0, 0], [0, 1], [0, 2], [1, 2]],
+    "J": [[0, 0], [0, 1], [0, 2], [1, 0]],
+    "T": [[0, 0], [0, 1], [0, 2], [1, 1]],
+    "O": [[0, 0], [0, 1], [1, 0], [1, 1]],
+    "S": [[0, 1], [0, 2], [1, 0], [1, 1]],
+    "Z": [[0, 0], [0, 1], [1, 1], [1, 2]]
+}
+
+function coloraCella(row, col, color)
+{
+    document.getElementById(`cell-${row}-${col}`).classList.add(color);
+}
+
+function svuotaCella(row, col)
+{
+    document.getElementById(`cell-${row}-${col}`).className = "cell";
+}
+
+function killTetra()
+{
+    for (let i of tetramino)
+    {
+        svuotaCella(i.riga, i.colonna);
+    }
+}
+
 function nuovoTetramino(tipo)
 {
-    switch(tipo)
+    const coordinate = POSIZIONI_TETRAMINI[tipo];
+    for(let i = 0; i < 4; i++)
     {
-        case TETRA_I:
-            for(let i = 0; i < 4; i++)
-            {
-                tetramino[i].riga = 0;
-                tetramino[i].colonna = i;
-                document.getElementById(`cell-${0}-${i+3}`).classList.add(TETRA_I);
-            }
-        break;
-        case TETRA_L:
-
-            for(let i = 0; i < 3; i++)
-            {
-                tetramino[i].riga = 0;
-                tetramino[i].colonna = i;
-                document.getElementById(`cell-${0}-${i+3}`).classList.add(TETRA_L);
-            }
-            document.getElementById(`cell-${1}-${5}`).classList.add(TETRA_L);
-            tetramino[3].riga = 1;
-            tetramino[3].colonna = 5;
-        break;
-        case TETRA_J:
-            document.getElementById(`cell-${1}-${3}`).classList.add(TETRA_J);
-            tetramino[3].riga = 1;
-            tetramino[3].colonna = 3;
-            for(let i = 0; i < 3; i++)
-            {
-                tetramino[i].riga = 0;
-                tetramino[i].colonna = i;
-                document.getElementById(`cell-${0}-${i+3}`).classList.add(TETRA_J);
-            }
-        break;
-        case TETRA_O:
-            for(let i = 0; i < 2; i++)
-            {
-                for(let j = 0; j < 2; j++)
-                {
-                    document.getElementById(`cell-${i}-${j+4}`).classList.add(TETRA_O);
-                    tetramino[i*2+j].riga = i;
-                    tetramino[i*2+j].colonna = j;
-                }
-            }
-        break;
-        case TETRA_S:
-            for(let i = 0; i < 2; i++)
-            {
-                for(let j = 0; j < 2; j++)
-                {
-                    if(i == 0)
-                    {
-                        document.getElementById(`cell-${i}-${j+4}`).classList.add(TETRA_S);
-                    }
-                    else
-                    {
-                        document.getElementById(`cell-${i}-${j+3}`).classList.add(TETRA_S);
-                    }
-                    tetramino[i*2+j].riga = i;
-                    tetramino[i*2+j].colonna = j;
-                }
-            }
-        break;
-        case TETRA_Z:
-            for(let i = 0; i < 2; i++)
-            {
-                for(let j = 0; j < 2; j++)
-                {
-                    if(i == 0)
-                    {
-                        document.getElementById(`cell-${i}-${j+4}`).classList.add(TETRA_Z);
-                    }
-                    else
-                    {
-                        document.getElementById(`cell-${i}-${j+5}`).classList.add(TETRA_Z);
-                    }
-                    tetramino[i*2+j].riga = i;
-                    tetramino[i*2+j].colonna = j;
-                }
-            }
-        break;
+        tetramino[i].riga = coordinate[i][0];
+        tetramino[i].colonna = coordinate[i][1] + 3;
+        coloraCella(tetramino[i].riga, tetramino[i].colonna, tipo);
     }
 }
 
