@@ -1,0 +1,62 @@
+body{
+    align-items: center;
+    background-color: black;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 30px;
+}
+
+h1{
+    text-align: center;
+    color: #001eff;
+    text-shadow: 3px 3px 3px  #f000ff;
+}
+
+div#gameBoard{
+    float: left;
+    width: fit-content;
+    height: fit-content;
+    margin: 2em;
+}
+
+.row{
+    display: flex;
+}
+
+.cell{
+    width: 1.2em;
+    height: 1.2em;
+    border: 1px solid #e0e0e0
+}
+
+.I{
+    background-color: orangered;
+}
+
+.L{
+    background-color: blue;
+}
+
+.J{
+    background-color: rgb(255, 0, 255);
+}
+
+.T{
+    background-color: yellow;
+}
+
+.O{
+    background-color: red;
+}
+
+.Z{
+    background-color: green;
+}
+
+.S{
+    background-color: lightblue;
+}
+
+.caduto{
+    background-color: #4f4b4b
+}
