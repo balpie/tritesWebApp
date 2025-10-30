@@ -35,7 +35,21 @@ const POSIZIONI_TETRAMINI = {
 function getCell(row, col)
 {
     return document.getElementById(`cell-${row}-${col}`);
-    
+}
+
+function tetraminoCasuale()
+{
+    let x = Math.floor(Math.random() * 7);
+    switch(x){
+        case 0: return TETRA_I;
+        case 1: return TETRA_L;
+        case 2: return TETRA_J
+        case 3: return TETRA_T
+        case 4: return TETRA_O;
+        case 5: return TETRA_S
+        case 6: return TETRA_Z
+    }
+    return ;
 }
 
 function coloraCella(row, col, color)
@@ -68,7 +82,14 @@ function nuovoTetramino(tipo)
     for(let i = 0; i < 4; i++)
     {
         tetramino[i].riga = coordinate[i][0] + 1;
-        tetramino[i].colonna = coordinate[i][1] + 3;
+        if(tipo === TETRA_O)
+        {
+        tetramino[i].colonna = coordinate[i][1] + 4;
+        }
+        else
+        {
+            tetramino[i].colonna = coordinate[i][1] + 3;
+        }
         coloraCella(tetramino[i].riga, tetramino[i].colonna, tipo);
         toggleInMovimento(tetramino[i].riga, tetramino[i].colonna);
     }
@@ -112,6 +133,6 @@ function down()
 function startGame()
 {
     document.getElementById("Start").disabled = true;
-    nuovoTetramino(TETRA_J);
+    nuovoTetramino(tetraminoCasuale());
     intervalId = setInterval(down, 200)
 }
