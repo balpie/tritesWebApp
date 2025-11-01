@@ -32,6 +32,11 @@ const POSIZIONI_TETRAMINI = {
     "Z": [[0, 0], [0, 1], [1, 1], [1, 2]]
 }
 
+function isInBound(r, c)
+{
+    return (r < BOARDROWS && r >= 0 && c < BOARDCOLUMNS && c >= 0);
+}
+
 function getCell(row, col)
 {
     return document.getElementById(`cell-${row}-${col}`);
@@ -54,17 +59,25 @@ function tetraminoCasuale()
 
 function coloraCella(row, col, color)
 {
-    document.getElementById(`cell-${row}-${col}`).classList.add(color);
+    getCell(row, col).classList.add(color);
+}
+
+function coloraTetra(tetra, tipo)
+{
+    for(e of tetra)
+    {
+        coloraCella(e.riga, e.colonna, tipo);
+    }
 }
 
 function svuotaCella(row, col)
 {
-    document.getElementById(`cell-${row}-${col}`).className = "cell";
+    getCell(row, col).className = "cell";
 }
 
 function toggleInMovimento(row, col)
 {
-    document.getElementById(`cell-${row}-${col}`).classList.toggle("inMovimento");
+    getCell(row, col).classList.toggle("inMovimento");
 }
 
 function killTetra()
@@ -72,6 +85,15 @@ function killTetra()
     for (let i of tetramino)
     {
         svuotaCella(i.riga, i.colonna);
+    }
+}
+
+function bloccaTetra(t)
+{
+    for (c of t)
+    {
+        getCell(c.riga, c.colonna).classList.remove("inMovimento");
+        getCell(c.riga, c.colonna).classList.add("Caduto"); // serve alla collision detection
     }
 }
 
@@ -115,24 +137,63 @@ function generateBoard()
     }
 }
 
-// TODO: collision detection
-// ottimizza sta robaaaaa
-function down()
+function muoviTetra(incc = 0, incr = 1)
 {
-    for(let sqr of tetramino)
+    aux = structuredClone(tetramino);
+    for(let sqr of aux)
     {
         svuotaCella(sqr.riga, sqr.colonna);
         sqr.riga++;
     }
-    for(let sqr of tetramino)
+    if(caduto(aux))
     {
-        coloraCella(sqr.riga, sqr.colonna, tipoCorrente);
+        bloccaTetra(tetramino);
+        coloraTetra(tetramino, tipoCorrente);
+        nuovoTetramino(tetraminoCasuale());
+        return;
     }
+    let count = 0; 
+    for(let sqr of aux) // copio aux in tetramino e coloro le celle
+    {
+        tetramino[count].riga = sqr.riga;
+        tetramino[count].colonna = sqr.colonna;
+        coloraCella(sqr.riga, sqr.colonna, tipoCorrente);
+        count++;
+    }
+}
+
+// valuta se il tetramino t passato collide con qualcosa di fermo sotto.
+function caduto(t)
+{
+    for(c of t)
+    {
+        // caduto in fondo
+        if(!isInBound(c.riga, c.colonna)) 
+        {
+            return true;
+        }
+        // caduto sopra un altro caduto
+        if(getCell(c.riga, c.colonna).classList.contains("Caduto")) 
+        {
+            return true;
+        }
+    }
+}
+
+function move(event)
+{
+    if(event.code !== "arrowRight" && event.code !== "arrowLeft" )
+    {
+        return; // nothing to do
+    }
+    let increment = (event.code === "arrowRight")? +1 : -1;
+
 }
 
 function startGame()
 {
     document.getElementById("Start").disabled = true;
+    document.addEventListener("keydown", move);
     nuovoTetramino(tetraminoCasuale());
-    intervalId = setInterval(down, 200)
+    intervalId = setInterval(muoviTetra, 200);
 }
