@@ -32,6 +32,8 @@ const POSIZIONI_TETRAMINI = {
     "Z": [[0, 0], [0, 1], [1, 1], [1, 2]]
 }
 
+let statoRotazione;
+
 function isInBound(r, c)
 {
     return (r < BOARDROWS && r >= 0 && c < BOARDCOLUMNS && c >= 0);
@@ -101,6 +103,7 @@ function nuovoTetramino(tipo)
 {
     tipoCorrente = tipo;
     const coordinate = POSIZIONI_TETRAMINI[tipo];
+    statoRotazione = 0;
     for(let i = 0; i < 4; i++)
     {
         tetramino[i].riga = coordinate[i][0] + 1;
@@ -120,6 +123,7 @@ function nuovoTetramino(tipo)
 function generateBoard()
 {
     document.getElementById("Start").addEventListener("click", startGame);
+    document.getElementById("Stop").addEventListener("click", stopGame);
 
     board = document.getElementById("gameBoard");
     for(let i = 0; i < BOARDROWS; i++)
@@ -143,15 +147,23 @@ function muoviTetra(incc = 0, incr = 1)
     for(let sqr of aux)
     {
         svuotaCella(sqr.riga, sqr.colonna);
-        sqr.riga++;
+        sqr.riga += incr;
+        sqr.colonna += incc;
     }
     if(caduto(aux))
     {
-        bloccaTetra(tetramino);
-        coloraTetra(tetramino, tipoCorrente);
-        nuovoTetramino(tetraminoCasuale());
+        if(incr === 1) // caso caduta
+        {
+            bloccaTetra(tetramino);
+            coloraTetra(tetramino, tipoCorrente);
+            nuovoTetramino(tetraminoCasuale());
+            //nuovoTetramino(tetraminoCasuale());
+        }
+        // altrimenti ha provato ad andare di lato ma c'era qualcosa
         return;
+
     }
+    // se il tetramino può spostarsi...
     let count = 0; 
     for(let sqr of aux) // copio aux in tetramino e coloro le celle
     {
@@ -178,22 +190,104 @@ function caduto(t)
             return true;
         }
     }
+    return false;
 }
 
+//TODO: rotazione
 function move(event)
 {
-    if(event.code !== "arrowRight" && event.code !== "arrowLeft" )
+    console.log("Codice tasto: "+event.code);
+    if(event.code !== "KeyA" && event.code !== "KeyD" && event.code !== "KeyW")
     {
-        return; // nothing to do
+        return; // tasto non interessante
     }
-    let increment = (event.code === "arrowRight")? +1 : -1;
+    if(event.code === "KeyW")
+    {
+        ruota();
+        return;
+    }
+    let increment = ((event.code === "KeyD")? +1 : -1);
+    muoviTetra(increment, 0);
+}
+
+// genera la posizione del tetramino ruotato
+function ruotaTetraI() 
+{
+    let aux = new Array();
+    let root = {riga: undefined, colonna: undefined}; // coordinate della cella in alto a sx
+              // del quadrato di cui dovrò fare la rotazione
+    if(statoRotazione === 0)
+    {
+        root.riga = tetramino[0].riga - 1;
+        root.colonna = tetramino[0].colonna;
+    }
+    else
+    {
+        root.riga = tetramino[0].riga;
+        root.colonna = tetramino[0].colonna - 1;
+    }
+    for(let sqr of tetramino)
+    {
+    // rotazione: invertire riga e colonna, mantenendo offset rispetto a root
+        aux.push(
+            {riga: sqr.colonna + root.riga - root.colonna, 
+            colonna: sqr.riga - root.riga + root.colonna}); 
+    }
+    return aux;
+}
+
+function ruota()
+{
+    let nuovoStatoRotazione;
+    let tryTetra; 
+    switch (tipoCorrente)
+    {
+        case TETRA_O:
+            return;
+        case TETRA_I:
+            tryTetra = ruotaTetraI();
+            nuovoStatoRotazione = (statoRotazione + 1) % 2;
+            break;
+        default:
+            console.log("Prima o poi faccio tutto");
+    }
+    if(caduto(tryTetra))
+    { 
+        console.log(tryTetra);
+        return; // in realtà non è caduto è più wouldCollide()
+    }
+    // se il tetramino può spostarsi...
+    // riesco a colorarlo quindi cancello quello vecchio
+    for(let c of tetramino)
+    {
+        svuotaCella(c.riga, c.colonna);
+    }
+    statoRotazione = nuovoStatoRotazione;
+    // coloro quello nuovo e aggiorno tetramino
+    let count = 0; 
+    for(let sqr of tryTetra) // copio aux in tetramino e coloro le celle
+    {
+        tetramino[count].riga = sqr.riga;
+        tetramino[count].colonna = sqr.colonna;
+        coloraCella(sqr.riga, sqr.colonna, tipoCorrente);
+        count++;
+    }
 
 }
 
 function startGame()
 {
     document.getElementById("Start").disabled = true;
+    document.getElementById("Stop").disabled = false;
     document.addEventListener("keydown", move);
+    //nuovoTetramino(tetraminoCasuale());
     nuovoTetramino(tetraminoCasuale());
     intervalId = setInterval(muoviTetra, 200);
+}
+
+function stopGame()
+{
+    clearInterval(intervalId);
+    document.getElementById("Start").disabled = false;
+    document.getElementById("Stop").disabled = true;
 }
