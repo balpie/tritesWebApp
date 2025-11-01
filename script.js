@@ -236,6 +236,56 @@ function ruotaTetraI()
     return aux;
 }
 
+function ruotaTetraS()
+{
+    let aux = new Array();
+    let root = {riga: undefined, colonna: undefined}; // coordinate della cella in alto a sx
+              // del quadrato di cui dovrò fare la rotazione
+    if(statoRotazione === 0)
+    {
+        root.riga = tetramino[0].riga - 1;
+        root.colonna = tetramino[0].colonna;
+    }
+    else
+    {
+        root.riga = tetramino[0].riga;
+        root.colonna = tetramino[0].colonna - 1;
+    }
+    for(let sqr of tetramino)
+    {
+    // rotazione: invertire riga e colonna, mantenendo offset rispetto a root
+        aux.push(
+            {riga: sqr.colonna + root.riga - root.colonna, 
+            colonna: sqr.riga - root.riga + root.colonna}); 
+    }
+    return aux;
+}
+
+function ruotaTetraZ()
+{
+    let aux = new Array();
+    let root = {riga: undefined, colonna: undefined}; // coordinate della cella in alto a sx
+              // del quadrato di cui dovrò fare la rotazione
+    if(statoRotazione === 0)
+    {
+        root.riga = tetramino[0].riga;
+        root.colonna = tetramino[0].colonna;
+    }
+    else
+    {
+        root.riga = tetramino[0].riga;
+        root.colonna = tetramino[0].colonna;
+    }
+    for(let sqr of tetramino)
+    {
+    // rotazione: invertire riga e colonna, mantenendo offset rispetto a root
+        aux.push(
+            {riga: sqr.colonna + root.riga - root.colonna, 
+            colonna: sqr.riga - root.riga + root.colonna}); 
+    }
+    return aux;
+}
+
 function ruota()
 {
     let nuovoStatoRotazione;
@@ -248,6 +298,12 @@ function ruota()
             tryTetra = ruotaTetraI();
             nuovoStatoRotazione = (statoRotazione + 1) % 2;
             break;
+        case TETRA_S:
+            tryTetra = ruotaTetraS();
+            nuovoStatoRotazione = (statoRotazione + 1) % 2;
+        case TETRA_Z:
+            tryTetra = ruotaTetraZ();
+            nuovoStatoRotazione = (statoRotazione + 1) % 2;
         default:
             console.log("Prima o poi faccio tutto");
     }
