@@ -1,10 +1,14 @@
 document.addEventListener("DOMContentLoaded", generateBoard);
+document.addEventListener("DOMContentLoaded", generatePreview);
 
 const BOARDCOLUMNS = 10;
 const BOARDROWS = 20;
-const INIT_INTERVAL_DURATION = 300;
+const INIT_INTERVAL_DURATION = 400;
 
 let cellArray = [];
+let previewArray = [];
+
+let tipoProssimo; // tipo visto in preview
 
 let tetramino = [ // tetramino in caduta libera
     {riga: undefined, colonna: undefined},
@@ -12,15 +16,16 @@ let tetramino = [ // tetramino in caduta libera
     {riga: undefined, colonna: undefined},
     {riga: undefined, colonna: undefined}
 ];
+
 let tipoCorrente;
 
 let intervalId;
 let moveIntervalId;
 let intervalDuration = INIT_INTERVAL_DURATION;
 
-let toNextLevel = 1; // linee da ripulire prima di arrivare al livello successivo
+const TO_NEXT_LEVEL = 5; // linee da ripulire prima di arrivare al livello successivo
 
-const movementSpeed = 60;
+const MOVEMENT_SPEED = 60;
 
 let lineeLiberate = 0;
 let punti = 0;
@@ -170,6 +175,42 @@ function bloccaTetra(t)
     }
 }
 
+function scriviPreview(tipo)
+{
+    const coordinate = POSIZIONI_TETRAMINI[tipo][0];
+    const coordinateVecchio = POSIZIONI_TETRAMINI[tipoCorrente][0];
+    for(let i = 0; i < 4; i++)
+    {
+        let r, c;
+        switch(tipoCorrente)
+        {
+            case TETRA_I: 
+                r = coordinateVecchio[i][0] + 1;
+                c = coordinateVecchio[i][1];
+            break;
+            default:
+                r = coordinateVecchio[i][0] + 1;
+                c = coordinateVecchio[i][1] + 1;
+        }
+        previewArray[r][c].className = "cell";
+    }
+    for(let i = 0; i < 4; i++)
+    {
+        let r, c;
+        switch(tipoProssimo)
+        {
+            case TETRA_I: 
+                r = coordinate[i][0] + 1;
+                c = coordinate[i][1];
+            break;
+            default:
+                r = coordinate[i][0] + 1;
+                c = coordinate[i][1] + 1;
+        }
+        previewArray[r][c].classList.add(tipo);
+    }
+}
+
 function nuovoTetramino(tipo)
 {
     tipoCorrente = tipo;
@@ -227,9 +268,31 @@ function generateBoard()
         cellArray.push(cellArrRow);
     }
 }
+function generatePreview(){
+    // genero la cella di preview
+    previewSquare = document.getElementById("Preview");
+    for (let i = 0; i < 4; i++)
+    {
+        let previewArrayRow = [];
+        let row = document.createElement("div");
+        row.classList.add("row");
+        previewSquare.appendChild(row);
+        for(let j = 0; j < 4; j++)
+        {
+            cell = document.createElement("div");
+            cell.classList.add("cell");
+            cell.id = `preview-${i}-${j}`;
+            previewArrayRow.push(cell);
+            row.append(cell);
+        }
+        previewArray.push(previewArrayRow);
+    }
+}
 
 function terminaPartita()
 {
+    document.removeEventListener("keydown", keyDownHandler);
+    document.removeEventListener("keyup", keyUpHandler);
     clearInterval(intervalId);
     clearInterval(moveIntervalId);
 }
@@ -298,6 +361,7 @@ function refreshPunteggio()
     }
 }
 
+// gameIter più che muoviTetra...
 function muoviTetra(incc = 0, incr = 1)
 {
     aux = structuredClone(tetramino);
@@ -314,8 +378,6 @@ function muoviTetra(incc = 0, incr = 1)
             coloraTetra(tetramino, tipoCorrente);
             righeRipulite = trovaRigheRipulite(); // lista di righe ripulite
 
-            // TODO ripulisci sta funzione che fa troppe cose
-
             calcolaPunteggio(righeRipulite); // calcolo nuovo punteggio
             refreshPunteggio();
 
@@ -323,7 +385,9 @@ function muoviTetra(incc = 0, incr = 1)
             {
                 scorriRighe(righeRipulite);
             }
-            nuovoTetramino(tetraminoCasuale());
+            nuovoTetramino(tipoProssimo);
+            tipoProssimo = tetraminoCasuale();
+            scriviPreview(tipoProssimo);
         }
         // altrimenti ha provato ad andare di lato ma c'era qualcosa
         return;
@@ -388,7 +452,7 @@ function keyDownHandler(event)
         }
         keySDown = true;
         clearInterval(intervalId);
-        intervalId = setInterval(muoviTetra ,Math.floor(intervalDuration/3));
+        intervalId = setInterval(muoviTetra, MOVEMENT_SPEED);
         return;
     }
     if(keyADown || keyDDown)
@@ -400,7 +464,7 @@ function keyDownHandler(event)
     let increment = ((event.code === "KeyD")? +1 : -1);
     moveIntervalId = setInterval( ()=>{
         muoviTetra(increment, 0);
-        }, movementSpeed);
+        }, MOVEMENT_SPEED);
 }
 
 function keyUpHandler(event)
@@ -451,7 +515,7 @@ function calcolaPunteggio(righeRipulite)
     {
         punti += 25*livello;
     }
-    if(Math.floor(lineeLiberate/toNextLevel) > livello - 1)
+    if(Math.floor(lineeLiberate/TO_NEXT_LEVEL) > livello - 1)
     {
         livello++;
     }
@@ -558,6 +622,7 @@ function startGame()
     document.addEventListener("keydown", keyDownHandler);
     document.addEventListener("keyup", keyUpHandler);
 
+
     // per quando ricomincia la partita
     clearBoard();
     livello = 1; 
@@ -568,5 +633,7 @@ function startGame()
     document.getElementById("Status").innerText = "";
 
     nuovoTetramino(tetraminoCasuale());
+    tipoProssimo = tetraminoCasuale();
+    scriviPreview(tipoProssimo);
     intervalId = setInterval(muoviTetra, intervalDuration);
 }

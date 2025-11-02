@@ -1,6 +1,6 @@
 body{
     align-items: center;
-    background-color: black;
+    background-color: #201f1f;
     color: #c0c0c0;
     font-family: "Press Start 2P", system-ui;
     padding: 30px;
@@ -18,7 +18,7 @@ button{
     font-family: "Press Start 2P";
     align-self: center;
     background-color: #c0c0c0;
-    color: #2b2b2b;
+    color: #201f1f;
     border: 2px solid #c0c0c0;
     border-radius: 0;
     display: block;
@@ -33,7 +33,7 @@ h1{
 
 button:hover{
     border: 2px solid #c0c0c0;
-    background-color: #2b2b2b;
+    background-color: #201f1f;
     color: #c0c0c0;
 }
 
@@ -41,8 +41,12 @@ button.Nascosto{
     display: none;
 }
 
+aside{
+    display: flex;
+    flex-direction: column;
+}
 
-div#gameBoard{
+div.gameBoard{
     float: left;
     width: fit-content;
     height: fit-content;
@@ -103,36 +107,36 @@ th{
 
 
 span.I{
-    background-color: black;
+    background-color: #201f1f;
     color: rgb(255, 123, 0);
 }
 
 span.L{
-    background-color: black;
+    background-color: #201f1f;
     color: blue;
 }
 
 span.J{
-    background-color: black;
+    background-color: #201f1f;
     color: rgb(255, 0, 255);
 }
 
 span.T{
-    background-color: black;
+    background-color: #201f1f;
     color: yellow;
 }
 
 span.O{
-    background-color: black;
+    background-color: #201f1f;
     color: red;
 }
 
 span.Z{
-    background-color: black;
+    background-color: #201f1f;
     color: rgb(0, 255, 0);
 }
 
 span.S{
-    background-color: black;
+    background-color: #201f1f;
     color: rgb(0, 255, 255);
 }
