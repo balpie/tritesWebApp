@@ -18,6 +18,7 @@ let tetramino = [ // tetramino in caduta libera
 ];
 
 let tipoCorrente;
+let hardDropped = false;
 
 let intervalId;
 let moveIntervalId;
@@ -35,7 +36,8 @@ let livello = 1;
  * singola linea: 100pts * liv
  * doppia linea: 300pts * liv
  * tripla linea: 500pts * liv
- * drop veloce: 25pts*liv
+ * drop veloce: 25pts * liv
+ * hard drop: 50pts * liv
  */
 
 // indica se i tasti sono premuti
@@ -246,6 +248,7 @@ function generateBoard()
     document.getElementById("Restart").classList.add("Nascosto");
     document.getElementById("Restart").addEventListener("click", ()=> {
             document.getElementById("Restart").classList.add("Nascosto");
+            document.getElementById("Restart").blur();
             terminaPartita();
             startGame();
         });
@@ -388,9 +391,10 @@ function muoviTetra(incc = 0, incr = 1)
             nuovoTetramino(tipoProssimo);
             tipoProssimo = tetraminoCasuale();
             scriviPreview(tipoProssimo);
+            return true;
         }
         // altrimenti ha provato ad andare di lato ma c'era qualcosa
-        return;
+        return false;
 
     }
     // se il tetramino può spostarsi...
@@ -427,10 +431,17 @@ function caduto(t)
     return false;
 }
 
+function hardDrop()
+{
+    hardDropped = true;
+    while(!muoviTetra(0, 1));
+}
+
 //TODO: rotazione
 function keyDownHandler(event)
 {
-    if(event.code !== "KeyA" && event.code !== "KeyD" && event.code !== "KeyW" && event.code !== "KeyS")
+    if(event.code !== "KeyA" && event.code !== "KeyD" && event.code !== "KeyW" && event.code !== "KeyS" && event.code !== "Enter")
+
     {
         return; // tasto non interessante
     }
@@ -453,6 +464,11 @@ function keyDownHandler(event)
         keySDown = true;
         clearInterval(intervalId);
         intervalId = setInterval(muoviTetra, MOVEMENT_SPEED);
+        return;
+    }
+    if(event.code === "Enter")
+    {
+        hardDrop();
         return;
     }
     if(keyADown || keyDDown)
@@ -489,6 +505,7 @@ function keyUpHandler(event)
         keyADown = false;
         keyDDown = false;
         clearInterval(moveIntervalId);
+        break;
     }
 
 }
@@ -510,6 +527,11 @@ function calcolaPunteggio(righeRipulite)
         case 1: 
         punti += 100*livello;
         break;
+    }
+    if(hardDropped)
+    {
+        hardDropped = false;
+        punti += 50*livello;
     }
     if(keySDown)
     {
@@ -577,6 +599,7 @@ function provaRotazione()
     }
     return tryTetra;
 }
+
 function ruota()
 {
     if( tipoCorrente === TETRA_O)
@@ -625,6 +648,7 @@ function startGame()
 
     // per quando ricomincia la partita
     clearBoard();
+    hardDropped = 0;
     livello = 1; 
     document.getElementById("Livello").innerText = livello;
     punti = 0;
