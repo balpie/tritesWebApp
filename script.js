@@ -23,14 +23,52 @@ const TETRA_Z = "Z";
 
 // posizione dei tetramini (relative)
 const POSIZIONI_TETRAMINI = {
-    "I": [[0, 0], [0, 1], [0, 2], [0, 3]],
-    "L": [[0, 0], [0, 1], [0, 2], [1, 2]],
-    "J": [[0, 0], [0, 1], [0, 2], [1, 0]],
-    "T": [[0, 0], [0, 1], [0, 2], [1, 1]],
-    "O": [[0, 0], [0, 1], [1, 0], [1, 1]],
-    "S": [[0, 1], [0, 2], [1, 0], [1, 1]],
-    "Z": [[0, 0], [0, 1], [1, 1], [1, 2]]
-}
+    // contiene anche le posizioni relative alle rotazioni
+    "I": [
+            [[0, 0], [0, 1], [0, 2], [0, 3]], // stato iniziale 
+            [[-1, 2], [0, 2], [1, 2], [2, 2]],
+            [[1, 0], [1, 1], [1, 2], [1, 3]],
+            [[-1, 1], [0, 1], [1, 1], [2, 1]]
+         ],
+    "L": [ 
+            [[1, 1], [1, 0], [1, 2], [0, 2]], // stato iniziale 
+            [[1, 1], [0, 1], [2, 1], [2, 2]],
+            [[1, 1], [1, 0], [1, 2], [2, 0]],
+            [[1, 1], [0, 1], [0, 0], [2, 1]]
+         ],
+        
+    "J": [
+            [[1, 1], [1, 0], [1, 2], [0, 0]], // stato iniziale 
+            [[1, 1], [0, 1], [2, 1], [0, 2]],
+            [[1, 1], [1, 0], [1, 2], [2, 2]],
+            [[1, 1], [0, 1], [2, 1], [2, 0]]
+         ],
+    "T": [
+            [[1, 1], [0, 1], [1, 2], [1, 0]], // stato iniziale 
+            [[1, 1], [0, 1], [2, 1], [1, 2]],
+            [[1, 1], [1, 0], [1, 2], [2, 1]],
+            [[1, 1], [1, 0], [0, 1], [2, 1]]
+         ], 
+    "O": [
+            [[0, 0], [0, 1], [1, 0], [1, 1]], // stato iniziale 
+            [[0, 0], [0, 1], [1, 0], [1, 1]],
+            [[0, 0], [0, 1], [1, 0], [1, 1]],
+            [[0, 0], [0, 1], [1, 0], [1, 1]],
+    ],
+    "S": [
+            [[1, 1], [0, 2], [1, 0], [0, 1]], // stato iniziale 
+            [[1, 1], [0, 1], [1, 2], [2, 2]],
+            [[1, 1], [2, 0], [2, 1], [1, 2]],
+            [[1, 1], [0, 0], [1, 0], [2, 1]]
+    ],
+    "Z": [
+            [[1, 1], [0, 1], [0, 0], [1, 2]], // stato iniziale 
+            [[1, 1], [0, 2], [1, 2], [2, 1]],
+            [[1, 1], [1, 0], [2, 1], [2, 2]],
+            [[1, 1], [0, 1], [1, 0], [2, 0]]
+    ]
+};
+
 
 let statoRotazione;
 
@@ -47,16 +85,16 @@ function getCell(row, col)
 function tetraminoCasuale()
 {
     let x = Math.floor(Math.random() * 7);
-    switch(x){
-        case 0: return TETRA_I;
-        case 1: return TETRA_L;
-        case 2: return TETRA_J
-        case 3: return TETRA_T
-        case 4: return TETRA_O;
-        case 5: return TETRA_S
-        case 6: return TETRA_Z
-    }
-    return ;
+    //switch(x){
+    //    case 0: return TETRA_I;
+    //    case 1: return TETRA_L;
+    //    case 2: return TETRA_J;
+    //    case 3: return TETRA_T;
+    //    case 4: return TETRA_O;
+    //    case 5: return TETRA_S;
+    //    case 6: return TETRA_Z;
+    //}
+    return TETRA_I;
 }
 
 function coloraCella(row, col, color)
@@ -102,8 +140,8 @@ function bloccaTetra(t)
 function nuovoTetramino(tipo)
 {
     tipoCorrente = tipo;
-    const coordinate = POSIZIONI_TETRAMINI[tipo];
     statoRotazione = 0;
+    const coordinate = POSIZIONI_TETRAMINI[tipo][statoRotazione];
     for(let i = 0; i < 4; i++)
     {
         tetramino[i].riga = coordinate[i][0] + 1;
@@ -157,7 +195,6 @@ function muoviTetra(incc = 0, incr = 1)
             bloccaTetra(tetramino);
             coloraTetra(tetramino, tipoCorrente);
             nuovoTetramino(tetraminoCasuale());
-            //nuovoTetramino(tetraminoCasuale());
         }
         // altrimenti ha provato ad andare di lato ma c'era qualcosa
         return;
@@ -196,7 +233,6 @@ function caduto(t)
 //TODO: rotazione
 function move(event)
 {
-    console.log("Codice tasto: "+event.code);
     if(event.code !== "KeyA" && event.code !== "KeyD" && event.code !== "KeyW")
     {
         return; // tasto non interessante
@@ -210,107 +246,75 @@ function move(event)
     muoviTetra(increment, 0);
 }
 
-// genera la posizione del tetramino ruotato
-function ruotaTetraI() 
+// ritorna la posizione di dove ruoterebbe il tetramino se non ci fossero conflitti
+function provaRotazione()
 {
-    let aux = new Array();
-    let root = {riga: undefined, colonna: undefined}; // coordinate della cella in alto a sx
-              // del quadrato di cui dovrò fare la rotazione
-    if(statoRotazione === 0)
+    let tryTetra = new Array();
+    let root = {};
+    if(tipoCorrente != TETRA_I)
     {
-        root.riga = tetramino[0].riga - 1;
-        root.colonna = tetramino[0].colonna;
+        root = {
+            riga: tetramino[0].riga - 1,
+            colonna: tetramino[0].colonna - 1
+        };
     }
     else
     {
-        root.riga = tetramino[0].riga;
-        root.colonna = tetramino[0].colonna - 1;
+        switch(statoRotazione)
+        {
+            case 0:
+                root = 
+                {
+                    riga: tetramino[0].riga,
+                    colonna: tetramino[0].colonna
+                }
+            break;
+            case 1:
+                root = 
+                {
+                    riga: tetramino[0].riga + 1,
+                    colonna: tetramino[0].colonna - 2
+                }
+            break;
+            case 2:
+                root =
+                {
+                    riga: tetramino[0].riga - 1,
+                    colonna: tetramino[0].colonna 
+                }
+            break;
+            case 3:
+                root =
+                {
+                    riga: tetramino[0].riga + 1,
+                    colonna: tetramino[0].colonna -1
+                }
+            break;
+        }
     }
-    for(let sqr of tetramino)
+    for (let i = 0; i < 4; i++)
     {
-    // rotazione: invertire riga e colonna, mantenendo offset rispetto a root
-        aux.push(
-            {riga: sqr.colonna + root.riga - root.colonna, 
-            colonna: sqr.riga - root.riga + root.colonna}); 
+        tryTetra.push(
+        {
+            riga: POSIZIONI_TETRAMINI[tipoCorrente][(statoRotazione + 1) % 4][i][0] + root.riga,
+            colonna: POSIZIONI_TETRAMINI[tipoCorrente][(statoRotazione + 1) % 4][i][1] + root.colonna
+        });
+        console.log("Cosa ho pushado? guesdo: " + tryTetra[i]);
     }
-    return aux;
+    return tryTetra;
 }
-
-function ruotaTetraS()
-{
-    let aux = new Array();
-    let root = {riga: undefined, colonna: undefined}; // coordinate della cella in alto a sx
-              // del quadrato di cui dovrò fare la rotazione
-    if(statoRotazione === 0)
-    {
-        root.riga = tetramino[0].riga - 1;
-        root.colonna = tetramino[0].colonna;
-    }
-    else
-    {
-        root.riga = tetramino[0].riga;
-        root.colonna = tetramino[0].colonna - 1;
-    }
-    for(let sqr of tetramino)
-    {
-    // rotazione: invertire riga e colonna, mantenendo offset rispetto a root
-        aux.push(
-            {riga: sqr.colonna + root.riga - root.colonna, 
-            colonna: sqr.riga - root.riga + root.colonna}); 
-    }
-    return aux;
-}
-
-function ruotaTetraZ()
-{
-    let aux = new Array();
-    let root = {riga: undefined, colonna: undefined}; // coordinate della cella in alto a sx
-              // del quadrato di cui dovrò fare la rotazione
-    if(statoRotazione === 0)
-    {
-        root.riga = tetramino[0].riga;
-        root.colonna = tetramino[0].colonna;
-    }
-    else
-    {
-        root.riga = tetramino[0].riga;
-        root.colonna = tetramino[0].colonna;
-    }
-    for(let sqr of tetramino)
-    {
-    // rotazione: invertire riga e colonna, mantenendo offset rispetto a root
-        aux.push(
-            {riga: sqr.colonna + root.riga - root.colonna, 
-            colonna: sqr.riga - root.riga + root.colonna}); 
-    }
-    return aux;
-}
-
 function ruota()
 {
-    let nuovoStatoRotazione;
-    let tryTetra; 
-    switch (tipoCorrente)
-    {
-        case TETRA_O:
-            return;
-        case TETRA_I:
-            tryTetra = ruotaTetraI();
-            nuovoStatoRotazione = (statoRotazione + 1) % 2;
-            break;
-        case TETRA_S:
-            tryTetra = ruotaTetraS();
-            nuovoStatoRotazione = (statoRotazione + 1) % 2;
-        case TETRA_Z:
-            tryTetra = ruotaTetraZ();
-            nuovoStatoRotazione = (statoRotazione + 1) % 2;
-        default:
-            console.log("Prima o poi faccio tutto");
+    if( tipoCorrente === TETRA_O)
+    { // inutile provare
+        return;
     }
+    let tryTetra = provaRotazione(); 
     if(caduto(tryTetra))
     { 
+        // Todo: wallkick (?)
         console.log(tryTetra);
-        return; // in realtà non è caduto è più wouldCollide()
+        return; 
     }
     // se il tetramino può spostarsi...
     // riesco a colorarlo quindi cancello quello vecchio
@@ -318,7 +322,7 @@ function ruota()
     {
         svuotaCella(c.riga, c.colonna);
     }
-    statoRotazione = nuovoStatoRotazione;
+    statoRotazione = (statoRotazione + 1) % 4;
     // coloro quello nuovo e aggiorno tetramino
     let count = 0; 
     for(let sqr of tryTetra) // copio aux in tetramino e coloro le celle
@@ -336,7 +340,6 @@ function startGame()
     document.getElementById("Start").disabled = true;
     document.getElementById("Stop").disabled = false;
     document.addEventListener("keydown", move);
-    //nuovoTetramino(tetraminoCasuale());
     nuovoTetramino(tetraminoCasuale());
     intervalId = setInterval(muoviTetra, 200);
 }
