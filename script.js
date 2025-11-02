@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", generateBoard);
 
 const BOARDCOLUMNS = 10;
-const BOARDROWS = 15;
+const BOARDROWS = 20;
 
 let tetramino = [ // tetramino in caduta libera
     {riga: undefined, colonna: undefined},
@@ -12,6 +12,28 @@ let tetramino = [ // tetramino in caduta libera
 let tipoCorrente;
 
 let intervalId;
+let moveIntervalId;
+let intervalDuration = 250;
+
+const movementSpeed = 60;
+
+let punti = 0;
+let livello = 1;
+/*
+ **** CALCOLO PUNTEGGIO: 
+ * singola linea: 100pts * liv
+ * doppia linea: 300pts * liv
+ * tripla linea: 500pts * liv
+ * drop veloce: 25pts*liv
+ */
+
+// indica se i tasti sono premuti
+let keySDown = false;
+let keyWDown = false;
+let keyADown = false;
+let keyDDown = false;
+
+let lineCleared = 0; // Prima versione di punteggio
 
 const TETRA_T = "T"; // tipi di tetramini
 const TETRA_L = "L";
@@ -229,12 +251,17 @@ function scorriRighe(righe)
     }
 }
 
+function refreshPunteggio()
+{
+    pts = document.getElementById("Punti");
+    pts.innerText = punti;
+}
+
 function muoviTetra(incc = 0, incr = 1)
 {
     aux = structuredClone(tetramino);
     for(let sqr of aux)
     {
-        svuotaCella(sqr.riga, sqr.colonna);
         sqr.riga += incr;
         sqr.colonna += incc;
     }
@@ -245,6 +272,12 @@ function muoviTetra(incc = 0, incr = 1)
             bloccaTetra(tetramino);
             coloraTetra(tetramino, tipoCorrente);
             righeRipulite = trovaRigheRipulite(); // lista di righe ripulite
+
+            // TODO ripulisci sta funzione che fa troppe cose
+
+            calcolaPunteggio(righeRipulite); // calcolo nuovo punteggio
+            refreshPunteggio();
+
             if(righeRipulite.length !== 0)
             {
                 scorriRighe(righeRipulite);
@@ -257,6 +290,10 @@ function muoviTetra(incc = 0, incr = 1)
     }
     // se il tetramino può spostarsi...
     let count = 0; 
+    for(let sqr of tetramino)
+    {
+        svuotaCella(sqr.riga, sqr.colonna);
+    }
     for(let sqr of aux) // copio aux in tetramino e coloro le celle
     {
         tetramino[count].riga = sqr.riga;
@@ -286,19 +323,94 @@ function caduto(t)
 }
 
 //TODO: rotazione
-function move(event)
+function keyDownHandler(event)
 {
-    if(event.code !== "KeyA" && event.code !== "KeyD" && event.code !== "KeyW")
+    if(event.code !== "KeyA" && event.code !== "KeyD" && event.code !== "KeyW" && event.code !== "KeyS")
     {
         return; // tasto non interessante
     }
     if(event.code === "KeyW")
     {
+        if(keyWDown) // se il tasto era già premuto non fare nulla
+        {
+            return;
+        }
+        keyWDown = true;
         ruota();
         return;
     }
+    if(event.code === "KeyS")
+    {
+        if(keySDown) // se il tasto era già premuto non fare nulla
+        {
+            return;
+        }
+        keySDown = true;
+        clearInterval(intervalId);
+        intervalId = setInterval(muoviTetra ,Math.floor(intervalDuration/3));
+        return;
+    }
+    if(keyADown || keyDDown)
+    {
+        return;
+    }
+    keyADown = true;
+    keyDDown = true;
     let increment = ((event.code === "KeyD")? +1 : -1);
-    muoviTetra(increment, 0);
+    moveIntervalId = setInterval( ()=>{
+        muoviTetra(increment, 0);
+        }, movementSpeed);
+    console.log("Creo intervallo movimento orizzontale: " + moveIntervalId);
+}
+
+function keyUpHandler(event)
+{
+    if(event.code !== "KeyA" && event.code !== "KeyD" && event.code !== "KeyW" && event.code !== "KeyS")
+    {
+        return; // tasto non interessante
+    }
+    switch(event.code)
+    {
+
+    case "KeyS":
+        keySDown = false;
+        clearInterval(intervalId);
+        intervalId = setInterval(muoviTetra, intervalDuration);
+        break;
+    case "KeyW":
+        keyWDown = false;
+        break;
+    case "KeyA":
+    case "KeyD":
+        console.log("fermo intervallo movimento orizzontale");
+        keyADown = false;
+        keyDDown = false;
+        clearInterval(moveIntervalId);
+    }
+
+}
+
+function calcolaPunteggio(righeRipulite)
+{
+    switch(righeRipulite.length)
+    {
+        case 4:
+        punti += 800*livello;
+        break;
+        case 3:
+        punti += 500*livello;
+        break;
+        case 2: 
+        punti += 300*livello;
+        break;
+        case 1: 
+        punti += 100*livello;
+        break;
+    }
+    if(keySDown)
+    {
+        punti += 25*livello;
+    }
 }
 
 // ritorna la posizione di dove ruoterebbe il tetramino se non ci fossero conflitti
@@ -391,9 +503,10 @@ function startGame()
 {
     document.getElementById("Start").disabled = true;
     document.getElementById("Stop").disabled = false;
-    document.addEventListener("keydown", move);
+    document.addEventListener("keydown", keyDownHandler);
+    document.addEventListener("keyup", keyUpHandler);
     nuovoTetramino(tetraminoCasuale());
-    intervalId = setInterval(muoviTetra, 200);
+    intervalId = setInterval(muoviTetra, intervalDuration);
 }
 
 function stopGame()
