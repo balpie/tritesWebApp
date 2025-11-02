@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", generateBoard);
 
 const BOARDCOLUMNS = 10;
 const BOARDROWS = 20;
+const INIT_INTERVAL_DURATION = 300;
 
 let tetramino = [ // tetramino in caduta libera
     {riga: undefined, colonna: undefined},
@@ -13,10 +14,13 @@ let tipoCorrente;
 
 let intervalId;
 let moveIntervalId;
-let intervalDuration = 250;
+let intervalDuration = INIT_INTERVAL_DURATION;
+
+let toNextLevel = 1; // linee da ripulire prima di arrivare al livello successivo
 
 const movementSpeed = 60;
 
+let lineeLiberate = 0;
 let punti = 0;
 let livello = 1;
 /*
@@ -154,6 +158,11 @@ function bloccaTetra(t)
 {
     for (c of t)
     {
+        if(c.riga == 0)
+        { // caso sconfitta
+            document.getElementById("Status").innerText = "Hai perso :(";
+            terminaPartita();
+        }
         getCell(c.riga, c.colonna).classList.remove("inMovimento");
         getCell(c.riga, c.colonna).classList.add("Caduto"); // serve alla collision detection
     }
@@ -166,7 +175,7 @@ function nuovoTetramino(tipo)
     const coordinate = POSIZIONI_TETRAMINI[tipo][statoRotazione];
     for(let i = 0; i < 4; i++)
     {
-        tetramino[i].riga = coordinate[i][0] + 1;
+        tetramino[i].riga = coordinate[i][0];
         if(tipo === TETRA_O)
         {
         tetramino[i].colonna = coordinate[i][1] + 4;
@@ -175,15 +184,28 @@ function nuovoTetramino(tipo)
         {
             tetramino[i].colonna = coordinate[i][1] + 3;
         }
-        coloraCella(tetramino[i].riga, tetramino[i].colonna, tipo);
+        if(getCell(tetramino[i].riga, tetramino[i].colonna).classList.contains("caduto"))
+        {
+            terminaPartita();
+            return;
+        }
         toggleInMovimento(tetramino[i].riga, tetramino[i].colonna);
+    }
+    for (let sqr of tetramino)
+    {
+        coloraCella(sqr.riga, sqr.colonna);
     }
 }
 
 function generateBoard()
 {
     document.getElementById("Start").addEventListener("click", startGame);
-    document.getElementById("Stop").addEventListener("click", stopGame);
+    document.getElementById("Restart").classList.add("Nascosto");
+    document.getElementById("Restart").addEventListener("click", ()=> {
+            document.getElementById("Restart").classList.add("Nascosto");
+            terminaPartita();
+            startGame();
+        });
 
     board = document.getElementById("gameBoard");
     for(let i = 0; i < BOARDROWS; i++)
@@ -199,6 +221,12 @@ function generateBoard()
             row.appendChild(cell);
         }
     }
+}
+
+function terminaPartita()
+{
+    clearInterval(intervalId);
+    clearInterval(moveIntervalId);
 }
 
 function trovaRigheRipulite()
@@ -234,7 +262,6 @@ function scorriColonna(r, c) // scorro la colonna c a partire dalla riga r
 {
     for(let i = r; i > 0; i--)
     {
-        console.log("copio proprietà di cella" + i +", "+ c + "in" + i - 1 +", "+ c);
         getCell(i, c).className = getCell(i - 1, c).className;
     }
 }
@@ -253,8 +280,15 @@ function scorriRighe(righe)
 
 function refreshPunteggio()
 {
-    pts = document.getElementById("Punti");
-    pts.innerText = punti;
+    document.getElementById("Punti").innerText = punti;
+    prevLiv = Number(document.getElementById("Livello").innerText)
+    if(prevLiv !== livello)
+    {
+        intervalDuration = intervalDuration - 30; // tolgo 30 msec all'intervallo
+        clearInterval(intervalId);
+        intervalId = setInterval(muoviTetra, intervalDuration);
+        document.getElementById("Livello").innerText = livello;
+    }
 }
 
 function muoviTetra(incc = 0, incr = 1)
@@ -360,7 +394,6 @@ function keyDownHandler(event)
     moveIntervalId = setInterval( ()=>{
         muoviTetra(increment, 0);
         }, movementSpeed);
-    console.log("Creo intervallo movimento orizzontale: " + moveIntervalId);
 }
 
 function keyUpHandler(event)
@@ -382,7 +415,6 @@ function keyUpHandler(event)
         break;
     case "KeyA":
     case "KeyD":
-        console.log("fermo intervallo movimento orizzontale");
         keyADown = false;
         keyDDown = false;
         clearInterval(moveIntervalId);
@@ -392,6 +424,7 @@ function keyUpHandler(event)
 
 function calcolaPunteggio(righeRipulite)
 {
+    lineeLiberate += righeRipulite.length;
     switch(righeRipulite.length)
     {
         case 4:
@@ -410,6 +443,10 @@ function calcolaPunteggio(righeRipulite)
     if(keySDown)
     {
         punti += 25*livello;
+    }
+    if(Math.floor(lineeLiberate/toNextLevel) > livello - 1)
+    {
+        livello++;
     }
 }
 
@@ -499,19 +536,30 @@ function ruota()
 
 }
 
-function startGame()
+function clearBoard()
 {
-    document.getElementById("Start").disabled = true;
-    document.getElementById("Stop").disabled = false;
-    document.addEventListener("keydown", keyDownHandler);
-    document.addEventListener("keyup", keyUpHandler);
-    nuovoTetramino(tetraminoCasuale());
-    intervalId = setInterval(muoviTetra, intervalDuration);
+    for (c of document.getElementsByClassName("cell"))
+    {
+        c.className = "cell";
+    }
 }
 
-function stopGame()
+function startGame()
 {
-    clearInterval(intervalId);
-    document.getElementById("Start").disabled = false;
-    document.getElementById("Stop").disabled = true;
+    document.getElementById("Start").classList.add("Nascosto");
+    document.getElementById("Restart").classList.remove("Nascosto");
+    document.addEventListener("keydown", keyDownHandler);
+    document.addEventListener("keyup", keyUpHandler);
+
+    // per quando ricomincia la partita
+    clearBoard();
+    livello = 1; 
+    document.getElementById("Livello").innerText = livello;
+    punti = 0;
+    document.getElementById("Punti").innerText = punti;
+    intervalDuration = INIT_INTERVAL_DURATION;
+    document.getElementById("Status").innerText = "";
+
+    nuovoTetramino(tetraminoCasuale());
+    intervalId = setInterval(muoviTetra, intervalDuration);
 }

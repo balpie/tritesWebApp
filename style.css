@@ -6,6 +6,10 @@ body{
     padding: 30px;
 }
 
+button.Nascosto{
+    display: none;
+}
+
 h1{
     text-align: center;
     color: #001eff;
@@ -21,6 +25,9 @@ div#gameBoard{
 
 .row{
     display: flex;
+}
+#Status{
+    color: red;
 }
 
 .cell{
