@@ -1,26 +1,60 @@
 body{
     align-items: center;
     background-color: black;
-    color: white;
-    font-family: Arial, Helvetica, sans-serif;
+    color: #c0c0c0;
+    font-family: "Press Start 2P", system-ui;
     padding: 30px;
+    display: flex;
+    flex-direction: row;
+}
+
+main{
+    display: flex;
+    flex-direction: column;
+}
+
+
+button{
+    font-family: "Press Start 2P";
+    align-self: center;
+    background-color: #c0c0c0;
+    color: #2b2b2b;
+    border: 2px solid #c0c0c0;
+    border-radius: 0;
+    display: block;
+    width: fit-content;
+    height: 30px;
+}
+
+h1{
+    text-align: center;
+    text-shadow: 3px 3px 0 #c0c0c0;
+}
+
+button:hover{
+    border: 2px solid #c0c0c0;
+    background-color: #2b2b2b;
+    color: #c0c0c0;
 }
 
 button.Nascosto{
     display: none;
 }
 
-h1{
-    text-align: center;
-    color: #001eff;
-    text-shadow: 3px 3px 3px  #f000ff;
-}
 
 div#gameBoard{
     float: left;
     width: fit-content;
     height: fit-content;
     margin: 2em;
+    border: 3px solid #c0c0c0
+}
+
+table{
+    text-align: left;
+}
+th{
+    padding-right: 20px;
 }
 
 .row{
@@ -30,14 +64,17 @@ div#gameBoard{
     color: red;
 }
 
+.Stats{
+    color: white;
+}
+
 .cell{
     width: 1.2em;
     height: 1.2em;
-    border: 1px solid #444444
 }
 
 .I{
-    background-color: lightcoral;
+    background-color: rgb(255, 123, 0);
 }
 
 .L{
@@ -57,9 +94,45 @@ div#gameBoard{
 }
 
 .Z{
-    background-color: green;
+    background-color: rgb(0, 255, 0);
 }
 
 .S{
-    background-color: lightblue;
+    background-color: rgb(0, 255, 255);
+}
+
+
+span.I{
+    background-color: black;
+    color: rgb(255, 123, 0);
+}
+
+span.L{
+    background-color: black;
+    color: blue;
+}
+
+span.J{
+    background-color: black;
+    color: rgb(255, 0, 255);
+}
+
+span.T{
+    background-color: black;
+    color: yellow;
+}
+
+span.O{
+    background-color: black;
+    color: red;
+}
+
+span.Z{
+    background-color: black;
+    color: rgb(0, 255, 0);
+}
+
+span.S{
+    background-color: black;
+    color: rgb(0, 255, 255);
 }

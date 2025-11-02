@@ -6,31 +6,35 @@
         <link rel="stylesheet" href="style.css">
         <script src="script.js"></script>
         <meta author="Pietro Balestri">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
         <title>Tetris</title>
     </head>
     <body>
         <main>
-            <h1>
-                triTes
-            </h1>
             <div id="gameBoard"></div>
-            <button type="button" id="Start">Gioca!</button>
-            <button type="button" id="Restart">Ricomincia!</button>
-            <br>
+            <button type="button" id="Start">Gioca</button>
+            <button type="button" id="Restart">Ricomincia</button>
+        </main>
+
+        <aside>
+            <h1><span class="O">T</span><span class="I">r</span><span class="T">i</span><span class="Z">t</span><span class="S">e</span><span class="J">s</span></h1>
             <table>
                 <tr>
-                    <th>Punti</th>
-                    <td id="Punti">0</tr>
+                    <th>Livello: </th>
+                    <td id = "Livello" class="Stats">1</td>
                 </tr>
                 <tr>
-                    <th>Livello</th>
-                    <td id = "Livello">1</td>
+                    <th>Linee: </th>
+                    <td id = "Lines" class="Stats">0</td>
                 </tr>
                 <tr>
-                    <th id="Status"></th>
+                    <th>Punti: </th>
+                    <td id="Punti" class="Stats">0</tr>
                 </tr>
             </table>
-            
-        </main>
+            <p id="Status"></p>
+        </aside>
     </body>
 </html>

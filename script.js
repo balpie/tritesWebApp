@@ -4,6 +4,8 @@ const BOARDCOLUMNS = 10;
 const BOARDROWS = 20;
 const INIT_INTERVAL_DURATION = 300;
 
+let cellArray = [];
+
 let tetramino = [ // tetramino in caduta libera
     {riga: undefined, colonna: undefined},
     {riga: undefined, colonna: undefined},
@@ -105,7 +107,7 @@ function isInBound(r, c)
 
 function getCell(row, col)
 {
-    return document.getElementById(`cell-${row}-${col}`);
+    return cellArray[row][col];
 }
 
 function tetraminoCasuale()
@@ -210,6 +212,7 @@ function generateBoard()
     board = document.getElementById("gameBoard");
     for(let i = 0; i < BOARDROWS; i++)
     {
+        const cellArrRow = [];
         row = document.createElement("div");
         row.classList.add("row");
         board.appendChild(row);
@@ -218,8 +221,10 @@ function generateBoard()
             cell = document.createElement("div");
             cell.classList.add("cell");
             cell.id = `cell-${i}-${j}`;
+            cellArrRow.push(cell);
             row.appendChild(cell);
         }
+        cellArray.push(cellArrRow);
     }
 }
 
@@ -281,7 +286,9 @@ function scorriRighe(righe)
 function refreshPunteggio()
 {
     document.getElementById("Punti").innerText = punti;
-    prevLiv = Number(document.getElementById("Livello").innerText)
+    document.getElementById("Lines").innerText = lineeLiberate;
+    prevLiv = Number(document.getElementById("Livello").innerText);
+
     if(prevLiv !== livello)
     {
         intervalDuration = intervalDuration - 30; // tolgo 30 msec all'intervallo
