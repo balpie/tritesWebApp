@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", generateBoard);
 
 const BOARDCOLUMNS = 10;
-const BOARDROWS = 25;
+const BOARDROWS = 15;
 
 let tetramino = [ // tetramino in caduta libera
     {riga: undefined, colonna: undefined},
@@ -85,16 +85,16 @@ function getCell(row, col)
 function tetraminoCasuale()
 {
     let x = Math.floor(Math.random() * 7);
-    //switch(x){
-    //    case 0: return TETRA_I;
-    //    case 1: return TETRA_L;
-    //    case 2: return TETRA_J;
-    //    case 3: return TETRA_T;
-    //    case 4: return TETRA_O;
-    //    case 5: return TETRA_S;
-    //    case 6: return TETRA_Z;
-    //}
-    return TETRA_I;
+    switch(x){
+        case 0: return TETRA_I;
+        case 1: return TETRA_L;
+        case 2: return TETRA_J;
+        case 3: return TETRA_T;
+        case 4: return TETRA_O;
+        case 5: return TETRA_S;
+        case 6: return TETRA_Z;
+    }
+    return undefined;
 }
 
 function coloraCella(row, col, color)
@@ -179,6 +179,56 @@ function generateBoard()
     }
 }
 
+function trovaRigheRipulite()
+{
+    let arrayRigheRipulite = new Array();
+    let guardate = new Array();
+    for (let sqr of tetramino)
+    {
+        if(guardate.indexOf(sqr.riga) !== -1)
+        { // non aggiungo righe duplicate
+            continue;
+        }
+        guardate.push(sqr.riga);
+        trovatoVuoto = false;
+        for(let i = 0; i < BOARDCOLUMNS; i++)
+        {
+            if(!getCell(sqr.riga, i).classList.contains("Caduto"))
+            {
+                trovatoVuoto = true;
+                break;
+            }
+        }
+        if(trovatoVuoto)
+        {
+            continue;
+        }
+        arrayRigheRipulite.push(sqr.riga);
+    }
+    return arrayRigheRipulite;
+}
+
+function scorriColonna(r, c) // scorro la colonna c a partire dalla riga r
+{
+    for(let i = r; i > 0; i--)
+    {
+        console.log("copio proprietà di cella" + i +", "+ c + "in" + i - 1 +", "+ c);
+        getCell(i, c).className = getCell(i - 1, c).className;
+    }
+}
+
+function scorriRighe(righe)
+{
+    for (r of righe)
+    {
+        for(let c = 0; c < BOARDCOLUMNS; c++)
+        {
+            svuotaCella(r, c);
+            scorriColonna(r, c);
+        }
+    }
+}
+
 function muoviTetra(incc = 0, incr = 1)
 {
     aux = structuredClone(tetramino);
@@ -194,6 +244,11 @@ function muoviTetra(incc = 0, incr = 1)
         {
             bloccaTetra(tetramino);
             coloraTetra(tetramino, tipoCorrente);
+            righeRipulite = trovaRigheRipulite(); // lista di righe ripulite
+            if(righeRipulite.length !== 0)
+            {
+                scorriRighe(righeRipulite);
+            }
             nuovoTetramino(tetraminoCasuale());
         }
         // altrimenti ha provato ad andare di lato ma c'era qualcosa
@@ -299,7 +354,6 @@ function provaRotazione()
             riga: POSIZIONI_TETRAMINI[tipoCorrente][(statoRotazione + 1) % 4][i][0] + root.riga,
             colonna: POSIZIONI_TETRAMINI[tipoCorrente][(statoRotazione + 1) % 4][i][1] + root.colonna
         });
-        console.log("Cosa ho pushado? guesdo: " + tryTetra[i]);
     }
     return tryTetra;
 }
@@ -312,8 +366,6 @@ function ruota()
     let tryTetra = provaRotazione(); 
     if(caduto(tryTetra))
     { 
-        // Todo: wallkick (?)
-        console.log(tryTetra);
         return; 
     }
     // se il tetramino può spostarsi...
