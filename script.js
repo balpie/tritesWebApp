@@ -2,7 +2,8 @@ document.addEventListener("DOMContentLoaded", generateBoard);
 document.addEventListener("DOMContentLoaded", generatePreview);
 
 const BOARDCOLUMNS = 10;
-const BOARDROWS = 20;
+const BOARDROWS = 22;
+const BOARDHIDDENROWS = 2;
 const INIT_INTERVAL_DURATION = 400;
 
 let cellArray = [];
@@ -180,7 +181,7 @@ function bloccaTetra(t)
 {
     for (c of t)
     {
-        if(c.riga == 0)
+        if(c.riga == BOARDHIDDENROWS)
         { // caso sconfitta
             document.getElementById("Status").innerText = "Hai perso :(";
             terminaPartita();
@@ -291,6 +292,10 @@ function generateBoard()
         const cellArrRow = [];
         row = document.createElement("div");
         row.classList.add("row");
+        if(i < BOARDHIDDENROWS)
+        {
+            row.classList.add("Nascosto"); // righe sopra nascoste
+        }
         board.appendChild(row);
         for(let j = 0; j < BOARDCOLUMNS; j++)
         {

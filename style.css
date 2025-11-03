@@ -8,6 +8,12 @@ body{
     flex-direction: row;
 }
 
+#Preview{
+    position: relative;
+    top: -70px;
+    left: 100px;
+}
+
 main{
     display: flex;
     flex-direction: column;
@@ -39,7 +45,11 @@ button:hover{
     color: #c0c0c0;
 }
 
-button.Nascosto{
+.Nascosto{
+    display: none;
+}
+
+.row.Nascosto{
     display: none;
 }
 
@@ -61,6 +71,10 @@ table{
 }
 th{
     padding-right: 20px;
+}
+
+td{
+    width: 6em;
 }
 
 .row{
