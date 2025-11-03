@@ -12,7 +12,9 @@ main{
     display: flex;
     flex-direction: column;
 }
-
+#Livello{
+    color: yellow;
+}
 
 button{
     font-family: "Press Start 2P";

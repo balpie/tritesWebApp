@@ -17,6 +17,7 @@ let tetramino = [ // tetramino in caduta libera
     {riga: undefined, colonna: undefined}
 ];
 
+
 let tipoCorrente;
 let hardDropped = false;
 
@@ -45,8 +46,8 @@ let keySDown = false;
 let keyWDown = false;
 let keyADown = false;
 let keyDDown = false;
+let EnterDown = false; 
 
-let lineCleared = 0; // Prima versione di punteggio
 
 const TETRA_T = "T"; // tipi di tetramini
 const TETRA_L = "L";
@@ -55,6 +56,18 @@ const TETRA_I = "I";
 const TETRA_O = "O";
 const TETRA_S = "S";
 const TETRA_Z = "Z";
+
+const arrayTipiTetramini = [
+    TETRA_I,
+    TETRA_S,
+    TETRA_Z, 
+    TETRA_L,
+    TETRA_J,
+    TETRA_O,
+    TETRA_T
+];
+let codaTetramini = []; // 14 tetramini
+let currTetra_ind;
 
 // posizione dei tetramini (relative)
 const POSIZIONI_TETRAMINI = {
@@ -119,17 +132,18 @@ function getCell(row, col)
 
 function tetraminoCasuale()
 {
-    let x = Math.floor(Math.random() * 7);
-    switch(x){
-        case 0: return TETRA_I;
-        case 1: return TETRA_L;
-        case 2: return TETRA_J;
-        case 3: return TETRA_T;
-        case 4: return TETRA_O;
-        case 5: return TETRA_S;
-        case 6: return TETRA_Z;
+    let nuovoIndice = (currTetra_ind + 1) % 14;
+    if(nuovoIndice === 0)
+    {
+        shuffle(codaTetramini, 7, 13);
     }
-    return undefined;
+    if(nuovoIndice === 7)
+    {
+        shuffle(codaTetramini, 0, 6);
+    }
+    currTetra_ind = nuovoIndice;
+    console.log("Tetramino casuale chiamata, ritorna: " + codaTetramini[nuovoIndice]);
+    return codaTetramini[nuovoIndice];
 }
 
 function coloraCella(row, col, color)
@@ -238,7 +252,18 @@ function nuovoTetramino(tipo)
     }
     for (let sqr of tetramino)
     {
-        coloraCella(sqr.riga, sqr.colonna);
+        coloraCella(sqr.riga, sqr.colonna, tipo);
+    }
+}
+
+// mescola gli elementi di a, da ini a fin
+function shuffle(a, ini, fin)
+{
+    for(let i = fin - 1; i >= ini; i--)
+    {
+        let aux = ini + Math.floor(Math.random() * (i - ini + 1));
+        // scambio elemento i-esimo con elemento casuale
+        [a[i], a[aux]] = [a[aux], a[i]]; 
     }
 }
 
@@ -252,6 +277,14 @@ function generateBoard()
             terminaPartita();
             startGame();
         });
+    codaTetramini = structuredClone(arrayTipiTetramini);
+    for(let i = 0; i < 7; i++)
+    {
+        codaTetramini.push(arrayTipiTetramini[i]);
+    }
+    shuffle(codaTetramini, 0, 6);
+    shuffle(codaTetramini, 7, 13);
+    currTetra_ind = 0;
 
     board = document.getElementById("gameBoard");
     for(let i = 0; i < BOARDROWS; i++)
@@ -294,6 +327,7 @@ function generatePreview(){
 
 function terminaPartita()
 {
+    primaPartita = false;
     document.removeEventListener("keydown", keyDownHandler);
     document.removeEventListener("keyup", keyUpHandler);
     clearInterval(intervalId);
@@ -437,7 +471,6 @@ function hardDrop()
     while(!muoviTetra(0, 1));
 }
 
-//TODO: rotazione
 function keyDownHandler(event)
 {
     if(event.code !== "KeyA" && event.code !== "KeyD" && event.code !== "KeyW" && event.code !== "KeyS" && event.code !== "Enter")
@@ -468,6 +501,10 @@ function keyDownHandler(event)
     }
     if(event.code === "Enter")
     {
+        if(EnterDown)
+        {
+            return;
+        }
         hardDrop();
         return;
     }
@@ -485,7 +522,7 @@ function keyDownHandler(event)
 
 function keyUpHandler(event)
 {
-    if(event.code !== "KeyA" && event.code !== "KeyD" && event.code !== "KeyW" && event.code !== "KeyS")
+    if(event.code !== "KeyA" && event.code !== "KeyD" && event.code !== "KeyW" && event.code !== "KeyS" && event.code !== "Enter")
     {
         return; // tasto non interessante
     }
@@ -505,6 +542,9 @@ function keyUpHandler(event)
         keyADown = false;
         keyDDown = false;
         clearInterval(moveIntervalId);
+        break;
+    case "Enter":
+        EnterDown = false;
         break;
     }
 
@@ -646,12 +686,14 @@ function startGame()
     document.addEventListener("keyup", keyUpHandler);
 
 
-    // per quando ricomincia la partita
+// per quando ricomincia la partita
     clearBoard();
     hardDropped = 0;
     livello = 1; 
     document.getElementById("Livello").innerText = livello;
     punti = 0;
+    lineeLiberate = 0;
+    document.getElementById("Lines").innerText = 0;
     document.getElementById("Punti").innerText = punti;
     intervalDuration = INIT_INTERVAL_DURATION;
     document.getElementById("Status").innerText = "";
