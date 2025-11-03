@@ -142,7 +142,6 @@ function tetraminoCasuale()
         shuffle(codaTetramini, 0, 6);
     }
     currTetra_ind = nuovoIndice;
-    console.log("Tetramino casuale chiamata, ritorna: " + codaTetramini[nuovoIndice]);
     return codaTetramini[nuovoIndice];
 }
 
@@ -454,11 +453,13 @@ function caduto(t)
         // caduto in fondo
         if(!isInBound(c.riga, c.colonna)) 
         {
+            console.log("caduto: out of bound");
             return true;
         }
-        // caduto sopra un altro caduto
+        // collide con un altro caduto
         if(getCell(c.riga, c.colonna).classList.contains("Caduto")) 
         {
+            console.log("caduto: collisione");
             return true;
         }
     }
@@ -583,10 +584,8 @@ function calcolaPunteggio(righeRipulite)
     }
 }
 
-// ritorna la posizione di dove ruoterebbe il tetramino se non ci fossero conflitti
-function provaRotazione()
+function calcolaRootRotazione()
 {
-    let tryTetra = new Array();
     let root = {};
     if(tipoCorrente != TETRA_I)
     {
@@ -629,6 +628,13 @@ function provaRotazione()
             break;
         }
     }
+    return root;
+}
+
+// ritorna la posizione di dove ruoterebbe il tetramino se non ci fossero conflitti
+function provaRotazione(root)
+{
+    let tryTetra = new Array();
     for (let i = 0; i < 4; i++)
     {
         tryTetra.push(
@@ -646,10 +652,27 @@ function ruota()
     { // inutile provare
         return;
     }
-    let tryTetra = provaRotazione(); 
-    if(caduto(tryTetra))
-    { 
-        return; 
+    //wallkick
+    let tryTetra;
+    let canRotate = false;
+    for(let i of [0, -1, 1]) // prima provo nel suo posto, poi sinistra e dx
+    {
+        let root = calcolaRootRotazione();
+        root.colonna += i;
+        tryTetra = provaRotazione(root); 
+        console.log(`Root tentativo rotazione [${i}]-${root.riga}-${root.colonna}`);
+        console.log("isInBound" + isInBound(root.riga, root.colonna));
+        console.log("caduto(tryTetra): " + caduto(tryTetra));
+        if(isInBound(root.riga, root.colonna) && !caduto(tryTetra))
+        { 
+            console.log("Può ruotare con offset: " + i);
+            canRotate = true;
+            break; 
+        }
+    }
+    if(!canRotate) 
+    {
+        return;
     }
     // se il tetramino può spostarsi...
     // riesco a colorarlo quindi cancello quello vecchio
@@ -667,7 +690,6 @@ function ruota()
         coloraCella(sqr.riga, sqr.colonna, tipoCorrente);
         count++;
     }
-
 }
 
 function clearBoard()
