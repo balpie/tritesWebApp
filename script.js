@@ -4,7 +4,9 @@ document.addEventListener("DOMContentLoaded", generatePreview);
 const BOARDCOLUMNS = 10;
 const BOARDROWS = 22;
 const BOARDHIDDENROWS = 2;
-const INIT_INTERVAL_DURATION = 400;
+const INIT_INTERVAL_DURATION = 450;
+
+const LVL_STEP = 27; // differenza di velocità tra un livello e un altro (ms)
 
 let cellArray = [];
 let previewArray = [];
@@ -28,7 +30,7 @@ let intervalDuration = INIT_INTERVAL_DURATION;
 
 const TO_NEXT_LEVEL = 5; // linee da ripulire prima di arrivare al livello successivo
 
-const MOVEMENT_SPEED = 60;
+const MOVEMENT_SPEED = 40;
 
 let lineeLiberate = 0;
 let punti = 0;
@@ -189,6 +191,7 @@ function bloccaTetra(t)
         getCell(c.riga, c.colonna).classList.remove("inMovimento");
         getCell(c.riga, c.colonna).classList.add("Caduto"); // serve alla collision detection
     }
+    // todo timeout intervalDuration+10ms per dare tempo di muoversi e poi riparte 
 }
 
 function scriviPreview(tipo)
@@ -344,8 +347,10 @@ function trovaRigheRipulite()
     let guardate = new Array();
     for (let sqr of tetramino)
     {
+        console.log(`[trovaRigheRipulite]: Considero riga ${sqr.riga} da ripulire`)
         if(guardate.indexOf(sqr.riga) !== -1)
         { // non aggiungo righe duplicate
+            console.log(`[trovaRigheRipulite]: riga ${sqr.riga} già considerata`)
             continue;
         }
         guardate.push(sqr.riga);
@@ -355,6 +360,7 @@ function trovaRigheRipulite()
             if(!getCell(sqr.riga, i).classList.contains("Caduto"))
             {
                 trovatoVuoto = true;
+                console.log(`[trovaRigheRipulite]: riga ${sqr.riga} trovato un vuoto`)
                 break;
             }
         }
@@ -362,8 +368,10 @@ function trovaRigheRipulite()
         {
             continue;
         }
+        console.log(`[trovaRigheRipulite]: riga ${sqr.riga} ripulita`)
         arrayRigheRipulite.push(sqr.riga);
     }
+    arrayRigheRipulite.sort();
     return arrayRigheRipulite;
 }
 
@@ -395,7 +403,7 @@ function refreshPunteggio()
 
     if(prevLiv !== livello)
     {
-        intervalDuration = intervalDuration - 30; // tolgo 30 msec all'intervallo
+        intervalDuration = intervalDuration - LVL_STEP; // tolgo 30 msec all'intervallo
         clearInterval(intervalId);
         intervalId = setInterval(muoviTetra, intervalDuration);
         document.getElementById("Livello").innerText = livello;
@@ -418,6 +426,7 @@ function muoviTetra(incc = 0, incr = 1)
             bloccaTetra(tetramino);
             coloraTetra(tetramino, tipoCorrente);
             righeRipulite = trovaRigheRipulite(); // lista di righe ripulite
+            console.log(`Righe da ripulire: ${righeRipulite}`);
 
             calcolaPunteggio(righeRipulite); // calcolo nuovo punteggio
             refreshPunteggio();
@@ -458,13 +467,11 @@ function caduto(t)
         // caduto in fondo
         if(!isInBound(c.riga, c.colonna)) 
         {
-            console.log("caduto: out of bound");
             return true;
         }
         // collide con un altro caduto
         if(getCell(c.riga, c.colonna).classList.contains("Caduto")) 
         {
-            console.log("caduto: collisione");
             return true;
         }
     }
@@ -665,12 +672,8 @@ function ruota()
         let root = calcolaRootRotazione();
         root.colonna += i;
         tryTetra = provaRotazione(root); 
-        console.log(`Root tentativo rotazione [${i}]-${root.riga}-${root.colonna}`);
-        console.log("isInBound" + isInBound(root.riga, root.colonna));
-        console.log("caduto(tryTetra): " + caduto(tryTetra));
         if(isInBound(root.riga, root.colonna) && !caduto(tryTetra))
         { 
-            console.log("Può ruotare con offset: " + i);
             canRotate = true;
             break; 
         }
