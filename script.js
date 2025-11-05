@@ -20,6 +20,9 @@ let tetramino = [ // tetramino in caduta libera
     {riga: undefined, colonna: undefined}
 ];
 
+let STATUS_SCONFITTA = "StatusSconfitta"
+let STATUS_NUOVO_LIVELLO = "StatusNuovoLivello"
+
 
 let tipoCorrente;
 let hardDropped = false;
@@ -133,6 +136,7 @@ function getCell(row, col)
     return cellArray[row][col];
 }
 
+// Algoritmo 7-bag
 function tetraminoCasuale()
 {
     let nuovoIndice = (currTetra_ind + 1) % 14;
@@ -186,12 +190,19 @@ function bloccaTetra(t)
         if(c.riga == BOARDHIDDENROWS)
         { // caso sconfitta
             document.getElementById("Status").innerText = "Hai perso :(";
+            scriviStatus("Hai perso :(", STATUS_SCONFITTA);
             terminaPartita();
         }
         getCell(c.riga, c.colonna).classList.remove("inMovimento");
         getCell(c.riga, c.colonna).classList.add("Caduto"); // serve alla collision detection
     }
     // todo timeout intervalDuration+10ms per dare tempo di muoversi e poi riparte 
+}
+
+function scriviStatus(msg, color)
+{
+    document.getElementById("Status").classList = color
+    document.getElementById("Status").innerText = msg;
 }
 
 function scriviPreview(tipo)
@@ -260,6 +271,7 @@ function nuovoTetramino(tipo)
 }
 
 // mescola gli elementi di a, da ini a fin
+// (algoritmo 7-bag)
 function shuffle(a, ini, fin)
 {
     for(let i = fin - 1; i >= ini; i--)
@@ -407,6 +419,8 @@ function refreshPunteggio()
         clearInterval(intervalId);
         intervalId = setInterval(muoviTetra, intervalDuration);
         document.getElementById("Livello").innerText = livello;
+        scriviStatus(`Nuovo livello!`, STATUS_NUOVO_LIVELLO);
+        setTimeout(scriviStatus, 3000, "", "");
     }
 }
 

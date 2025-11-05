@@ -80,17 +80,21 @@ td{
 .row{
     display: flex;
 }
-#Status{
-    color: red;
-}
 
 .Stats{
     color: white;
 }
 
+.StatusSconfitta{
+    color: red
+}
+.StatusNuovoLivello{
+    color: yellow;
+}
+
 .cell{
-    width: 1.2em;
-    height: 1.2em;
+    width: 1.5em;
+    height: 1.5em;
 }
 
 .I{
