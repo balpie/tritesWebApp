@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", generateBoard);
 document.addEventListener("DOMContentLoaded", generatePreview);
+document.addEventListener("DOMContentLoaded", generateHold);
 
 const BOARDCOLUMNS = 10;
 const BOARDROWS = 22;
@@ -10,6 +11,9 @@ const LVL_STEP = 27; // differenza di velocità tra un livello e un altro (ms)
 
 let cellArray = [];
 let previewArray = [];
+let holdArray = [];
+let tetraminoInHold = null; // tipo di tetramino attualmente in hold
+let holdAllowed = true;
 
 let tipoProssimo; // tipo visto in preview
 
@@ -196,6 +200,7 @@ function bloccaTetra(t)
         getCell(c.riga, c.colonna).classList.remove("inMovimento");
         getCell(c.riga, c.colonna).classList.add("Caduto"); // serve alla collision detection
     }
+    holdAllowed = true;
     // todo timeout intervalDuration+10ms per dare tempo di muoversi e poi riparte 
 }
 
@@ -205,29 +210,47 @@ function scriviStatus(msg, color)
     document.getElementById("Status").innerText = msg;
 }
 
-function scriviPreview(tipo)
+function pulisciBoard(brd)
 {
+    console.log(`[pulisciBoard]: ${brd[0][0].id}`);
+    for(let i = 0; i < brd.length; i++)
+    {
+        for(let j = 0; j < brd[0].length; j++)
+        {
+            brd[i][j].className = "cell";
+        }
+    }
+}
+
+function scriviHold(tipo)
+{
+    console.log("[scriviHold]")
     const coordinate = POSIZIONI_TETRAMINI[tipo][0];
-    const coordinateVecchio = POSIZIONI_TETRAMINI[tipoCorrente][0];
     for(let i = 0; i < 4; i++)
     {
         let r, c;
-        switch(tipoCorrente)
+        switch(tipo)
         {
             case TETRA_I: 
-                r = coordinateVecchio[i][0] + 1;
-                c = coordinateVecchio[i][1];
+                r = coordinate[i][0] + 1;
+                c = coordinate[i][1];
             break;
             default:
-                r = coordinateVecchio[i][0] + 1;
-                c = coordinateVecchio[i][1] + 1;
+                r = coordinate[i][0] + 1;
+                c = coordinate[i][1] + 1;
         }
-        previewArray[r][c].className = "cell";
+        holdArray[r][c].classList.add(tipo);
     }
+}
+
+function scriviPreview(tipo)
+{
+    console.log("[scriviPreview]")
+    const coordinate = POSIZIONI_TETRAMINI[tipo][0];
     for(let i = 0; i < 4; i++)
     {
         let r, c;
-        switch(tipoProssimo)
+        switch(tipo)
         {
             case TETRA_I: 
                 r = coordinate[i][0] + 1;
@@ -241,6 +264,7 @@ function scriviPreview(tipo)
     }
 }
 
+// non si preoccupa di preview, tipoPossimo
 function nuovoTetramino(tipo)
 {
     tipoCorrente = tipo;
@@ -325,7 +349,7 @@ function generateBoard()
 }
 function generatePreview(){
     // genero la cella di preview
-    previewSquare = document.getElementById("Preview");
+    let previewSquare = document.getElementById("Preview");
     for (let i = 0; i < 4; i++)
     {
         let previewArrayRow = [];
@@ -344,6 +368,27 @@ function generatePreview(){
     }
 }
 
+function generateHold(){
+    // genero la cella di hold
+    let holdSquare = document.getElementById("Hold");
+    for (let i = 0; i < 4; i++)
+    {
+        let holdArrayRow = [];
+        let row = document.createElement("div");
+        row.classList.add("row");
+        holdSquare.appendChild(row);
+        for(let j = 0; j < 4; j++)
+        {
+            cell = document.createElement("div");
+            cell.classList.add("cell");
+            cell.id = `hold-${i}-${j}`;
+            holdArrayRow.push(cell);
+            row.append(cell);
+        }
+        holdArray.push(holdArrayRow);
+    }
+}
+
 function terminaPartita()
 {
     primaPartita = false;
@@ -359,10 +404,8 @@ function trovaRigheRipulite()
     let guardate = new Array();
     for (let sqr of tetramino)
     {
-        console.log(`[trovaRigheRipulite]: Considero riga ${sqr.riga} da ripulire`)
         if(guardate.indexOf(sqr.riga) !== -1)
         { // non aggiungo righe duplicate
-            console.log(`[trovaRigheRipulite]: riga ${sqr.riga} già considerata`)
             continue;
         }
         guardate.push(sqr.riga);
@@ -372,7 +415,6 @@ function trovaRigheRipulite()
             if(!getCell(sqr.riga, i).classList.contains("Caduto"))
             {
                 trovatoVuoto = true;
-                console.log(`[trovaRigheRipulite]: riga ${sqr.riga} trovato un vuoto`)
                 break;
             }
         }
@@ -380,7 +422,6 @@ function trovaRigheRipulite()
         {
             continue;
         }
-        console.log(`[trovaRigheRipulite]: riga ${sqr.riga} ripulita`)
         arrayRigheRipulite.push(sqr.riga);
     }
     arrayRigheRipulite.sort();
@@ -440,7 +481,6 @@ function muoviTetra(incc = 0, incr = 1)
             bloccaTetra(tetramino);
             coloraTetra(tetramino, tipoCorrente);
             righeRipulite = trovaRigheRipulite(); // lista di righe ripulite
-            console.log(`Righe da ripulire: ${righeRipulite}`);
 
             calcolaPunteggio(righeRipulite); // calcolo nuovo punteggio
             refreshPunteggio();
@@ -449,6 +489,7 @@ function muoviTetra(incc = 0, incr = 1)
             {
                 scorriRighe(righeRipulite);
             }
+            pulisciBoard(previewArray);
             nuovoTetramino(tipoProssimo);
             tipoProssimo = tetraminoCasuale();
             scriviPreview(tipoProssimo);
@@ -500,51 +541,73 @@ function hardDrop()
 
 function keyDownHandler(event)
 {
-    if(event.code !== "KeyA" && event.code !== "KeyD" && event.code !== "KeyW" && event.code !== "KeyS" && event.code !== "Enter")
-
+    if(event.code !== "KeyA" && event.code !== "KeyD" && event.code !== "ShiftRight" 
+        && event.code !== "KeyW" && event.code !== "KeyS" && event.code !== "Enter")
     {
         return; // tasto non interessante
     }
-    if(event.code === "KeyW")
+    switch(event.code)
     {
-        if(keyWDown) // se il tasto era già premuto non fare nulla
-        {
+        case "KeyW":
+            if(keyWDown) // se il tasto era già premuto non fare nulla
+            {
+                return;
+            }
+            keyWDown = true;
+            ruota();
             return;
-        }
-        keyWDown = true;
-        ruota();
-        return;
-    }
-    if(event.code === "KeyS")
-    {
-        if(keySDown) // se il tasto era già premuto non fare nulla
-        {
+        case "KeyS":
+            if(keySDown) // se il tasto era già premuto non fare nulla
+            {
+                return;
+            }
+            keySDown = true;
+            clearInterval(intervalId);
+            intervalId = setInterval(muoviTetra, MOVEMENT_SPEED);
             return;
-        }
-        keySDown = true;
-        clearInterval(intervalId);
-        intervalId = setInterval(muoviTetra, MOVEMENT_SPEED);
-        return;
-    }
-    if(event.code === "Enter")
-    {
-        if(EnterDown)
-        {
+        case "Enter":
+            if(EnterDown)
+            {
+                return;
+            }
+            hardDrop();
             return;
-        }
-        hardDrop();
-        return;
+        case "ShiftRight":
+            if(!holdAllowed)
+            {
+                return;
+            }
+            holdAllowed = false;
+            killTetra();
+            // fai funzionare come preview
+            let newTetraHold = tipoCorrente;
+            if(tetraminoInHold != null)
+            {
+                nuovoTetramino(tetraminoInHold);
+            }
+            else
+            {
+                nuovoTetramino(tipoProssimo);
+                pulisciBoard(previewArray);
+                tipoProssimo = tetraminoCasuale();
+                scriviPreview(tipoProssimo);
+            }
+            tetraminoInHold = newTetraHold;
+            pulisciBoard(holdArray);
+            scriviHold(tetraminoInHold);
+            return;
+        default: // keyA o keyD
+            if(keyADown || keyDDown)
+            {
+                return;
+            }
+            keyADown = true;
+            keyDDown = true;
+            let increment = ((event.code === "KeyD")? +1 : -1);
+            moveIntervalId = setInterval( ()=>{
+                muoviTetra(increment, 0);
+                }, MOVEMENT_SPEED);
     }
-    if(keyADown || keyDDown)
-    {
-        return;
-    }
-    keyADown = true;
-    keyDDown = true;
-    let increment = ((event.code === "KeyD")? +1 : -1);
-    moveIntervalId = setInterval( ()=>{
-        muoviTetra(increment, 0);
-        }, MOVEMENT_SPEED);
 }
 
 function keyUpHandler(event)

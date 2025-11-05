@@ -8,16 +8,26 @@ body{
     flex-direction: row;
 }
 
-#Preview{
-    position: relative;
-    top: -70px;
-    left: 100px;
+#holdPreview{
+    display: flex;
+    flex-direction: column;
 }
+
+#Preview .cell{
+    height: 1.2em;
+    width: 1.2em;
+}
+#Hold .cell{
+    height: 1em;
+    width: 1em;
+}
+
 
 main{
     display: flex;
     flex-direction: column;
 }
+
 #Livello{
     color: yellow;
 }

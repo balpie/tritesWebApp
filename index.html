@@ -13,7 +13,19 @@
     </head>
     <body>
         <aside>
-            <div id="Preview" class="gameBoard"></div>
+            <div id="HoldPreview">
+                <p>Preview:</p>
+                <div id="Preview" class="gameBoard"></div>
+                <p>Hold:</p>
+                <div id="Hold" class="gameBoard"></div>
+            </div>
+        </aside>
+        <main>
+            <h1><span class="O">T</span><span class="I">r</span><span class="T">i</span><span class="Z">t</span><span class="S">e</span><span class="J">s</span></h1>
+            <div id="gameBoard" class="gameBoard"></div>
+            <button type="button" id="Start">Gioca</button>
+            <button type="button" id="Restart">Ricomincia</button>
+        </main>
             <table>
                 <tr>
                     <th>Livello: </th>
@@ -27,14 +39,9 @@
                     <th>Punti: </th>
                     <td id="Punti" class="Stats">0</tr>
                 </tr>
+                <tr>
+                    <td colspan="2" id="Status"></td>
+                </tr>
             </table>
-            <p id="Status"></p>
-        </aside>
-        <main>
-            <h1><span class="O">T</span><span class="I">r</span><span class="T">i</span><span class="Z">t</span><span class="S">e</span><span class="J">s</span></h1>
-            <div id="gameBoard" class="gameBoard"></div>
-            <button type="button" id="Start">Gioca</button>
-            <button type="button" id="Restart">Ricomincia</button>
-        </main>
     </body>
 </html>
