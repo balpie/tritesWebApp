@@ -31,7 +31,7 @@ const LVL_STEP = 27; // differenza di velocità tra un livello e un altro (ms)
 
 const TO_NEXT_LEVEL = 5; // linee da ripulire prima di arrivare al livello successivo
 
-const MOVEMENT_SPEED = 40;
+const MOVEMENT_SPEED = 50;
 // posizione dei tetramini (relative)
 const POSIZIONI_TETRAMINI = {
     // contiene anche le posizioni relative alle rotazioni
