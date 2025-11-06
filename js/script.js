@@ -84,19 +84,19 @@ const STATUS_NUOVO_LIVELLO = "StatusNuovoLivello"
 
 // DICHIARAZIONE OGGETTI GLOBALI
 const SevenBag = { 
-    tipoProssimo: undefined, 
-    tipoCorrente: undefined,
-    currTetra_ind: undefined,
+    tipoProssimo: null, 
+    tipoCorrente: null,
+    currTetra_ind: null,
     codaTetramini: []
 }
 
 // gameObj
 const Game = {
     tetramino : [ 
-        {riga: undefined, colonna: undefined},
-        {riga: undefined, colonna: undefined},
-        {riga: undefined, colonna: undefined},
-        {riga: undefined, colonna: undefined}
+        {riga: null, colonna: null},
+        {riga: null, colonna: null},
+        {riga: null, colonna: null},
+        {riga: null, colonna: null}
     ],
     cellArray: [],
     previewArray: [],
@@ -104,13 +104,13 @@ const Game = {
     tetraminoInHold: null,
     holdAllowed : true,
     hardDropped: false,
-    intervalId: undefined,
-    moveIntervalId: undefined,
+    intervalId: null,
+    moveIntervalId: null,
     intervalDuration: INIT_INTERVAL_DURATION,
     lineeLiberate: 0,
     punti: 0,
     livello: 1,
-    statoRotazione: undefined
+    statoRotazione: null
 }
 
 
@@ -310,10 +310,9 @@ function generateBoard()
             terminaPartita();
             startGame();
         });
-    SevenBag.codaTetramini = structuredClone(arrayTipiTetramini);
-    for(let i = 0; i < 7; i++)
+    for(let i = 0; i < 14; i++)
     {
-        SevenBag.codaTetramini.push(arrayTipiTetramini[i]);
+        SevenBag.codaTetramini.push(arrayTipiTetramini[i%7]);
     }
     shuffle(SevenBag.codaTetramini, 0, 6);
     shuffle(SevenBag.codaTetramini, 7, 13);
@@ -459,10 +458,20 @@ function refreshPunteggio()
     }
 }
 
+function copiaTetramino(Obj)
+{
+    copia = [];
+    for(let i of Obj)
+    {
+        copia.push({riga: i.riga, colonna: i.colonna});
+    }
+    return copia;
+}
+
 // gameIter più che muoviTetra...
 function muoviTetra(incc = 0, incr = 1)
 {
-    aux = structuredClone(Game.tetramino);
+    aux = copiaTetramino(Game.tetramino);
     for(let sqr of aux)
     {
         sqr.riga += incr;
@@ -655,13 +664,13 @@ function calcolaPunteggio(righeRipulite)
     if(Game.hardDropped)
     {
         Game.hardDropped = false;
-        Game.punti += 50*Game.livello;
+        Game.punti += 10*Game.livello;
     }
     if(KeyState.SDown)
     {
-        Game.punti += 25*Game.livello;
+        Game.punti += 5*Game.livello;
     }
-    if(Math.floor(Game.lineeLiberate/TO_NEXT_LEVEL) > Game.livello - 1)
+    if(Game.livello < 15 && Math.floor(Game.lineeLiberate/TO_NEXT_LEVEL) > Game.livello - 1)
     {
         Game.livello++;
     }
