@@ -804,6 +804,7 @@ function startGame()
     document.getElementById("Punti").innerText = punti;
     intervalDuration = INIT_INTERVAL_DURATION;
     document.getElementById("Status").innerText = "";
+    holdAllowed = true;
 
     nuovoTetramino(tetraminoCasuale());
     tipoProssimo = tetraminoCasuale();
