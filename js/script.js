@@ -29,7 +29,7 @@ const INIT_INTERVAL_DURATION = 450;
 
 const LVL_STEP = 27; // differenza di velocità tra un livello e un altro (ms)
 
-const TO_NEXT_LEVEL = 1; // linee da ripulire prima di arrivare al livello successivo
+const TO_NEXT_LEVEL = 5; // linee da ripulire prima di arrivare al livello successivo
 
 const MOVEMENT_SPEED = 40;
 // posizione dei tetramini (relative)
@@ -109,10 +109,10 @@ const Game = {
     intervalDuration: INIT_INTERVAL_DURATION,
     lineeLiberate: 0,
     punti: 0,
-    livello: 1
+    livello: 1,
+    statoRotazione: undefined
 }
 
-let statoRotazione;
 
 // indica se i tasti sono premuti
 const KeyState = 
@@ -262,8 +262,8 @@ function scriviPreview(tipo)
 function nuovoTetramino(tipo)
 {
     SevenBag.tipoCorrente = tipo;
-    statoRotazione = 0;
-    const coordinate = POSIZIONI_TETRAMINI[tipo][statoRotazione];
+    Game.statoRotazione = 0;
+    const coordinate = POSIZIONI_TETRAMINI[tipo][Game.statoRotazione];
     for(let i = 0; i < 4; i++)
     {
         Game.tetramino[i].riga = coordinate[i][0];
@@ -679,7 +679,7 @@ function calcolaRootRotazione()
     }
     else
     {
-        switch(statoRotazione)
+        switch(Game.statoRotazione)
         {
             case 0:
                 root = 
@@ -722,8 +722,8 @@ function provaRotazione(root)
     {
         tryTetra.push(
         {
-            riga: POSIZIONI_TETRAMINI[SevenBag.tipoCorrente][(statoRotazione + 1) % 4][i][0] + root.riga,
-            colonna: POSIZIONI_TETRAMINI[SevenBag.tipoCorrente][(statoRotazione + 1) % 4][i][1] + root.colonna
+            riga: POSIZIONI_TETRAMINI[SevenBag.tipoCorrente][(Game.statoRotazione + 1) % 4][i][0] + root.riga,
+            colonna: POSIZIONI_TETRAMINI[SevenBag.tipoCorrente][(Game.statoRotazione + 1) % 4][i][1] + root.colonna
         });
     }
     return tryTetra;
@@ -759,7 +759,7 @@ function ruota()
     {
         svuotaCella(c.riga, c.colonna);
     }
-    statoRotazione = (statoRotazione + 1) % 4;
+    Game.statoRotazione = (Game.statoRotazione + 1) % 4;
     // coloro quello nuovo e aggiorno tetramino
     let count = 0; 
     for(let sqr of tryTetra) // copio aux in tetramino e coloro le celle
