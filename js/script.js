@@ -2,62 +2,7 @@ document.addEventListener("DOMContentLoaded", generateBoard);
 document.addEventListener("DOMContentLoaded", generatePreview);
 document.addEventListener("DOMContentLoaded", generateHold);
 
-const BOARDCOLUMNS = 10;
-const BOARDROWS = 22;
-const BOARDHIDDENROWS = 2;
-const INIT_INTERVAL_DURATION = 450;
-
-const LVL_STEP = 27; // differenza di velocità tra un livello e un altro (ms)
-
-let cellArray = [];
-let previewArray = [];
-let holdArray = [];
-let tetraminoInHold = null; // tipo di tetramino attualmente in hold
-let holdAllowed = true;
-
-let tipoProssimo; // tipo visto in preview
-
-let tetramino = [ // tetramino in caduta libera
-    {riga: undefined, colonna: undefined},
-    {riga: undefined, colonna: undefined},
-    {riga: undefined, colonna: undefined},
-    {riga: undefined, colonna: undefined}
-];
-
-let STATUS_SCONFITTA = "StatusSconfitta"
-let STATUS_NUOVO_LIVELLO = "StatusNuovoLivello"
-
-
-let tipoCorrente;
-let hardDropped = false;
-
-let intervalId;
-let moveIntervalId;
-let intervalDuration = INIT_INTERVAL_DURATION;
-
-const TO_NEXT_LEVEL = 5; // linee da ripulire prima di arrivare al livello successivo
-
-const MOVEMENT_SPEED = 40;
-
-let lineeLiberate = 0;
-let punti = 0;
-let livello = 1;
-/*
- **** CALCOLO PUNTEGGIO: 
- * singola linea: 100pts * liv
- * doppia linea: 300pts * liv
- * tripla linea: 500pts * liv
- * drop veloce: 25pts * liv
- * hard drop: 50pts * liv
- */
-
-// indica se i tasti sono premuti
-let keySDown = false;
-let keyWDown = false;
-let keyADown = false;
-let keyDDown = false;
-let EnterDown = false; 
-
+// DICHIARAZIONI DATI COSTANTI
 
 const TETRA_T = "T"; // tipi di tetramini
 const TETRA_L = "L";
@@ -76,9 +21,17 @@ const arrayTipiTetramini = [
     TETRA_O,
     TETRA_T
 ];
-let codaTetramini = []; // 14 tetramini
-let currTetra_ind;
 
+const BOARDCOLUMNS = 10;
+const BOARDROWS = 22;
+const BOARDHIDDENROWS = 2;
+const INIT_INTERVAL_DURATION = 450;
+
+const LVL_STEP = 27; // differenza di velocità tra un livello e un altro (ms)
+
+const TO_NEXT_LEVEL = 1; // linee da ripulire prima di arrivare al livello successivo
+
+const MOVEMENT_SPEED = 40;
 // posizione dei tetramini (relative)
 const POSIZIONI_TETRAMINI = {
     // contiene anche le posizioni relative alle rotazioni
@@ -126,9 +79,50 @@ const POSIZIONI_TETRAMINI = {
             [[1, 1], [0, 1], [1, 0], [2, 0]]
     ]
 };
+const STATUS_SCONFITTA = "StatusSconfitta"
+const STATUS_NUOVO_LIVELLO = "StatusNuovoLivello"
 
+// DICHIARAZIONE OGGETTI GLOBALI
+const SevenBag = { 
+    tipoProssimo: undefined, 
+    tipoCorrente: undefined,
+    currTetra_ind: undefined,
+    codaTetramini: []
+}
+
+// gameObj
+const Game = {
+    tetramino : [ 
+        {riga: undefined, colonna: undefined},
+        {riga: undefined, colonna: undefined},
+        {riga: undefined, colonna: undefined},
+        {riga: undefined, colonna: undefined}
+    ],
+    cellArray: [],
+    previewArray: [],
+    holdArray: [],
+    tetraminoInHold: null,
+    holdAllowed : true,
+    hardDropped: false,
+    intervalId: undefined,
+    moveIntervalId: undefined,
+    intervalDuration: INIT_INTERVAL_DURATION,
+    lineeLiberate: 0,
+    punti: 0,
+    livello: 1
+}
 
 let statoRotazione;
+
+// indica se i tasti sono premuti
+const KeyState = 
+{
+    SDown : false,
+    WDown : false,
+    ADown : false,
+    DDown : false,
+    EnterDown: false
+}
 
 function isInBound(r, c)
 {
@@ -137,23 +131,23 @@ function isInBound(r, c)
 
 function getCell(row, col)
 {
-    return cellArray[row][col];
+    return Game.cellArray[row][col];
 }
 
 // Algoritmo 7-bag
 function tetraminoCasuale()
 {
-    let nuovoIndice = (currTetra_ind + 1) % 14;
+    let nuovoIndice = (SevenBag.currTetra_ind + 1) % 14;
     if(nuovoIndice === 0)
     {
-        shuffle(codaTetramini, 7, 13);
+        shuffle(SevenBag.codaTetramini, 7, 13);
     }
     if(nuovoIndice === 7)
     {
-        shuffle(codaTetramini, 0, 6);
+        shuffle(SevenBag.codaTetramini, 0, 6);
     }
-    currTetra_ind = nuovoIndice;
-    return codaTetramini[nuovoIndice];
+    SevenBag.currTetra_ind = nuovoIndice;
+    return SevenBag.codaTetramini[nuovoIndice];
 }
 
 function coloraCella(row, col, color)
@@ -181,7 +175,7 @@ function toggleInMovimento(row, col)
 
 function killTetra()
 {
-    for (let i of tetramino)
+    for (let i of Game.tetramino)
     {
         svuotaCella(i.riga, i.colonna);
     }
@@ -200,7 +194,7 @@ function bloccaTetra(t)
         getCell(c.riga, c.colonna).classList.remove("inMovimento");
         getCell(c.riga, c.colonna).classList.add("Caduto"); // serve alla collision detection
     }
-    holdAllowed = true;
+    Game.holdAllowed = true;
     // todo timeout intervalDuration+10ms per dare tempo di muoversi e poi riparte 
 }
 
@@ -239,7 +233,7 @@ function scriviHold(tipo)
                 r = coordinate[i][0] + 1;
                 c = coordinate[i][1] + 1;
         }
-        holdArray[r][c].classList.add(tipo);
+        Game.holdArray[r][c].classList.add(tipo);
     }
 }
 
@@ -260,35 +254,35 @@ function scriviPreview(tipo)
                 r = coordinate[i][0] + 1;
                 c = coordinate[i][1] + 1;
         }
-        previewArray[r][c].classList.add(tipo);
+        Game.previewArray[r][c].classList.add(tipo);
     }
 }
 
 // non si preoccupa di preview, tipoPossimo
 function nuovoTetramino(tipo)
 {
-    tipoCorrente = tipo;
+    SevenBag.tipoCorrente = tipo;
     statoRotazione = 0;
     const coordinate = POSIZIONI_TETRAMINI[tipo][statoRotazione];
     for(let i = 0; i < 4; i++)
     {
-        tetramino[i].riga = coordinate[i][0];
+        Game.tetramino[i].riga = coordinate[i][0];
         if(tipo === TETRA_O)
         {
-        tetramino[i].colonna = coordinate[i][1] + 4;
+        Game.tetramino[i].colonna = coordinate[i][1] + 4;
         }
         else
         {
-            tetramino[i].colonna = coordinate[i][1] + 3;
+            Game.tetramino[i].colonna = coordinate[i][1] + 3;
         }
-        if(getCell(tetramino[i].riga, tetramino[i].colonna).classList.contains("caduto"))
+        if(getCell(Game.tetramino[i].riga, Game.tetramino[i].colonna).classList.contains("caduto"))
         {
             terminaPartita();
             return;
         }
-        toggleInMovimento(tetramino[i].riga, tetramino[i].colonna);
+        toggleInMovimento(Game.tetramino[i].riga, Game.tetramino[i].colonna);
     }
-    for (let sqr of tetramino)
+    for (let sqr of Game.tetramino)
     {
         coloraCella(sqr.riga, sqr.colonna, tipo);
     }
@@ -316,14 +310,14 @@ function generateBoard()
             terminaPartita();
             startGame();
         });
-    codaTetramini = structuredClone(arrayTipiTetramini);
+    SevenBag.codaTetramini = structuredClone(arrayTipiTetramini);
     for(let i = 0; i < 7; i++)
     {
-        codaTetramini.push(arrayTipiTetramini[i]);
+        SevenBag.codaTetramini.push(arrayTipiTetramini[i]);
     }
-    shuffle(codaTetramini, 0, 6);
-    shuffle(codaTetramini, 7, 13);
-    currTetra_ind = 0;
+    shuffle(SevenBag.codaTetramini, 0, 6);
+    shuffle(SevenBag.codaTetramini, 7, 13);
+    SevenBag.currTetra_ind = 0;
 
     board = document.getElementById("gameBoard");
     for(let i = 0; i < BOARDROWS; i++)
@@ -344,7 +338,7 @@ function generateBoard()
             cellArrRow.push(cell);
             row.appendChild(cell);
         }
-        cellArray.push(cellArrRow);
+        Game.cellArray.push(cellArrRow);
     }
 }
 function generatePreview(){
@@ -364,7 +358,7 @@ function generatePreview(){
             previewArrayRow.push(cell);
             row.append(cell);
         }
-        previewArray.push(previewArrayRow);
+        Game.previewArray.push(previewArrayRow);
     }
 }
 
@@ -385,7 +379,7 @@ function generateHold(){
             holdArrayRow.push(cell);
             row.append(cell);
         }
-        holdArray.push(holdArrayRow);
+        Game.holdArray.push(holdArrayRow);
     }
 }
 
@@ -394,15 +388,15 @@ function terminaPartita()
     primaPartita = false;
     document.removeEventListener("keydown", keyDownHandler);
     document.removeEventListener("keyup", keyUpHandler);
-    clearInterval(intervalId);
-    clearInterval(moveIntervalId);
+    clearInterval(Game.intervalId);
+    clearInterval(Game.moveIntervalId);
 }
 
 function trovaRigheRipulite()
 {
     let arrayRigheRipulite = new Array();
     let guardate = new Array();
-    for (let sqr of tetramino)
+    for (let sqr of Game.tetramino)
     {
         if(guardate.indexOf(sqr.riga) !== -1)
         { // non aggiungo righe duplicate
@@ -450,16 +444,16 @@ function scorriRighe(righe)
 
 function refreshPunteggio()
 {
-    document.getElementById("Punti").innerText = punti;
-    document.getElementById("Lines").innerText = lineeLiberate;
+    document.getElementById("Punti").innerText = Game.punti;
+    document.getElementById("Lines").innerText = Game.lineeLiberate;
     prevLiv = Number(document.getElementById("Livello").innerText);
 
-    if(prevLiv !== livello)
+    if(prevLiv !== Game.livello)
     {
-        intervalDuration = intervalDuration - LVL_STEP; // tolgo 30 msec all'intervallo
-        clearInterval(intervalId);
-        intervalId = setInterval(muoviTetra, intervalDuration);
-        document.getElementById("Livello").innerText = livello;
+        Game.intervalDuration = Game.intervalDuration - LVL_STEP; // tolgo 30 msec all'intervallo
+        clearInterval(Game.intervalId);
+        Game.intervalId = setInterval(muoviTetra, Game.intervalDuration);
+        document.getElementById("Livello").innerText = Game.livello;
         scriviStatus(`Nuovo livello!`, STATUS_NUOVO_LIVELLO);
         setTimeout(scriviStatus, 3000, "", "");
     }
@@ -468,7 +462,7 @@ function refreshPunteggio()
 // gameIter più che muoviTetra...
 function muoviTetra(incc = 0, incr = 1)
 {
-    aux = structuredClone(tetramino);
+    aux = structuredClone(Game.tetramino);
     for(let sqr of aux)
     {
         sqr.riga += incr;
@@ -478,8 +472,8 @@ function muoviTetra(incc = 0, incr = 1)
     {
         if(incr === 1) // caso caduta
         {
-            bloccaTetra(tetramino);
-            coloraTetra(tetramino, tipoCorrente);
+            bloccaTetra(Game.tetramino);
+            coloraTetra(Game.tetramino, SevenBag.tipoCorrente);
             righeRipulite = trovaRigheRipulite(); // lista di righe ripulite
 
             calcolaPunteggio(righeRipulite); // calcolo nuovo punteggio
@@ -489,10 +483,10 @@ function muoviTetra(incc = 0, incr = 1)
             {
                 scorriRighe(righeRipulite);
             }
-            pulisciBoard(previewArray);
-            nuovoTetramino(tipoProssimo);
-            tipoProssimo = tetraminoCasuale();
-            scriviPreview(tipoProssimo);
+            pulisciBoard(Game.previewArray);
+            nuovoTetramino(SevenBag.tipoProssimo);
+            SevenBag.tipoProssimo = tetraminoCasuale();
+            scriviPreview(SevenBag.tipoProssimo);
             return true;
         }
         // altrimenti ha provato ad andare di lato ma c'era qualcosa
@@ -501,15 +495,15 @@ function muoviTetra(incc = 0, incr = 1)
     }
     // se il tetramino può spostarsi...
     let count = 0; 
-    for(let sqr of tetramino)
+    for(let sqr of Game.tetramino)
     {
         svuotaCella(sqr.riga, sqr.colonna);
     }
     for(let sqr of aux) // copio aux in tetramino e coloro le celle
     {
-        tetramino[count].riga = sqr.riga;
-        tetramino[count].colonna = sqr.colonna;
-        coloraCella(sqr.riga, sqr.colonna, tipoCorrente);
+        Game.tetramino[count].riga = sqr.riga;
+        Game.tetramino[count].colonna = sqr.colonna;
+        coloraCella(sqr.riga, sqr.colonna, SevenBag.tipoCorrente);
         count++;
     }
 }
@@ -535,7 +529,7 @@ function caduto(t)
 
 function hardDrop()
 {
-    hardDropped = true;
+    Game.hardDropped = true;
     while(!muoviTetra(0, 1));
 }
 
@@ -549,62 +543,62 @@ function keyDownHandler(event)
     switch(event.code)
     {
         case "KeyW":
-            if(keyWDown) // se il tasto era già premuto non fare nulla
+            if(KeyState.WDown) // se il tasto era già premuto non fare nulla
             {
                 return;
             }
-            keyWDown = true;
+            KeyState.WDown = true;
             ruota();
             return;
         case "KeyS":
-            if(keySDown) // se il tasto era già premuto non fare nulla
+            if(KeyState.SDown) // se il tasto era già premuto non fare nulla
             {
                 return;
             }
-            keySDown = true;
-            clearInterval(intervalId);
-            intervalId = setInterval(muoviTetra, MOVEMENT_SPEED);
+            KeyState.SDown = true;
+           clearInterval(Game.intervalId);
+            Game.intervalId = setInterval(muoviTetra, MOVEMENT_SPEED);
             return;
         case "Enter":
-            if(EnterDown)
+            if(KeyState.EnterDown)
             {
                 return;
             }
             hardDrop();
             return;
         case "ShiftRight":
-            if(!holdAllowed)
+            if(!Game.holdAllowed)
             {
                 return;
             }
-            holdAllowed = false;
+            Game.holdAllowed = false;
             killTetra();
             // fai funzionare come preview
-            let newTetraHold = tipoCorrente;
-            if(tetraminoInHold != null)
+            let newTetraHold = SevenBag.tipoCorrente;
+            if(Game.TetraminoInHold != null)
             {
-                nuovoTetramino(tetraminoInHold);
+                nuovoTetramino(Game.TetraminoInHold);
             }
             else
             {
-                nuovoTetramino(tipoProssimo);
-                pulisciBoard(previewArray);
-                tipoProssimo = tetraminoCasuale();
-                scriviPreview(tipoProssimo);
+                nuovoTetramino(SevenBag.tipoProssimo);
+                pulisciBoard(Game.previewArray);
+                SevenBag.tipoProssimo = tetraminoCasuale();
+                scriviPreview(SevenBag.tipoProssimo);
             }
-            tetraminoInHold = newTetraHold;
-            pulisciBoard(holdArray);
-            scriviHold(tetraminoInHold);
+            Game.TetraminoInHold = newTetraHold;
+            pulisciBoard(Game.holdArray);
+            scriviHold(Game.TetraminoInHold);
             return;
         default: // keyA o keyD
-            if(keyADown || keyDDown)
+            if(KeyState.ADown || KeyState.DDown)
             {
                 return;
             }
-            keyADown = true;
-            keyDDown = true;
+            KeyState.ADown = true;
+            KeyState.keyDDown = true;
             let increment = ((event.code === "KeyD")? +1 : -1);
-            moveIntervalId = setInterval( ()=>{
+            Game.moveIntervalId = setInterval( ()=>{
                 muoviTetra(increment, 0);
                 }, MOVEMENT_SPEED);
     }
@@ -620,21 +614,21 @@ function keyUpHandler(event)
     {
 
     case "KeyS":
-        keySDown = false;
-        clearInterval(intervalId);
-        intervalId = setInterval(muoviTetra, intervalDuration);
+        KeyState.SDown = false;
+        clearInterval(Game.intervalId);
+        Game.intervalId = setInterval(muoviTetra, Game.intervalDuration);
         break;
     case "KeyW":
-        keyWDown = false;
+        KeyState.WDown = false;
         break;
     case "KeyA":
     case "KeyD":
-        keyADown = false;
-        keyDDown = false;
-        clearInterval(moveIntervalId);
+        KeyState.ADown = false;
+        KeyState.DDown = false;
+        clearInterval(Game.moveIntervalId);
         break;
     case "Enter":
-        EnterDown = false;
+        KeyState.EnterDown = false;
         break;
     }
 
@@ -642,45 +636,45 @@ function keyUpHandler(event)
 
 function calcolaPunteggio(righeRipulite)
 {
-    lineeLiberate += righeRipulite.length;
+    Game.lineeLiberate += righeRipulite.length;
     switch(righeRipulite.length)
     {
         case 4:
-        punti += 800*livello;
+        Game.punti += 800*Game.livello;
         break;
         case 3:
-        punti += 500*livello;
+        Game.punti += 500*Game.livello;
         break;
         case 2: 
-        punti += 300*livello;
+        Game.punti += 300*Game.livello;
         break;
         case 1: 
-        punti += 100*livello;
+        Game.punti += 100*Game.livello;
         break;
     }
-    if(hardDropped)
+    if(Game.hardDropped)
     {
-        hardDropped = false;
-        punti += 50*livello;
+        Game.hardDropped = false;
+        Game.punti += 50*Game.livello;
     }
-    if(keySDown)
+    if(KeyState.SDown)
     {
-        punti += 25*livello;
+        Game.punti += 25*Game.livello;
     }
-    if(Math.floor(lineeLiberate/TO_NEXT_LEVEL) > livello - 1)
+    if(Math.floor(Game.lineeLiberate/TO_NEXT_LEVEL) > Game.livello - 1)
     {
-        livello++;
+        Game.livello++;
     }
 }
 
 function calcolaRootRotazione()
 {
     let root = {};
-    if(tipoCorrente != TETRA_I)
+    if(SevenBag.tipoCorrente != TETRA_I)
     {
         root = {
-            riga: tetramino[0].riga - 1,
-            colonna: tetramino[0].colonna - 1
+            riga: Game.tetramino[0].riga - 1,
+            colonna: Game.tetramino[0].colonna - 1
         };
     }
     else
@@ -690,29 +684,29 @@ function calcolaRootRotazione()
             case 0:
                 root = 
                 {
-                    riga: tetramino[0].riga,
-                    colonna: tetramino[0].colonna
+                    riga: Game.tetramino[0].riga,
+                    colonna: Game.tetramino[0].colonna
                 }
             break;
             case 1:
                 root = 
                 {
-                    riga: tetramino[0].riga + 1,
-                    colonna: tetramino[0].colonna - 2
+                    riga: Game.tetramino[0].riga + 1,
+                    colonna: Game.tetramino[0].colonna - 2
                 }
             break;
             case 2:
                 root =
                 {
-                    riga: tetramino[0].riga - 1,
-                    colonna: tetramino[0].colonna 
+                    riga: Game.tetramino[0].riga - 1,
+                    colonna: Game.tetramino[0].colonna 
                 }
             break;
             case 3:
                 root =
                 {
-                    riga: tetramino[0].riga + 1,
-                    colonna: tetramino[0].colonna -1
+                    riga: Game.tetramino[0].riga + 1,
+                    colonna: Game.tetramino[0].colonna -1
                 }
             break;
         }
@@ -728,8 +722,8 @@ function provaRotazione(root)
     {
         tryTetra.push(
         {
-            riga: POSIZIONI_TETRAMINI[tipoCorrente][(statoRotazione + 1) % 4][i][0] + root.riga,
-            colonna: POSIZIONI_TETRAMINI[tipoCorrente][(statoRotazione + 1) % 4][i][1] + root.colonna
+            riga: POSIZIONI_TETRAMINI[SevenBag.tipoCorrente][(statoRotazione + 1) % 4][i][0] + root.riga,
+            colonna: POSIZIONI_TETRAMINI[SevenBag.tipoCorrente][(statoRotazione + 1) % 4][i][1] + root.colonna
         });
     }
     return tryTetra;
@@ -737,7 +731,7 @@ function provaRotazione(root)
 
 function ruota()
 {
-    if( tipoCorrente === TETRA_O)
+    if( SevenBag.tipoCorrente === TETRA_O)
     { // inutile provare
         return;
     }
@@ -761,7 +755,7 @@ function ruota()
     }
     // se il tetramino può spostarsi...
     // riesco a colorarlo quindi cancello quello vecchio
-    for(let c of tetramino)
+    for(let c of Game.tetramino)
     {
         svuotaCella(c.riga, c.colonna);
     }
@@ -770,9 +764,9 @@ function ruota()
     let count = 0; 
     for(let sqr of tryTetra) // copio aux in tetramino e coloro le celle
     {
-        tetramino[count].riga = sqr.riga;
-        tetramino[count].colonna = sqr.colonna;
-        coloraCella(sqr.riga, sqr.colonna, tipoCorrente);
+        Game.tetramino[count].riga = sqr.riga;
+        Game.tetramino[count].colonna = sqr.colonna;
+        coloraCella(sqr.riga, sqr.colonna, SevenBag.tipoCorrente);
         count++;
     }
 }
@@ -795,19 +789,19 @@ function startGame()
 
 // per quando ricomincia la partita
     clearBoard();
-    hardDropped = 0;
-    livello = 1; 
-    document.getElementById("Livello").innerText = livello;
-    punti = 0;
-    lineeLiberate = 0;
+    Game.hardDropped = 0;
+    Game.livello = 1; 
+    document.getElementById("Livello").innerText = Game.livello;
+    Game.punti = 0;
+    Game.lineeLiberate = 0;
     document.getElementById("Lines").innerText = 0;
-    document.getElementById("Punti").innerText = punti;
-    intervalDuration = INIT_INTERVAL_DURATION;
+    document.getElementById("Punti").innerText = Game.punti;
+    Game.intervalDuration = INIT_INTERVAL_DURATION;
     document.getElementById("Status").innerText = "";
-    holdAllowed = true;
+    Game.holdAllowed = true;
 
     nuovoTetramino(tetraminoCasuale());
-    tipoProssimo = tetraminoCasuale();
-    scriviPreview(tipoProssimo);
-    intervalId = setInterval(muoviTetra, intervalDuration);
+    SevenBag.tipoProssimo = tetraminoCasuale();
+    scriviPreview(SevenBag.tipoProssimo);
+    Game.intervalId = setInterval(muoviTetra, Game.intervalDuration);
 }
