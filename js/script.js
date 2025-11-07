@@ -187,7 +187,6 @@ function bloccaTetra(t)
     {
         if(c.riga == BOARDHIDDENROWS)
         { // caso sconfitta
-            document.getElementById("Status").innerText = "Hai perso :(";
             scriviStatus("Hai perso :(", STATUS_SCONFITTA);
             terminaPartita();
         }
@@ -200,11 +199,13 @@ function bloccaTetra(t)
 
 function scriviStatus(msg, color)
 {
+    console.log(`Stato prima: ${document.getElementById("Status").className}`)
     if(color !== "")
     {
-        document.getElementById("Status").classList.add(color);
+        document.getElementById("Status").className = color;
     }
     document.getElementById("Status").innerText = msg;
+    console.log(`Stato dopo: ${document.getElementById("Status").className}`)
 }
 
 function pulisciBoard(brd)

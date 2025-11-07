@@ -1,3 +1,5 @@
+/*COMMON STYLES*/
+
 html
 {
     display:flex;
@@ -13,17 +15,17 @@ h1{
     margin: 0;
 }
 
-main
-{
-    flex-direction: row;
-    display: flex;
-    flex-direction: row;
-}
-
 nav{
     display: flex;
     flex-direction: row;
     margin-left: 0;
+    background-color: #c0c0c0;
+    color: #201f1f
+}
+
+a, a:visited{
+    color: #201f1f;
+    text-decoration: none;
 }
 
 p{
@@ -47,6 +49,24 @@ body{
     flex-direction: column;
 }
 
+
+h1{
+    text-align: center;
+    text-shadow: 3px 3px 0 #201f1f;
+}
+/*MANUALE UTENTE*/
+dt{
+    color: yellow;
+}
+
+/*STILI GIOCO*/
+main
+{
+    flex-direction: row;
+    display: flex;
+    flex-direction: row;
+}
+
 #gameContainer
 {
     display: flex;
@@ -62,12 +82,11 @@ body{
     height: 1.2em;
     width: 1.2em;
 }
+
 #Hold .cell{
     height: 1em;
     width: 1em;
 }
-
-
 
 #Livello{
     color: yellow;
@@ -83,11 +102,6 @@ button{
     display: block;
     width: fit-content;
     height: 30px;
-}
-
-h1{
-    text-align: center;
-    text-shadow: 3px 3px 0 #c0c0c0;
 }
 
 button:hover{
@@ -125,6 +139,7 @@ table#GameStats{
     margin-top: 5em;
     text-align: left;
 }
+
 th{
     padding-right: 20px;
     text-align: left;
@@ -141,6 +156,7 @@ td{
 .StatusSconfitta{
     color: red
 }
+
 .StatusNuovoLivello{
     color: yellow;
 }
@@ -180,36 +196,36 @@ td{
 
 
 span.I{
-    background-color: #201f1f;
+    background-color: #c0c0c0;
     color: rgb(255, 123, 0);
 }
 
 span.L{
-    background-color: #201f1f;
+    background-color: #c0c0c0;
     color: blue;
 }
 
 span.J{
-    background-color: #201f1f;
+    background-color: #c0c0c0;
     color: rgb(255, 0, 255);
 }
 
 span.T{
-    background-color: #201f1f;
+    background-color: #c0c0c0;
     color: yellow;
 }
 
 span.O{
-    background-color: #201f1f;
+    background-color: #c0c0c0;
     color: red;
 }
 
 span.Z{
-    background-color: #201f1f;
+    background-color: #c0c0c0;
     color: rgb(0, 255, 0);
 }
 
 span.S{
-    background-color: #201f1f;
+    background-color: #c0c0c0;
     color: rgb(0, 255, 255);
 }

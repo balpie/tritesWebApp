@@ -14,12 +14,14 @@
     <body>
         <nav>
             <h1>
+                <a href="php/homepage.php">
                 <span class="O">T</span><span class="I">r</span><span class="T">i</span><span class="Z">t</span><span class="S">e</span><span class="J">s</span>
+                <a>
             </h1>
             <ul>
                 <li>Gioca</li>
-                <li>Classifiche</li>
-                <li>Account</li>
+                <li><a href="classifiche.php">Classifiche</a></li>
+                <li><a href="login.php">Account</a></li>
             </ul>
         </nav>
         <main>
@@ -57,7 +59,4 @@
             </aside>
         </main>
     </body>
-    <footer>
-
-    </footer>
 </html>
