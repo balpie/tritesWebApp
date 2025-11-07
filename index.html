@@ -12,36 +12,49 @@
         <title>Trites</title>
     </head>
     <body>
-        <aside>
-            <div id="HoldPreview">
-                <p>Preview:</p>
-                <div id="Preview" class="gameBoard"></div>
-                <p>Hold:</p>
-                <div id="Hold" class="gameBoard"></div>
-            </div>
-        </aside>
+        <nav>
+            <h1>
+                <a><span class="O">T</span><span class="I">r</span><span class="T">i</span><span class="Z">t</span><span class="S">e</span><span class="J">s</span>
+            </h1>
+            <ul>
+                <li>Gioca</li>
+                <li>Classifiche</li>
+                <li>Account</li>
+            </ul>
+        </nav>
         <main>
-            <h1><span class="O">T</span><span class="I">r</span><span class="T">i</span><span class="Z">t</span><span class="S">e</span><span class="J">s</span></h1>
-            <div id="gameBoard" class="gameBoard"></div>
-            <button type="button" id="Start">Gioca</button>
-            <button type="button" id="Restart">Ricomincia</button>
+            <aside>
+                <div id="HoldPreview">
+                    <p>Preview:</p>
+                    <div id="Preview" class="gameBoard"></div>
+                    <p>Hold:</p>
+                    <div id="Hold" class="gameBoard"></div>
+                </div>
+            </aside>
+            <div id="gameContainer">
+                <div id="gameBoard" class="gameBoard"></div>
+                <button type="button" id="Start">Gioca</button>
+                <button type="button" id="Restart">Ricomincia</button>
+            </div>
+            <aside>
+                <table id="GameStats">
+                    <tr>
+                        <th>Livello: </th>
+                        <td id = "Livello" class="Stats">1</td>
+                    </tr>
+                    <tr>
+                        <th>Linee: </th>
+                        <td id = "Lines" class="Stats">0</td>
+                    </tr>
+                    <tr>
+                        <th>Punti: </th>
+                        <td id="Punti" class="Stats">0</tr>
+                    </tr>
+                    <tr>
+                        <td colspan="2" id="Status"></td>
+                    </tr>
+                </table>
+            </aside>
         </main>
-            <table>
-                <tr>
-                    <th>Livello: </th>
-                    <td id = "Livello" class="Stats">1</td>
-                </tr>
-                <tr>
-                    <th>Linee: </th>
-                    <td id = "Lines" class="Stats">0</td>
-                </tr>
-                <tr>
-                    <th>Punti: </th>
-                    <td id="Punti" class="Stats">0</tr>
-                </tr>
-                <tr>
-                    <td colspan="2" id="Status"></td>
-                </tr>
-            </table>
     </body>
 </html>
