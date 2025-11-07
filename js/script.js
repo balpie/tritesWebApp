@@ -200,7 +200,10 @@ function bloccaTetra(t)
 
 function scriviStatus(msg, color)
 {
-    document.getElementById("Status").classList = color
+    if(color !== "")
+    {
+        document.getElementById("Status").classList.add(color);
+    }
     document.getElementById("Status").innerText = msg;
 }
 

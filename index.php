@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 
 <html lang="it">
-    <meta charset="utf-8">
     <head>
+        <meta charset="utf-8">
+        <meta name="author" content="Pietro Balestri">
         <link rel="stylesheet" href="css/style.css">
         <script src="js/script.js"></script>
-        <meta author="Pietro Balestri">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
     <body>
         <nav>
             <h1>
-                <a><span class="O">T</span><span class="I">r</span><span class="T">i</span><span class="Z">t</span><span class="S">e</span><span class="J">s</span>
+                <span class="O">T</span><span class="I">r</span><span class="T">i</span><span class="Z">t</span><span class="S">e</span><span class="J">s</span>
             </h1>
             <ul>
                 <li>Gioca</li>
@@ -48,7 +48,7 @@
                     </tr>
                     <tr>
                         <th>Punti: </th>
-                        <td id="Punti" class="Stats">0</tr>
+                        <td id="Punti" class="Stats">0</td>
                     </tr>
                     <tr>
                         <td colspan="2" id="Status"></td>
@@ -57,4 +57,7 @@
             </aside>
         </main>
     </body>
+    <footer>
+
+    </footer>
 </html>
