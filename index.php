@@ -23,42 +23,44 @@
             <ul>
                 <li><a href="php/guida.php">Guida</a></li>
                 <li><a href="php/classifiche.php">Classifiche</a></li>
-                <li><a href="php/login.php">Account</a></li>
+                <li><a href="php/account.php">Account</a></li>
             </ul>
         </nav>
-        <main>
-            <aside>
-                <div id="HoldPreview">
-                    <p>Preview:</p>
-                    <div id="Preview" class="gameBoard"></div>
-                    <p>Hold:</p>
-                    <div id="Hold" class="gameBoard"></div>
+        <div class="Center">
+            <main>
+                <aside>
+                    <div id="HoldPreview">
+                        <p>Preview:</p>
+                        <div id="Preview" class="gameBoard"></div>
+                        <p>Hold:</p>
+                        <div id="Hold" class="gameBoard"></div>
+                    </div>
+                </aside>
+                <div id="gameContainer">
+                    <div id="gameBoard" class="gameBoard"></div>
                 </div>
-            </aside>
-            <div id="gameContainer">
-                <div id="gameBoard" class="gameBoard"></div>
-            </div>
-            <aside>
-                <table id="GameStats">
-                    <tr>
-                        <th>Livello: </th>
-                        <td id = "Livello" class="Stats">1</td>
-                    </tr>
-                    <tr>
-                        <th>Linee: </th>
-                        <td id = "Lines" class="Stats">0</td>
-                    </tr>
-                    <tr>
-                        <th>Punti: </th>
-                        <td id="Punti" class="Stats">0</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" id="Status"></td>
-                    </tr>
-                </table>
-                <button type="button" id="Start">Gioca</button>
-                <button type="button" id="Restart">Ricomincia</button>
-            </aside>
-        </main>
+                <aside>
+                    <table id="GameStats">
+                        <tr>
+                            <th>Livello: </th>
+                            <td id = "Livello" class="Stats">1</td>
+                        </tr>
+                        <tr>
+                            <th>Linee: </th>
+                            <td id = "Lines" class="Stats">0</td>
+                        </tr>
+                        <tr>
+                            <th>Punti: </th>
+                            <td id="Punti" class="Stats">0</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" id="Status"></td>
+                        </tr>
+                    </table>
+                    <button type="button" id="Start">Gioca</button>
+                    <button type="button" id="Restart">Ricomincia</button>
+                </aside>
+            </main>
+        </div>
     </body>
 </html>

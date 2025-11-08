@@ -1,8 +1,12 @@
+.Center{
+    display: flex;
+    justify-content: space-around;
+}
+
 main
 {
     flex-direction: row;
     display: flex;
-    flex-direction: row;
     border: 3px solid #c0c0c0;
     margin: 2em;
 }
