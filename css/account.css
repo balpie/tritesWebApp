@@ -1,0 +1,41 @@
+main{
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+}
+
+form{
+    margin: 2em auto;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+input{
+    display: block;
+    border-radius: 0;
+    background-color: #c0c0c0;
+    font-family: "Press Start 2P", system-ui;
+    margin: 0.5em 0 0.5em 0;
+}
+
+input:focus{
+    outline: none;
+}
+
+button{
+    font-family: "Press Start 2P";
+    background-color: #c0c0c0;
+    color: #201f1f;
+    border: 2px solid #c0c0c0;
+    border-radius: 0;
+    display: block;
+    width: fit-content;
+    height: 2.2em;
+}
+
+button:hover{
+    border: 2px solid #c0c0c0;
+    background-color: #201f1f;
+    color: #c0c0c0;
+}

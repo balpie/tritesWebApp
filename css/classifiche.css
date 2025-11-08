@@ -1,0 +1,11 @@
+table{
+    border-collapse: collapse;
+    margin-top: 2em;
+    margin-left: 2em;
+    color: white;
+}
+
+th, td, table{
+    border: 3px solid #c0c0c0;
+    padding: 0.2em;
+}

@@ -22,14 +22,13 @@
             <ul>
                 <li><a href="guida.php">Guida</a></li>
                 <li><a href="classifiche.php">Classifiche</a></li>
-                <li><a href="login.php">Account</a></li>
+                <li><a href="account.php">Account</a></li>
             </ul>
         </nav>
         <main>
             <article>
                 <h2>Guida all'utente</h2>
                 <h3>Tasti: </h3>
-                <p>
                     <dl class="UserGuide">
                         <dt>A D</dt>
                             <dd>
@@ -41,7 +40,7 @@
                             </dd>
                         <dt>S</dt>
                             <dd>
-                                Fa cadere il tetramino più velocemente. 
+                                Fa cadere il tetramino più velocemente
                             </dd>
                         <dt>Enter</dt>
                             <dd>
@@ -55,18 +54,15 @@
                                 sarà il prossimo, visibile in "preview"
                             </dd>
                     </dl>
-                </p>
                 <h3>
                     Meccaniche di gioco
                 </h3>
-                <p>
-                    <ul>
-                        <li>Pezzi</li>
-                        <li>Punteggi</li>
-                        <li>7-bag</li>
-                        <li>Wall Kick</li>
-                    </ul>
-                </p>
+                <ul>
+                    <li>Pezzi</li>
+                    <li>Punteggi</li>
+                    <li>7-bag</li>
+                    <li>Wall Kick</li>
+                </ul>
             </article>
         </main>
     </body>

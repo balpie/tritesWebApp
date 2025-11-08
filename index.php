@@ -22,8 +22,8 @@
             </h1>
             <ul>
                 <li><a href="php/guida.php">Guida</a></li>
-                <li><a href="classifiche.php">Classifiche</a></li>
-                <li><a href="login.php">Account</a></li>
+                <li><a href="php/classifiche.php">Classifiche</a></li>
+                <li><a href="php/login.php">Account</a></li>
             </ul>
         </nav>
         <main>

@@ -18,7 +18,6 @@ CREATE TABLE IF NOT EXISTS Partite(
     `LineeRipulite` INTEGER NOT NULL,
     `Punti` INTEGER NOT NULL,
     `DataPartita` DATETIME NOT NULL,
-    `Durata` INTEGER NOT NULL, -- Durata partita in secondi
     FOREIGN KEY(`NomeUtente`) REFERENCES `Utenti`(`NomeUtente`),
     PRIMARY KEY(`IdPartita`)
 );
