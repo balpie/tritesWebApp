@@ -199,18 +199,15 @@ function bloccaTetra(t)
 
 function scriviStatus(msg, color)
 {
-    console.log(`Stato prima: ${document.getElementById("Status").className}`)
     if(color !== "")
     {
         document.getElementById("Status").className = color;
     }
     document.getElementById("Status").innerText = msg;
-    console.log(`Stato dopo: ${document.getElementById("Status").className}`)
 }
 
 function pulisciBoard(brd)
 {
-    console.log(`[pulisciBoard]: ${brd[0][0].id}`);
     for(let i = 0; i < brd.length; i++)
     {
         for(let j = 0; j < brd[0].length; j++)
@@ -222,7 +219,6 @@ function pulisciBoard(brd)
 
 function scriviHold(tipo)
 {
-    console.log("[scriviHold]")
     const coordinate = POSIZIONI_TETRAMINI[tipo][0];
     for(let i = 0; i < 4; i++)
     {
@@ -243,7 +239,6 @@ function scriviHold(tipo)
 
 function scriviPreview(tipo)
 {
-    console.log("[scriviPreview]")
     const coordinate = POSIZIONI_TETRAMINI[tipo][0];
     for(let i = 0; i < 4; i++)
     {

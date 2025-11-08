@@ -13,3 +13,42 @@ dt{
 dd{
     margin-bottom: 0.5em;
 }
+
+ul{
+    list-style: none;
+}
+
+dd > span.I{
+    background-color: #201f1f;
+    color: rgb(255, 123, 0);
+}
+
+dd > span.L{
+    background-color: #201f1f;
+    color: blue;
+}
+
+dd > span.J{
+    background-color: #201f1f;
+    color: rgb(255, 0, 255);
+}
+
+dd > span.T{
+    background-color: #201f1f;
+    color: yellow;
+}
+
+dd > span.O{
+    background-color: #201f1f;
+    color: red;
+}
+
+dd > span.Z{
+    background-color: #201f1f;
+    color: rgb(0, 255, 0);
+}
+
+dd > span.S{
+    background-color: #201f1f;
+    color: rgb(0, 255, 255);
+}

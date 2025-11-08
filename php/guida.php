@@ -57,12 +57,32 @@
                 <h3>
                     Meccaniche di gioco
                 </h3>
-                <ul>
-                    <li>Pezzi</li>
-                    <li>Punteggi</li>
-                    <li>7-bag</li>
-                    <li>Wall Kick</li>
-                </ul>
+                <dl>
+                    <dt>Tetramini</dt>
+                        <dd>
+                            In Tetris esistono 7 diversi tipi di pezzi, detti Tetramini, ognuno nominato 
+                            con la lettera alla quale somiglia: 
+                            <br>
+                <span class="O">O</span>, <span class="I">I</span>, <span class="T">T</span>, <span class="Z">Z</span>, <span class="S">S</span>, <span class="J">J</span>, <span class="L">L</span>
+                        <dd>
+                    <dt>Punteggi</dt>
+                        <dd>
+                            Si vincono punti riempiendo intere righe della scatola. Più righe della scatola si riempiono, più punti vengono assegnati.
+                            Un altro modo di vincere punti è far scendere velocemente i tetramini, col tasto <span class="T">S</span> o <span class="T">Enter</span>
+                        </dd> 
+                    <dt>Scelta del prossimo tetramino</dt>
+                        <dd>
+                            La scelta del tetramino successivo non è completamente casuale, ma è
+                            stato adottato l'algoritmo 7-bag: il prossimo tetramino viene estratto da 
+                            una lista da 7 tetramini, che viene rimescolata ogni volta che termina.
+                        </dd>
+                    <dt>Rotazione: Wall Kick</dt>
+                        <dd>
+                            La rotazione non è sempre una rotazione pura: quando il tetramino potrebbe ruotare se fosse spostato di 1 
+                            casella a destra o sinistra, ma non può ruotare nella posizione attuale senza collidere
+                            con un tetramino già caduto, o uscire dalla scatola, viene eseguita una traslazione.
+                        </dd>
+                </dl>
             </article>
         </main>
     </body>
