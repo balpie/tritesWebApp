@@ -1,0 +1,123 @@
+body{
+    padding: 0;
+    margin-top: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+main
+{
+    flex-direction: row;
+    display: flex;
+    flex-direction: row;
+}
+
+#gameContainer
+{
+    display: flex;
+    flex-direction: column;
+}
+
+#holdPreview{
+    display: flex;
+    flex-direction: column;
+}
+
+p{
+    text-align: center;
+    padding: 0;
+    margin-bottom: 0;
+}
+
+
+#Preview .cell{
+    height: 1.2em;
+    width: 1.2em;
+}
+
+#Hold .cell{
+    height: 1em;
+    width: 1em;
+}
+
+#Livello{
+    color: yellow;
+}
+
+button{
+    font-family: "Press Start 2P";
+    align-self: left;
+    background-color: #c0c0c0;
+    color: #201f1f;
+    border: 2px solid #c0c0c0;
+    border-radius: 0;
+    display: block;
+    width: fit-content;
+    height: 2.2em;
+}
+
+button:hover{
+    border: 2px solid #c0c0c0;
+    background-color: #201f1f;
+    color: #c0c0c0;
+}
+
+.Nascosto{
+    display: none;
+}
+
+.row.Nascosto{
+    display: none;
+}
+
+aside{
+    display: flex;
+    flex-direction: column;
+}
+
+div.gameBoard{
+    float: left;
+    width: fit-content;
+    height: fit-content;
+    margin: 2em;
+    border: 3px solid #c0c0c0
+}
+
+#HoldPreview{
+    margin-top: 1em;
+}
+#HoldPreview .gameBoard{
+    margin-top: 0;
+    padding: 0
+}
+
+table#GameStats{
+    margin-top: 5em;
+    text-align: left;
+}
+
+th{
+    padding-right: 20px;
+    text-align: left;
+}
+
+td{
+    width: 6em;
+}
+
+.row{
+    display: flex;
+}
+
+.StatusSconfitta{
+    color: red
+}
+
+.StatusNuovoLivello{
+    color: yellow;
+}
+
+.cell{
+    width: 1.5em;
+    height: 1.5em;
+}

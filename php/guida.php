@@ -4,7 +4,9 @@
     <head>
         <meta charset="utf-8">
         <meta name="author" content="Pietro Balestri">
-        <link rel="stylesheet" href="../css/style.css">
+        <link rel="stylesheet" href="../css/guida.css">
+        <link rel="stylesheet" href="../css/navbar.css">
+        <link rel="stylesheet" href="../css/tetracolors.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -13,12 +15,12 @@
     <body>
         <nav>
             <h1>
-                <a href="homepage.php">
+                <a href="../index.php">
                 <span class="O">T</span><span class="I">r</span><span class="T">i</span><span class="Z">t</span><span class="S">e</span><span class="J">s</span>
-                <a>
+                </a>
             </h1>
             <ul>
-                <li><a href="../index.php">Gioca</a></li>
+                <li><a href="guida.php">Guida</a></li>
                 <li><a href="classifiche.php">Classifiche</a></li>
                 <li><a href="login.php">Account</a></li>
             </ul>
@@ -29,7 +31,7 @@
                 <h3>Tasti: </h3>
                 <p>
                     <dl class="UserGuide">
-                        <dt>A, D</dt>
+                        <dt>A D</dt>
                             <dd>
                                 Spostano il tetramino rispettivamente verso sinistra, e verso destra
                             </dd>
@@ -40,12 +42,10 @@
                         <dt>S</dt>
                             <dd>
                                 Fa cadere il tetramino più velocemente. 
-                                Se mentre si blocca è ancora tenuto premuto, verranno assegnati 5 * aunti livello
                             </dd>
                         <dt>Enter</dt>
                             <dd>
-                                Fa cadere il tetramino istantaneamente. Quando premuto vengono assegnati 10 
-                                punti * livello
+                                Fa cadere il tetramino istantaneamente
                             </dd>
                         <dt>Shift Destro</dt>
                             <dd>
@@ -55,6 +55,17 @@
                                 sarà il prossimo, visibile in "preview"
                             </dd>
                     </dl>
+                </p>
+                <h3>
+                    Meccaniche di gioco
+                </h3>
+                <p>
+                    <ul>
+                        <li>Pezzi</li>
+                        <li>Punteggi</li>
+                        <li>7-bag</li>
+                        <li>Wall Kick</li>
+                    </ul>
                 </p>
             </article>
         </main>
