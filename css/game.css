@@ -52,6 +52,7 @@ button{
     display: block;
     width: fit-content;
     height: 2.2em;
+    margin-top: 2em;
 }
 
 button:hover{
@@ -107,6 +108,14 @@ td{
 
 .row{
     display: flex;
+}
+
+#Status{
+    height: 1.2em;
+}
+
+#Status.Nascosto{
+    visibility: hidden;
 }
 
 .StatusSconfitta{

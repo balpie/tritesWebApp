@@ -141,10 +141,12 @@ function tetraminoCasuale()
     if(nuovoIndice === 0)
     {
         shuffle(SevenBag.codaTetramini, 7, 13);
+        console.log("[tetraminoCasuale] shuffle: ", SevenBag.codaTetramini);
     }
     if(nuovoIndice === 7)
     {
         shuffle(SevenBag.codaTetramini, 0, 6);
+        console.log("[tetraminoCasuale] shuffle: ", SevenBag.codaTetramini);
     }
     SevenBag.currTetra_ind = nuovoIndice;
     return SevenBag.codaTetramini[nuovoIndice];
