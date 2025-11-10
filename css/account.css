@@ -32,10 +32,24 @@ button{
     display: block;
     width: fit-content;
     height: 2.2em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
 }
 
 button:hover{
     border: 2px solid #c0c0c0;
     background-color: #201f1f;
     color: #c0c0c0;
+}
+.Nascosto{
+    display: none;
+}
+
+span.Cliccabile{
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    cursor: pointer;
+}
+span.Cliccabile:hover[onclick]{
+    text-decoration: none;
 }

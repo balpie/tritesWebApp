@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="../css/game.css">
         <link rel="stylesheet" href="../css/navbar.css">
         <link rel="stylesheet" href="../css/tetracolors.css">
-        <script src="../js/script.js"></script>
+        <script src="../js/game.js"></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">

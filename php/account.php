@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="../css/account.css">
         <link rel="stylesheet" href="../css/navbar.css">
         <link rel="stylesheet" href="../css/tetracolors.css">
+        <script src="../js/account.js"></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -26,22 +27,24 @@
             </ul>
         </nav>
         <main>
-        <form id="SignUp" method="POST">
-            <label for="NewUsername">Inserire l'username:</label>
-            <input type="text" id="NewUsername">
-            <label for="NewPassword">Inserire la password:</label>
-            <input type="password" id="NewPassword">
-            <label for="ConfirmPassword">Confermare la password:</label>
-            <input type="password" id="ConfirmPassword">
-            <button type="submit">Iscriviti</button>
-        </form>
-        <form id="LogIn" method="POST">
-            <label for="Username">Inserire l'username:</label>
-            <input type="text" id="Username">
-            <label for="Password">Inserire la password:</label>
-            <input type="password" id="Password">
-            <button type="submit">Accedi</button>
-        </form>
+            <form id="SignUp" method="POST" class="Nascosto">
+                <label for="NewUsername">Inserire l'username:</label>
+                <input type="text" id="NewUsername">
+                <label for="NewPassword">Inserire la password:</label>
+                <input type="password" id="NewPassword">
+                <label for="ConfirmPassword">Confermare la password:</label>
+                <input type="password" id="ConfirmPassword">
+                <button type="submit">Iscriviti</button>
+                se hai già un account <span id="logInBtn" class="Cliccabile" onclick="actionButton()">log in</span>
+            </form>
+            <form id="LogIn" method="POST">
+                <label for="Username">Inserire l'username:</label>
+                <input type="text" id="Username">
+                <label for="Password">Inserire la password:</label>
+                <input type="password" id="Password">
+                <button type="submit">Accedi</button>
+                Se non hai un account <span id="SignUpBtn" class="Cliccabile" onclick="actionButton()">iscriviti</span>
+            </form>
         </main>
     </body>
 </html>

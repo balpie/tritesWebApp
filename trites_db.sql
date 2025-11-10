@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS Partite(
     `NomeUtente` VARCHAR(30) NOT NULL,
     `LineeRipulite` INTEGER NOT NULL,
     `Punti` INTEGER NOT NULL,
-    `DataPartita` DATETIME NOT NULL,
+    `DataPartita` DATE NOT NULL,
     FOREIGN KEY(`NomeUtente`) REFERENCES `Utenti`(`NomeUtente`),
     PRIMARY KEY(`IdPartita`)
 );
