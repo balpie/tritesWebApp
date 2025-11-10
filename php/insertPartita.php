@@ -8,9 +8,17 @@
         echo "Failed to connect to MySQL: " . $connessione->connect_error;
         die("E' stato bello");
     }
+    if(isset($_SESSION["login"]))
+    {
+        $username = $_SESSION["login"];
+    }
+    else
+    {
+        $username = "Anon";
+    }
 
     $query = "INSERT INTO Partite(NomeUtente, LineeRipulite, Punti, DataPartita)
-              VALUES ('Anon'," . $_POST["LineeRipulite"] . "," . $_POST["Punti"]. ", CURRENT_DATE)"; 
+              VALUES ('". $username ."'," . $_POST["LineeRipulite"] . "," . $_POST["Punti"]. ", CURRENT_DATE)"; 
 
     error_log("Query: `" . $query . "`", 0);
     $result = $connessione->query($query);

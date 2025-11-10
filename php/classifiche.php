@@ -44,7 +44,7 @@
                     die("E' stato bello");
                 }
                 
-                if($result = mysqli_query($connessione, "SELECT * FROM Partite ORDER BY Punti LIMIT 10"))
+                if($result = mysqli_query($connessione, "SELECT * FROM Partite ORDER BY Punti DESC LIMIT 10"))
                 {
                     echo "
                         <table>

@@ -33,7 +33,7 @@
                 <label for="NewPassword">Inserire la password:</label>
                 <input type="password" id="NewPassword" name="password">
                 <label for="ConfirmPassword">Confermare la password:</label>
-                <input type="password" id="ConfirmPassword" name = confirm>
+                <input type="password" id="ConfirmPassword" name = "confirm">
                 <button type="button" onclick="trySignUp()">Iscriviti</button>
                 se hai già un account: <span id="logInBtn" class="Cliccabile" onclick="actionButton()">log in</span>
             </form>

@@ -5,7 +5,7 @@
     $connessione = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
     if(mysqli_connect_errno()) {
         echo "Failed to connect to MySQL: " . mysqli_connect_errno();
-        die("E' stato bello");
+        die("ERR");
     }
     $query = 
        "SELECT NomeUtente 
@@ -15,9 +15,10 @@
     $result = mysqli_query($connessione, $query);
     if(mysqli_num_rows($result) < 1)
     {
-        echo "no_usr_";
+        echo "no_usr_-";
         return;
     }
+    $_SESSION["login"] = $_POST["username"];
     echo "no_err-";
     echo "Cose relative all'utente appena trovato"
 ?>

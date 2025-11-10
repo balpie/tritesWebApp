@@ -188,15 +188,21 @@ function killTetra()
 
 function bloccaTetra(t)
 {
+    let termina = false;
     for (c of t)
     {
+
         if(c.riga == BOARDHIDDENROWS)
         { // caso sconfitta
-            scriviStatus("Hai perso :(", STATUS_SCONFITTA);
-            terminaPartita(true);
+            termina = true;
         }
         getCell(c.riga, c.colonna).classList.remove("inMovimento");
         getCell(c.riga, c.colonna).classList.add("Caduto"); // serve alla collision detection
+    }
+    if(termina)
+    {
+        scriviStatus("Hai perso :(", STATUS_SCONFITTA);
+        terminaPartita(true);
     }
     Game.holdAllowed = true;
     // todo timeout intervalDuration+10ms per dare tempo di muoversi e poi riparte 
@@ -394,6 +400,11 @@ function terminaPartita(postaPartita)
         console.log("Invio POST");
         let http = new XMLHttpRequest();
         let url = "insertPartita.php";
+        if (Game.hardDropped)
+        { // calcolo subito altrimenti non vengono conteggiati
+            Game.punti += 10 * Game.livello;
+            Game.hardDropped = false;
+        }
         let parameters = "Punti=" + Game.punti + "&LineeRipulite=" + Game.lineeLiberate;
             // apro un post verso insertPartita.php in modo asincrono:
         http.open("POST", url, true); 
@@ -412,12 +423,14 @@ function trovaRigheRipulite()
         { // non aggiungo righe duplicate
             continue;
         }
+        console.log("guardo riga: "+sqr.riga); 
         guardate.push(sqr.riga);
-        trovatoVuoto = false;
+        let trovatoVuoto = false;
         for(let i = 0; i < BOARDCOLUMNS; i++)
         {
             if(!getCell(sqr.riga, i).classList.contains("Caduto"))
             {
+                console.log("Trovato vuoto in riga"+ sqr.riga);
                 trovatoVuoto = true;
                 break;
             }
@@ -426,6 +439,7 @@ function trovaRigheRipulite()
         {
             continue;
         }
+        console.log("trovato riga ripulita: ", sqr.riga);
         arrayRigheRipulite.push(sqr.riga);
     }
     arrayRigheRipulite.sort();
@@ -492,18 +506,17 @@ function muoviTetra(incc = 0, incr = 1)
     {
         if(incr === 1) // caso caduta
         {
+            console.log("Chiamo bloccatetra");
+            bloccaTetra(Game.tetramino);
+            coloraTetra(Game.tetramino, SevenBag.tipoCorrente);
 
-            righeRipulite = trovaRigheRipulite(); // lista di righe ripulite
+            let righeRipulite = trovaRigheRipulite(); // lista di righe ripulite
             calcolaPunteggio(righeRipulite); // calcolo nuovo punteggio
             refreshPunteggio();
             if(righeRipulite.length !== 0)
             {
                 scorriRighe(righeRipulite);
             }
-
-            console.log("Chiamo bloccatetra");
-            bloccaTetra(Game.tetramino);
-            coloraTetra(Game.tetramino, SevenBag.tipoCorrente);
 
             pulisciBoard(Game.previewArray);
             nuovoTetramino(SevenBag.tipoProssimo);
@@ -597,9 +610,9 @@ function keyDownHandler(event)
             killTetra();
             // fai funzionare come preview
             let newTetraHold = SevenBag.tipoCorrente;
-            if(Game.TetraminoInHold != null)
+            if(Game.tetraminoInHold != null)
             {
-                nuovoTetramino(Game.TetraminoInHold);
+                nuovoTetramino(Game.tetraminoInHold);
             }
             else
             {
@@ -608,9 +621,9 @@ function keyDownHandler(event)
                 SevenBag.tipoProssimo = tetraminoCasuale();
                 scriviPreview(SevenBag.tipoProssimo);
             }
-            Game.TetraminoInHold = newTetraHold;
+            Game.tetraminoInHold = newTetraHold;
             pulisciBoard(Game.holdArray);
-            scriviHold(Game.TetraminoInHold);
+            scriviHold(Game.tetraminoInHold);
             return;
         default: // keyA o keyD
             if(KeyState.ADown || KeyState.DDown)
