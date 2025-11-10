@@ -38,13 +38,13 @@
                           </tr>";
                 }
                 require_once("database.php");
-                $connessione = new mysqli("localhost","root","","balestri_665384");
-                if($mysqli->connect_errno) {
-                    echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
+                $connessione = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
+                if(mysqli_connect_errno()) {
+                    echo "Failed to connect to MySQL: " . mysqli_connect_errno();
                     die("E' stato bello");
                 }
                 
-                if($result = $connessione->query("SELECT * FROM Partite ORDER BY Punti LIMIT 10"))
+                if($result = mysqli_query($connessione, "SELECT * FROM Partite ORDER BY Punti LIMIT 10"))
                 {
                     echo "
                         <table>

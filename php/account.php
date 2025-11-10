@@ -26,24 +26,24 @@
                 <li><a href="account.php">Account</a></li>
             </ul>
         </nav>
-        <main>
-            <form id="SignUp" method="POST" class="Nascosto">
+        <main id="Wrapper">
+            <form id="SignUp" class="Nascosto">
                 <label for="NewUsername">Inserire l'username:</label>
-                <input type="text" id="NewUsername">
+                <input type="text" id="NewUsername" name="username">
                 <label for="NewPassword">Inserire la password:</label>
-                <input type="password" id="NewPassword">
+                <input type="password" id="NewPassword" name="password">
                 <label for="ConfirmPassword">Confermare la password:</label>
-                <input type="password" id="ConfirmPassword">
-                <button type="submit">Iscriviti</button>
-                se hai già un account <span id="logInBtn" class="Cliccabile" onclick="actionButton()">log in</span>
+                <input type="password" id="ConfirmPassword" name = confirm>
+                <button type="button" onclick="trySignUp()">Iscriviti</button>
+                se hai già un account: <span id="logInBtn" class="Cliccabile" onclick="actionButton()">log in</span>
             </form>
-            <form id="LogIn" method="POST">
+            <form id="LogIn">
                 <label for="Username">Inserire l'username:</label>
-                <input type="text" id="Username">
+                <input type="text" id="Username" name="username">
                 <label for="Password">Inserire la password:</label>
-                <input type="password" id="Password">
-                <button type="submit">Accedi</button>
-                Se non hai un account <span id="SignUpBtn" class="Cliccabile" onclick="actionButton()">iscriviti</span>
+                <input type="password" id="Password" name="password">
+                <button type="button" onclick="tryLogIn()">Accedi</button>
+                Se non hai un account: <span id="SignUpBtn" class="Cliccabile" onclick="actionButton()">iscriviti</span>
             </form>
         </main>
     </body>

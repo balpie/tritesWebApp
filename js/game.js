@@ -110,8 +110,11 @@ const Game = {
     lineeLiberate: 0,
     punti: 0,
     livello: 1,
-    statoRotazione: null
+    statoRotazione: null,
 }
+const PostInfo = {
+    postSent: false
+};
 
 
 // indica se i tasti sono premuti
@@ -190,7 +193,7 @@ function bloccaTetra(t)
         if(c.riga == BOARDHIDDENROWS)
         { // caso sconfitta
             scriviStatus("Hai perso :(", STATUS_SCONFITTA);
-            terminaPartita();
+            terminaPartita(true);
         }
         getCell(c.riga, c.colonna).classList.remove("inMovimento");
         getCell(c.riga, c.colonna).classList.add("Caduto"); // serve alla collision detection
@@ -276,11 +279,6 @@ function nuovoTetramino(tipo)
         {
             Game.tetramino[i].colonna = coordinate[i][1] + 3;
         }
-        if(getCell(Game.tetramino[i].riga, Game.tetramino[i].colonna).classList.contains("caduto"))
-        {
-            terminaPartita();
-            return;
-        }
         toggleInMovimento(Game.tetramino[i].riga, Game.tetramino[i].colonna);
     }
     for (let sqr of Game.tetramino)
@@ -308,7 +306,7 @@ function generateBoard()
     document.getElementById("Restart").addEventListener("click", ()=> {
             document.getElementById("Restart").classList.add("Nascosto");
             document.getElementById("Restart").blur();
-            terminaPartita();
+            terminaPartita(false);
             startGame();
         });
     for(let i = 0; i < 14; i++)
@@ -383,13 +381,25 @@ function generateHold(){
     }
 }
 
-function terminaPartita()
+function terminaPartita(postaPartita)
 {
+    clearInterval(Game.intervalId);
+    clearInterval(Game.moveIntervalId);
     primaPartita = false;
     document.removeEventListener("keydown", keyDownHandler);
     document.removeEventListener("keyup", keyUpHandler);
-    clearInterval(Game.intervalId);
-    clearInterval(Game.moveIntervalId);
+    if(postaPartita && !PostInfo.postSent)
+    {
+        PostInfo.postSent = true;
+        console.log("Invio POST");
+        let http = new XMLHttpRequest();
+        let url = "insertPartita.php";
+        let parameters = "Punti=" + Game.punti + "&LineeRipulite=" + Game.lineeLiberate;
+            // apro un post verso insertPartita.php in modo asincrono:
+        http.open("POST", url, true); 
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        http.send(parameters);
+    }
 }
 
 function trovaRigheRipulite()
@@ -482,17 +492,19 @@ function muoviTetra(incc = 0, incr = 1)
     {
         if(incr === 1) // caso caduta
         {
-            bloccaTetra(Game.tetramino);
-            coloraTetra(Game.tetramino, SevenBag.tipoCorrente);
-            righeRipulite = trovaRigheRipulite(); // lista di righe ripulite
 
+            righeRipulite = trovaRigheRipulite(); // lista di righe ripulite
             calcolaPunteggio(righeRipulite); // calcolo nuovo punteggio
             refreshPunteggio();
-
             if(righeRipulite.length !== 0)
             {
                 scorriRighe(righeRipulite);
             }
+
+            console.log("Chiamo bloccatetra");
+            bloccaTetra(Game.tetramino);
+            coloraTetra(Game.tetramino, SevenBag.tipoCorrente);
+
             pulisciBoard(Game.previewArray);
             nuovoTetramino(SevenBag.tipoProssimo);
             SevenBag.tipoProssimo = tetraminoCasuale();
@@ -799,13 +811,14 @@ function startGame()
 
 // per quando ricomincia la partita
     clearBoard();
+    PostInfo.postSent = false;
     Game.hardDropped = 0;
     Game.livello = 1; 
     document.getElementById("Livello").innerText = Game.livello;
     Game.punti = 0;
     Game.lineeLiberate = 0;
     document.getElementById("Lines").innerText = 0;
-    document.getElementById("Punti").innerText = Game.punti;
+    document.getElementById("Punti").innerText = 0;
     Game.intervalDuration = INIT_INTERVAL_DURATION;
     document.getElementById("Status").innerText = "";
     Game.holdAllowed = true;
