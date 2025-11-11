@@ -1,10 +1,13 @@
 <?php
     session_start();
 
+    $responseObj = new stdClass();
+
     require_once("database.php");
     $connessione = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
     if(mysqli_connect_errno()) {
-        echo "Failed to connect to MySQL: " . mysqli_connect_errno();
+        $responseObj->error = "Database Error";
+        echo json_encode($responseObj);
         die("ERR");
     }
 
@@ -20,7 +23,8 @@
 
     if (mysqli_num_rows($risultato) != 1) // al massimo uno perchè sto controllando sulla chiave primaria
     {
-        echo "no_user-";
+        $responseObj->error = "no_usr";
+        echo json_encode($responseObj);
         return;
     }
     // una sola volta tanto è
@@ -32,12 +36,15 @@
     {
         $_SESSION["login"] = $username;
         require_once("userinfo.php");
-        echo "no_err-" . getUserInfo($connessione, $username);
-        error_log("[login.php]: ". getUserInfo($connessione, $username));
+        $responseObj = getUserInfo($connessione, $username);
+        $responseObj->error = "no_err";
+        echo json_encode($responseObj);
+        
     }
     else
     {
-        echo "wrong_password-";
+        $responseObj->error = "wrong_password";
+        echo json_encode($responseObj);
     }
     mysqli_close($connessione);
 ?>

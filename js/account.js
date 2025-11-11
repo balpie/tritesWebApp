@@ -9,22 +9,20 @@ function checkSession()
     xmlhttp.onreadystatechange = function(){
         if(xmlhttp.readyState === 4 && xmlhttp.status === 200)
         {
-            let response = xmlhttp.response.split("-");
-            switch(response[0]) // Indica l'errore o se è stato fatto il login
+            let response = xmlhttp.response;
+            switch(response.error) // Indica l'errore o se è stato fatto il login
             {
                 case "no_err":
-                    console.log("[checkSession]: stampando userinfo dal server");
-                    clearForms(response[1]);
-                    printUserInfo(response[1]);
+                    clearForms();
+                    printUserInfo(response);
                     break;
                 default:
-                    console.log("[checkSession]:no_login");
                     document.getElementById("LogIn").classList.remove("Nascosto");
             }
             xmlhttp.onreadystatechange = null;
         }
     }
-    console.log("[checkSession]: send()");
+    xmlhttp.responseType = "json";
     xmlhttp.send("");
 }
 
@@ -46,20 +44,19 @@ function tryLogIn()
     xmlhttp.onreadystatechange = function(){
         if(xmlhttp.readyState === 4 && xmlhttp.status === 200)
         {
-            let response = xmlhttp.response.split("-");
+            let response = xmlhttp.response;
             console.log("[tryLogIn] server responds: "+response);
-            switch(response[0]) // Indica l'errore o se è stato fatto il login
+            switch(response.error) // Indica l'errore o se è stato fatto il login
             {
                 case "no_err":
                     clearForms();
-                    printUserInfo(response[1]);
+                    printUserInfo(response);
                     break;
-                default:
-                    console.log(response[0] + response[1]);
+                    //TODO errori
             }
         }
     }
-    console.log("[tryLogIn]: send()");
+    xmlhttp.responseType = "json";
     xmlhttp.send(parameters); 
 }
 
@@ -76,17 +73,20 @@ function trySignUp()
     xmlhttp.onreadystatechange = function(){
         if(xmlhttp.readyState === 4 && xmlhttp.status === 200)
         {
-            let response = xmlhttp.response.split("-");
-            switch(response[0]) // Indica l'errore o se è stato fatto il login
+            let response = xmlhttp.response;
+            console.log(response);
+            switch(response.error) // Indica l'errore o se è stato fatto il login
             {
                 case "no_err":
                     clearForms();
                     printUserInfo(response[1]);
                     break;
                 default:
+                    // TODO ERRORI
             }
         }
     }
+    xmlhttp.responseType = "json";
     console.log("[signUp]: send()");
     xmlhttp.send(parameters); // asincrona di default
 }
@@ -118,8 +118,10 @@ function logOut()
 
 function printUserInfo(serverResponse)
 {
+    console.log(serverResponse);
     let newStuff = document.createElement("p");
-    newStuff.innerText = serverResponse;
+    //TODO: fix layout
+    newStuff.innerText = "Username: "+serverResponse.username+"\nData iscrizione: "+ serverResponse.dataIscrizione + "\nMedia punti: "+ serverResponse.mediaPunti + "\nPosizione classifica: " + serverResponse.posizioneClassifica + "\nMassimo punteggio raggiunto: " + serverResponse.maxPunti;
     newStuff.id = "private";
     document.getElementById("LogOut").classList.remove("Nascosto");
     document.getElementById("Wrapper").prepend(newStuff);
