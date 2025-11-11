@@ -27,7 +27,7 @@
             </ul>
         </nav>
         <main id="Wrapper">
-            <form id="SignUp" class="Nascosto">
+            <form id="SignUp" class="Nascosto" class="Nascosto">
                 <label for="NewUsername">Inserire l'username:</label>
                 <input type="text" id="NewUsername" name="username">
                 <label for="NewPassword">Inserire la password:</label>
@@ -45,6 +45,7 @@
                 <button type="button" onclick="tryLogIn()">Accedi</button>
                 Se non hai un account: <span id="SignUpBtn" class="Cliccabile" onclick="actionButton()">iscriviti</span>
             </form>
+            <button id="LogOut" class="Nascosto" type="button" onclick="logOut()">Log Out</button>
         </main>
     </body>
 </html>

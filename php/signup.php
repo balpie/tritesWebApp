@@ -26,19 +26,36 @@
         echo("dberr-");
         return;
     }
-    $query = "SELECT NomeUtente FROM Utenti WHERE NomeUtente = '" . $_POST["username"] ."'";
+
+    $query = "SELECT NomeUtente FROM Utenti WHERE NomeUtente = ?";
+    $preparedQuery = mysqli_prepare($connessione, $query);
+    mysqli_stmt_bind_param($preparedQuery, "s", $_POST["username"]);
     error_log($query);
-    $risultato = mysqli_query($connessione, $query);
+    mysqli_stmt_execute($preparedQuery);
+    $risultato = mysqli_stmt_get_result($preparedQuery);
     if(mysqli_num_rows($risultato) != 0)
     {
         echo "username_taken-";
         return;
     }
-    echo "no_err-";
     $insert = "INSERT INTO Utenti(NomeUtente, PasswordUtente, DataIscrizione)
-            VALUES ('". $_POST["username"] . "', '" . $_POST["password"] ."', CURRENT_DATE)";
-    $risultato = mysqli_query($connessione, $insert);
-    // TODO ERROR CHECKING
+        VALUES (?, ?, CURRENT_DATE)";
+    $preparedInsert = mysqli_prepare($connessione, $insert);
+    mysqli_stmt_bind_param($preparedInsert, "ss", $_POST["username"], password_hash($_POST["password"], PASSWORD_DEFAULT));
+    mysqli_stmt_execute($preparedInsert);
     error_log($insert);
+    if(mysqli_stmt_affected_rows($preparedInsert) != 1)
+    {
+        echo "errore_insert-";
+        mysqli_close($connessione);
+        return;
+    }
+    echo "no_err-";
+    require_once("userinfo.php");
     $_SESSION["login"] = $_POST["username"];
+    error_log("[signup.php]: Chiamo printUserInfo");
+    $str = getUserInfo($connection, $_SESSION["login"]);
+    error_log("Stringa passata da getUserInfo" . $str);
+    echo $str;
+    mysqli_close($connessione);
 ?>

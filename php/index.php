@@ -59,6 +59,13 @@
                     </table>
                     <button type="button" id="Start">Gioca</button>
                     <button type="button" id="Restart">Ricomincia</button>
+                    <?php
+                        session_start();
+                        if(isset($_SESSION["login"]))
+                        {
+                            echo "<p>Giocando come: <br>" . $_SESSION["login"] . "</p>";
+                        }
+                    ?>
                 </aside>
             </main>
         </div>

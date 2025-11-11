@@ -16,10 +16,12 @@
     {
         $username = "Anon";
     }
-
     $query = "INSERT INTO Partite(NomeUtente, LineeRipulite, Punti, DataPartita)
-              VALUES ('". $username ."'," . $_POST["LineeRipulite"] . "," . $_POST["Punti"]. ", CURRENT_DATE)"; 
+              VALUES(?, ?, ?, NOW())";
+    $preparedQuery = mysqli_prepare($connessione, $query);
+    mysqli_stmt_bind_param($preparedQuery, "sdd", $username, $_POST["LineeRipulite"], $_POST["Punti"]);
+    mysqli_stmt_execute($preparedQuery);
 
-    error_log("Query: `" . $query . "`", 0);
     $result = $connessione->query($query);
+    error_log("Query: `" . $query . "`", 0);
 ?>

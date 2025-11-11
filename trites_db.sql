@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS Utenti;
 
 CREATE TABLE IF NOT EXISTS Utenti(
     `NomeUtente` VARCHAR(30) NOT NULL,
-    `PasswordUtente` VARCHAR(64) NOT NULL, -- Hash with: "PASSWORD"
+    `PasswordUtente` VARCHAR(128) NOT NULL, 
     `DataIscrizione` DATE NOT NULL,
     PRIMARY KEY(`NomeUtente`)
 );
