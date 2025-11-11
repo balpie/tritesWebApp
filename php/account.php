@@ -44,7 +44,9 @@
                 <input type="password" id="Password" name="password">
                 <button type="button" onclick="tryLogIn()">Accedi</button>
                 Se non hai un account: <span id="SignUpBtn" class="Cliccabile" onclick="actionButton()">iscriviti</span>
+                <br><br>
             </form>
+                <p id="Error"></p>
             <button id="LogOut" class="Nascosto" type="button" onclick="logOut()">Log Out</button>
         </main>
     </body>

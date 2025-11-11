@@ -6,7 +6,7 @@
     require_once("database.php");
     $connessione = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
     if(mysqli_connect_errno()) {
-        $responseObj->error = "Database Error";
+        $responseObj->error = "Errore interno al DataBase";
         echo json_encode($responseObj);
         die("ERR");
     }
@@ -23,7 +23,7 @@
 
     if (mysqli_num_rows($risultato) != 1) // al massimo uno perchè sto controllando sulla chiave primaria
     {
-        $responseObj->error = "no_usr";
+        $responseObj->error = "Utente Inesistente";
         echo json_encode($responseObj);
         return;
     }
@@ -43,7 +43,7 @@
     }
     else
     {
-        $responseObj->error = "wrong_password";
+        $responseObj->error = "Password Sbagliata";
         echo json_encode($responseObj);
     }
     mysqli_close($connessione);

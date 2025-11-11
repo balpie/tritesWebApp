@@ -33,8 +33,10 @@
                     echo "<tr>
                             <td>".$utente."</td>
                             <td>".$punti."</td>
+                            <td>". intdiv($linee,5)+1 ."</td>
                             <td>".$linee."</td>
-                            <td>".date('d-m-Y', $data)."</td>
+                            <td>".date('d-m-Y', strtotime($data))."</td>
+                            <td>".date('G:i:s', strtotime($data))."</td>
                           </tr>";
                 }
                 require_once("database.php");
@@ -44,19 +46,21 @@
                     die("E' stato bello");
                 }
                 
-                if($result = mysqli_query($connessione, "SELECT * FROM Partite ORDER BY Punti DESC LIMIT 10"))
+                if($result = mysqli_query($connessione, "SELECT * FROM Partite ORDER BY Punti DESC LIMIT 25"))
                 {
                     echo "
                         <table>
                             <tr>
                                 <th>Giocatore</th>
                                 <th>Punti</th>
+                                <th>Livello</th>
                                 <th>Linee</th>
                                 <th>Data</th>
+                                <th>Ora</th>
                             </tr>";
                             while($riga = $result->fetch_object())
                             {
-                                stampaRiga($riga->NomeUtente, $riga->Punti, $riga->LineeRipulite, $riga->data);
+                                stampaRiga($riga->NomeUtente, $riga->Punti, $riga->LineeRipulite, $riga->DataPartita);
                             }
                             echo "</table>";
                 }

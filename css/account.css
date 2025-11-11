@@ -1,7 +1,9 @@
 main{
+    margin: 2em;
     display: flex;
     flex-direction: column;
     justify-items: center;
+    border: 3px solid #c0c0c0;
 }
 
 form{
@@ -9,6 +11,9 @@ form{
     display:flex;
     flex-direction: column;
     align-items: center;
+}
+p{
+    text-align: center;
 }
 
 input{
@@ -34,6 +39,7 @@ button{
     height: 2.2em;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
+    align-self: center;
 }
 
 button:hover{
@@ -52,4 +58,8 @@ span.Cliccabile{
 }
 span.Cliccabile:hover[onclick]{
     text-decoration: none;
+}
+
+#Error{
+    color: red;
 }

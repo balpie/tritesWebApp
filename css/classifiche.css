@@ -1,7 +1,11 @@
+main{
+    display: flex;
+    justify-content: center;
+    margin: 2em;
+}
+
 table{
     border-collapse: collapse;
-    margin-top: 2em;
-    margin-left: 2em;
     color: white;
 }
 

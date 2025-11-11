@@ -13,7 +13,7 @@ function checkSession()
             switch(response.error) // Indica l'errore o se è stato fatto il login
             {
                 case "no_err":
-                    clearForms();
+                    clearForms(true);
                     printUserInfo(response);
                     break;
                 default:
@@ -45,14 +45,16 @@ function tryLogIn()
         if(xmlhttp.readyState === 4 && xmlhttp.status === 200)
         {
             let response = xmlhttp.response;
-            console.log("[tryLogIn] server responds: "+response);
+            console.log("[tryLogIn] server responds: "+response.error);
             switch(response.error) // Indica l'errore o se è stato fatto il login
             {
                 case "no_err":
-                    clearForms();
+                    clearForms(true);
                     printUserInfo(response);
                     break;
-                    //TODO errori
+                default:
+                    clearForms(false);
+                    document.getElementById("Error").innerText = response.error;
             }
         }
     }
@@ -78,11 +80,12 @@ function trySignUp()
             switch(response.error) // Indica l'errore o se è stato fatto il login
             {
                 case "no_err":
-                    clearForms();
-                    printUserInfo(response[1]);
+                    clearForms(true);
+                    printUserInfo(response);
                     break;
                 default:
-                    // TODO ERRORI
+                    clearForms(false);
+                    document.getElementById("Error").innerText = response.error;
             }
         }
     }
@@ -91,12 +94,16 @@ function trySignUp()
     xmlhttp.send(parameters); // asincrona di default
 }
 
-function clearForms()
+function clearForms(hide)
 {
+    document.getElementById("Error").innerText = "";
     login = document.getElementById("LogIn");
     signup = document.getElementById("SignUp");
-    login.className = "Nascosto";
-    signup.className = "Nascosto";
+    if(hide)
+    {
+        login.className = "Nascosto";
+        signup.className = "Nascosto";
+    }
     for (input of document.querySelectorAll("input"))
     {
         input.value = "";
