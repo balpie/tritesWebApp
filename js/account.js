@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", checkSession);
 
+const PrivateElements = [];
+
 function checkSession()
 {
     let xmlhttp = new XMLHttpRequest();
@@ -117,20 +119,65 @@ function logOut()
     console.log("[logOut]: send()");
     xmlhttp.open("POST", url, true);
     xmlhttp.send("");
-    document.getElementById("private").remove();
+    
+    for (e of PrivateElements)
+    {
+        e.remove();
+    }
     document.getElementById("LogIn").className = "";
     document.getElementById("SignUp").className = "Nascosto";
     document.getElementById("LogOut").classList.add("Nascosto");
 }
 
+// (array di stringhe) arr per array elementi di riga
+// (bool) header indica se la riga è data o header
+function creaRigaTabella(arr, header)
+{
+    let row = document.createElement("tr");
+    for(let i in arr)
+    {
+        let cell =  document.createElement(header? "th" : "td");
+        cell.innerText = arr[i];
+        row.appendChild(cell);
+    }
+    return row;
+}
+
 function printUserInfo(serverResponse)
 {
     console.log(serverResponse);
-    let newStuff = document.createElement("p");
-    //TODO: fix layout
-    newStuff.innerText = "Username: "+serverResponse.username+"\nData iscrizione: "+ serverResponse.dataIscrizione + "\nMedia punti: "+ serverResponse.mediaPunti + "\nPosizione classifica: " + serverResponse.posizioneClassifica + "\nMassimo punteggio raggiunto: " + serverResponse.maxPunti;
-    newStuff.id = "private";
+    let userPresentation = document.createElement("p");
+    console.log(serverResponse.partite);
+    userPresentation.innerText = "Username: "+serverResponse.username+" \nData iscrizione: "+ serverResponse.dataIscrizione;
+ 
+    let noPartite = false;
+    if(serverResponse.mediaPunti === null)
+    {
+        userPresentation.innerText += "\nNessuna partita giocata!\n Cliccare sul titolo in alto a sinistra per giocare";
+        noPartite = true;
+    }
+    if(!noPartite)
+    {
+        userPresentation.innerText += "\nMedia punti: "+ serverResponse.mediaPunti + "\nPosizione classifica: " + serverResponse.posizioneClassifica + "\nMassimo punteggio raggiunto: " + serverResponse.maxPunti;
+        let userTable = document.createElement("table");
+        PrivateElements.push(userTable);
+        let tbody = document.createElement("tbody");
+        userTable.appendChild(tbody);
+        tbody.appendChild(creaRigaTabella
+            (["Nome Utente", "Righe Ripulite", "Punti", "Data e ora"]));
+        for(let e of serverResponse.partite)
+        {
+            tbody.appendChild(creaRigaTabella(e, false));
+        }
+        let titolo = document.createElement("h2");
+        titolo.innerHTML = "Migliori partite: ";
+        PrivateElements.push(titolo);
+        document.getElementById("Wrapper").prepend(userTable);
+        document.getElementById("Wrapper").prepend(titolo);
+    }
+
+    PrivateElements.push(userPresentation);
     document.getElementById("LogOut").classList.remove("Nascosto");
-    document.getElementById("Wrapper").prepend(newStuff);
+    document.getElementById("Wrapper").prepend(userPresentation);
 
 }

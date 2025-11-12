@@ -67,7 +67,7 @@
                         <dd>
                     <dt>Punteggi</dt>
                         <dd>
-                            Si vincono punti riempiendo intere righe della scatola. Più righe della scatola si riempiono, più punti vengono assegnati.
+                            Si vincono punti riempiendo intere righe della scatola. Maggiore è il livello, più punti vengono assegnati.
                             Un altro modo di vincere punti è far scendere velocemente i tetramini, col tasto <span class="T">S</span> o <span class="T">Enter</span>
                         </dd> 
                     <dt>Scelta del prossimo tetramino</dt>

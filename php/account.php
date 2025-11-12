@@ -6,6 +6,7 @@
         <meta name="author" content="Pietro Balestri">
         <link rel="stylesheet" href="../css/account.css">
         <link rel="stylesheet" href="../css/navbar.css">
+        <link rel="stylesheet" href="../css/tabelle.css">
         <link rel="stylesheet" href="../css/tetracolors.css">
         <script src="../js/account.js"></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">

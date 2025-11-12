@@ -32,11 +32,17 @@
             # $responseObj->partite = [];
             return $responseObj;
         }
+        # Posizione in classifica giocatori
         $responseObj->mediaPunti = mysqli_fetch_assoc($result)["MediaPunti"];
-        $query = "SELECT RANK()OVER(ORDER BY Punti) as Posizione, MAX(Punti) as MaxPunti
-            FROM Partite
-            GROUP BY NomeUtente
-            HAVING NomeUtente = ?"; // TODO test 
+        $query = "WITH PosizMaxPts AS
+            (
+                SELECT RANK()OVER(ORDER BY Punti DESC) as Posizione, MAX(Punti) as MaxPunti, NomeUtente
+                FROM Partite
+                GROUP BY NomeUtente
+            )
+            SELECT Posizione, MaxPunti
+            FROM PosizMaxPts
+            WHERE NomeUtente = ?"; 
         $statement = mysqli_prepare($connection, $query); 
         mysqli_stmt_bind_param($statement, "s", $username);
         mysqli_stmt_execute($statement);
@@ -44,7 +50,22 @@
         $row = mysqli_fetch_assoc($result);
         $responseObj->posizioneClassifica = $row["Posizione"];
         $responseObj->maxPunti = $row["MaxPunti"];
-        
+        # Query migliori 10 partite dell'utente
+        $query = "SELECT NomeUtente, LineeRipulite, Punti, DataPartita
+            FROM Partite
+            WHERE NomeUtente = ?
+            ORDER BY Punti DESC
+            LIMIT 10"; 
+        $statement = mysqli_prepare($connection, $query); 
+        mysqli_stmt_bind_param($statement, "s", $username);
+        mysqli_stmt_execute($statement);
+        $result = mysqli_stmt_get_result($statement);
+        $arrPartite = [];
+        while($row = mysqli_fetch_assoc($result))
+        {
+            array_push($arrPartite, $row);
+        }
+        $responseObj->partite = $arrPartite;
         return $responseObj;
     }
 ?>

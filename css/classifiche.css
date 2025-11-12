@@ -1,15 +1,6 @@
 main{
     display: flex;
+    flex-direction: column;
     justify-content: center;
     margin: 2em;
-}
-
-table{
-    border-collapse: collapse;
-    color: white;
-}
-
-th, td, table{
-    border: 3px solid #c0c0c0;
-    padding: 0.2em;
 }

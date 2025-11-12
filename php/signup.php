@@ -60,6 +60,7 @@
     $_SESSION["login"] = $_POST["username"];
     require_once("userinfo.php");
     $responseObj = getUserInfo($connessione, $_SESSION["login"]);
+    $responseObj->error = "no_err";
     echo json_encode($responseObj);
     mysqli_close($connessione);
 ?>
