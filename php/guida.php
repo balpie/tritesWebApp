@@ -21,13 +21,14 @@
                 </a>
             </h1>
             <ul>
-                <li><a href="guida.php">Guida</a></li>
+                <li><a href="guida.php" class="PaginaAttuale">Guida</a></li>
                 <li><a href="classifiche.php">Classifiche</a></li>
                 <li><a href="account.php">Account</a></li>
             </ul>
         </nav>
         <main>
             <article>
+                <a href="index.php"><span class = "O">G</span><span class="I">i</span><span class="T">o</span><span class = "Z">c</span><span class="S">a</span>!</a>
                 <h2>Guida all'utente</h2>
                 <h3>Tasti: </h3>
                     <dl class="UserGuide">

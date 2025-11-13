@@ -27,37 +27,37 @@
 }
 
 /*Titolo*/
-span.I{
+h1 span.I{
     background-color: #c0c0c0;
     color: rgb(255, 123, 0);
 }
 
-span.L{
+h1 span.L{
     background-color: #c0c0c0;
     color: blue;
 }
 
-span.J{
+h1 span.J{
     background-color: #c0c0c0;
     color: rgb(255, 0, 255);
 }
 
-span.T{
+h1 span.T{
     background-color: #c0c0c0;
     color: yellow;
 }
 
-span.O{
+h1 span.O{
     background-color: #c0c0c0;
     color: red;
 }
 
-span.Z{
+h1 span.Z{
     background-color: #c0c0c0;
     color: rgb(0, 255, 0);
 }
 
-span.S{
+h1 span.S{
     background-color: #c0c0c0;
     color: rgb(0, 255, 255);
 }

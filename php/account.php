@@ -25,7 +25,7 @@
             <ul>
                 <li><a href="guida.php">Guida</a></li>
                 <li><a href="classifiche.php">Classifiche</a></li>
-                <li><a href="account.php">Account</a></li>
+                <li><a href="account.php" class="PaginaAttuale">Account</a></li>
             </ul>
         </nav>
         <main id="Wrapper">

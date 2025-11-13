@@ -23,7 +23,7 @@
             </h1>
             <ul>
                 <li><a href="guida.php">Guida</a></li>
-                <li><a href="classifiche.php">Classifiche</a></li>
+                <li><a href="classifiche.php" class="PaginaAttuale">Classifiche</a></li>
                 <li><a href="account.php">Account</a></li>
             </ul>
         </nav>

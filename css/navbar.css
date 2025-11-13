@@ -8,6 +8,10 @@ html
     color: #c0c0c0;
     font-family: "Press Start 2P", system-ui;
 }
+.PaginaAttuale{
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+}
 
 h1{
     font-size: 2em;
@@ -59,7 +63,7 @@ nav li a:hover{
     color: yellow;
 }
 
-a, a:visited{
+nav a,nav a:visited{
     color: #201f1f;
     text-decoration: none;
 }
