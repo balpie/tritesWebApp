@@ -63,7 +63,7 @@
                         session_start();
                         if(isset($_SESSION["login"]))
                         {
-                            echo "<p>Giocando come: <br>" . $_SESSION["login"] . "</p>";
+                            echo "<p>Giocando come: <br>" . htmlspecialchars($_SESSION["login"], ENT_QUOTES) . "</p>";
                         }
                     ?>
                 </aside>

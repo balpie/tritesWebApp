@@ -14,6 +14,10 @@ form{
 }
 p{
     text-align: center;
+    white-space: pre;
+}
+#Wrapper > ul{
+    list-style: none;
 }
 
 input{

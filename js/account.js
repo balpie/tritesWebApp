@@ -143,22 +143,31 @@ function creaRigaTabella(arr, header)
     return row;
 }
 
+function addListItem(list, text)
+{
+    let listElem = document.createElement("li");
+    listElem.innerText = text;
+    list.appendChild(listElem);
+}
+
 function printUserInfo(serverResponse)
 {
-    console.log(serverResponse);
-    let userPresentation = document.createElement("p");
-    console.log(serverResponse.partite);
-    userPresentation.innerText = "Username: "+serverResponse.username+" \nData iscrizione: "+ serverResponse.dataIscrizione;
- 
+    let userPresentation = document.createElement("ul");
+    addListItem(userPresentation, `Username: ${serverResponse.username}`);
+    addListItem(userPresentation, `Data iscrizione: ${serverResponse.dataIscrizione}`);
+
     let noPartite = false;
     if(serverResponse.mediaPunti === null)
     {
-        userPresentation.innerText += "\nNessuna partita giocata!\n Cliccare sul titolo in alto a sinistra per giocare";
+        addListItem(userPresentation, "Nessuna partita giocata!");;
         noPartite = true;
     }
     if(!noPartite)
     {
-        userPresentation.innerText += "\nMedia punti: "+ serverResponse.mediaPunti + "\nPosizione classifica: " + serverResponse.posizioneClassifica + "\nMassimo punteggio raggiunto: " + serverResponse.maxPunti;
+        addListItem(userPresentation, `Media punti: ${serverResponse.mediaPunti}`);
+        addListItem(userPresentation, `Posizione classifica giocatori: ${serverResponse.posizioneClassifica}`);
+        addListItem(userPresentation, `Massimo punteggio raggiunto: ${serverResponse.maxPunti}`);
+
         let userTable = document.createElement("table");
         PrivateElements.push(userTable);
         let tbody = document.createElement("tbody");
