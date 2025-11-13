@@ -39,6 +39,10 @@ function tryLogIn()
     let url = "login.php";
     let usrName = document.getElementById("Username").value;
     let password = document.getElementById("Password").value;
+    if(!usrName || !password)
+    {
+        document.getElementById("Error").innerText = "Tutti i campi sono obbligatori";
+    }
     let parameters = "username=" + usrName + "&password=" + password;
         // apro un post verso insertPartita.php in modo asincrono:
     xmlhttp.open("POST", url, true); 
@@ -47,7 +51,6 @@ function tryLogIn()
         if(xmlhttp.readyState === 4 && xmlhttp.status === 200)
         {
             let response = xmlhttp.response;
-            console.log("[tryLogIn] server responds: "+response.error);
             switch(response.error) // Indica l'errore o se è stato fatto il login
             {
                 case "no_err":
@@ -71,6 +74,10 @@ function trySignUp()
     let usrName = document.getElementById("NewUsername").value;
     let password = document.getElementById("NewPassword").value;
     let confirmPassword = document.getElementById("ConfirmPassword").value;
+    if(!usrName || !password || !confirmPassword)
+    {
+        document.getElementById("Error").innerText = "Tutti i campi sono obbligatori";
+    }
     let parameters = "username=" + usrName + "&password=" + password + "&confirm=" + confirmPassword;
     xmlhttp.open("POST", url, true); 
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -78,7 +85,6 @@ function trySignUp()
         if(xmlhttp.readyState === 4 && xmlhttp.status === 200)
         {
             let response = xmlhttp.response;
-            console.log(response);
             switch(response.error) // Indica l'errore o se è stato fatto il login
             {
                 case "no_err":
@@ -92,7 +98,6 @@ function trySignUp()
         }
     }
     xmlhttp.responseType = "json";
-    console.log("[signUp]: send()");
     xmlhttp.send(parameters); // asincrona di default
 }
 
@@ -116,7 +121,6 @@ function logOut()
 {
     xmlhttp = new XMLHttpRequest();
     url = "logout.php";
-    console.log("[logOut]: send()");
     xmlhttp.open("POST", url, true);
     xmlhttp.send("");
     
