@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="../css/game.css">
         <link rel="stylesheet" href="../css/navbar.css">
         <link rel="stylesheet" href="../css/tetracolors.css">
+        <link rel="stylesheet" href="../css/footer.css">
         <script src="../js/game.js"></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -69,5 +70,6 @@
                 </aside>
             </main>
         </div>
+        <footer>Progetto creato da Pietro Balestri per il corso di Progettazione Web</footer>
     </body>
 </html>

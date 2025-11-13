@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="../css/account.css">
         <link rel="stylesheet" href="../css/navbar.css">
         <link rel="stylesheet" href="../css/tabelle.css">
+        <link rel="stylesheet" href="../css/footer.css">
         <link rel="stylesheet" href="../css/tetracolors.css">
         <script src="../js/account.js"></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,5 +51,6 @@
                 <p id="Error"></p>
             <button id="LogOut" class="Nascosto" type="button" onclick="logOut()">Log Out</button>
         </main>
+        <footer>Progetto creato da Pietro Balestri per il corso di Progettazione Web</footer>
     </body>
 </html>

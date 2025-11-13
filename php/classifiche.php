@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="../css/classifiche.css">
         <link rel="stylesheet" href="../css/tabelle.css">
         <link rel="stylesheet" href="../css/navbar.css">
+        <link rel="stylesheet" href="../css/footer.css">
         <link rel="stylesheet" href="../css/tetracolors.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -98,5 +99,6 @@
                 }
             ?>
         </main>
+        <footer>Progetto creato da Pietro Balestri per il corso di Progettazione Web</footer>
     </body>
 </html>

@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="../css/guida.css">
         <link rel="stylesheet" href="../css/navbar.css">
         <link rel="stylesheet" href="../css/tetracolors.css">
+        <link rel="stylesheet" href="../css/footer.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -85,5 +86,6 @@
                 </dl>
             </article>
         </main>
+        <footer>Progetto creato da Pietro Balestri per il corso di Progettazione Web</footer>
     </body>
 </html>
