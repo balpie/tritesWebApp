@@ -2,274 +2,7 @@ document.addEventListener("DOMContentLoaded", generateBoard);
 document.addEventListener("DOMContentLoaded", generatePreview);
 document.addEventListener("DOMContentLoaded", generateHold);
 
-// DICHIARAZIONI DATI COSTANTI
-
-const TETRA_T = "T"; // tipi di tetramini
-const TETRA_L = "L";
-const TETRA_J = "J";
-const TETRA_I = "I";
-const TETRA_O = "O";
-const TETRA_S = "S";
-const TETRA_Z = "Z";
-
-const arrayTipiTetramini = [
-    TETRA_I,
-    TETRA_S,
-    TETRA_Z, 
-    TETRA_L,
-    TETRA_J,
-    TETRA_O,
-    TETRA_T
-];
-
-const BOARDCOLUMNS = 10;
-const BOARDROWS = 22;
-const BOARDHIDDENROWS = 2;
-const INIT_INTERVAL_DURATION = 450;
-
-const LVL_STEP = 27; // differenza di velocità tra un livello e un altro (ms)
-
-const TO_NEXT_LEVEL = 5; // linee da ripulire prima di arrivare al livello successivo
-
-const MOVEMENT_SPEED = 50;
-// posizione dei tetramini (relative)
-const POSIZIONI_TETRAMINI = {
-    // contiene anche le posizioni relative alle rotazioni
-    "I": [
-            [[0, 0], [0, 1], [0, 2], [0, 3]], // stato iniziale 
-            [[-1, 2], [0, 2], [1, 2], [2, 2]],
-            [[1, 0], [1, 1], [1, 2], [1, 3]],
-            [[-1, 1], [0, 1], [1, 1], [2, 1]]
-         ],
-    "L": [ 
-            [[1, 1], [1, 0], [1, 2], [0, 2]], // stato iniziale 
-            [[1, 1], [0, 1], [2, 1], [2, 2]],
-            [[1, 1], [1, 0], [1, 2], [2, 0]],
-            [[1, 1], [0, 1], [0, 0], [2, 1]]
-         ],
-        
-    "J": [
-            [[1, 1], [1, 0], [1, 2], [0, 0]], // stato iniziale 
-            [[1, 1], [0, 1], [2, 1], [0, 2]],
-            [[1, 1], [1, 0], [1, 2], [2, 2]],
-            [[1, 1], [0, 1], [2, 1], [2, 0]]
-         ],
-    "T": [
-            [[1, 1], [0, 1], [1, 2], [1, 0]], // stato iniziale 
-            [[1, 1], [0, 1], [2, 1], [1, 2]],
-            [[1, 1], [1, 0], [1, 2], [2, 1]],
-            [[1, 1], [1, 0], [0, 1], [2, 1]]
-         ], 
-    "O": [
-            [[0, 0], [0, 1], [1, 0], [1, 1]], // stato iniziale 
-            [[0, 0], [0, 1], [1, 0], [1, 1]],
-            [[0, 0], [0, 1], [1, 0], [1, 1]],
-            [[0, 0], [0, 1], [1, 0], [1, 1]],
-    ],
-    "S": [
-            [[1, 1], [0, 2], [1, 0], [0, 1]], // stato iniziale 
-            [[1, 1], [0, 1], [1, 2], [2, 2]],
-            [[1, 1], [2, 0], [2, 1], [1, 2]],
-            [[1, 1], [0, 0], [1, 0], [2, 1]]
-    ],
-    "Z": [
-            [[1, 1], [0, 1], [0, 0], [1, 2]], // stato iniziale 
-            [[1, 1], [0, 2], [1, 2], [2, 1]],
-            [[1, 1], [1, 0], [2, 1], [2, 2]],
-            [[1, 1], [0, 1], [1, 0], [2, 0]]
-    ]
-};
-const STATUS_SCONFITTA = "StatusSconfitta"
-const STATUS_NUOVO_LIVELLO = "StatusNuovoLivello"
-
-// DICHIARAZIONE OGGETTI GLOBALI
-const SevenBag = { 
-    tipoProssimo: null, 
-    tipoCorrente: null,
-    currTetra_ind: null,
-    codaTetramini: []
-}
-
-// gameObj
-const Game = {
-    tetramino : [ 
-        {riga: null, colonna: null},
-        {riga: null, colonna: null},
-        {riga: null, colonna: null},
-        {riga: null, colonna: null}
-    ],
-    cellArray: [],
-    previewArray: [],
-    holdArray: [],
-    tetraminoInHold: null,
-    holdAllowed : true,
-    hardDropped: false,
-    intervalId: null,
-    moveIntervalId: null,
-    intervalDuration: INIT_INTERVAL_DURATION,
-    lineeLiberate: 0,
-    punti: 0,
-    livello: 1,
-    statoRotazione: null,
-}
-const PostInfo = {
-    postSent: false
-};
-
-
-// indica se i tasti sono premuti
-const KeyState = 
-{
-    SDown : false,
-    WDown : false,
-    ADown : false,
-    DDown : false,
-    EnterDown: false
-}
-
-function isInBound(r, c)
-{
-    return (r < BOARDROWS && r >= 0 && c < BOARDCOLUMNS && c >= 0);
-}
-
-function getCell(row, col)
-{
-    return Game.cellArray[row][col];
-}
-
-// Algoritmo 7-bag
-function tetraminoCasuale()
-{
-    let nuovoIndice = (SevenBag.currTetra_ind + 1) % 14;
-    if(nuovoIndice === 0)
-    {
-        shuffle(SevenBag.codaTetramini, 7, 13);
-        console.log("[tetraminoCasuale] shuffle: ", SevenBag.codaTetramini);
-    }
-    if(nuovoIndice === 7)
-    {
-        shuffle(SevenBag.codaTetramini, 0, 6);
-        console.log("[tetraminoCasuale] shuffle: ", SevenBag.codaTetramini);
-    }
-    SevenBag.currTetra_ind = nuovoIndice;
-    return SevenBag.codaTetramini[nuovoIndice];
-}
-
-function coloraCella(row, col, color)
-{
-    getCell(row, col).classList.add(color);
-}
-
-function coloraTetra(tetra, tipo)
-{
-    for(e of tetra)
-    {
-        coloraCella(e.riga, e.colonna, tipo);
-    }
-}
-
-function svuotaCella(row, col)
-{
-    getCell(row, col).className = "cell";
-}
-
-function toggleInMovimento(row, col)
-{
-    getCell(row, col).classList.toggle("inMovimento");
-}
-
-function killTetra()
-{
-    for (let i of Game.tetramino)
-    {
-        svuotaCella(i.riga, i.colonna);
-    }
-}
-
-function bloccaTetra(t)
-{
-    let termina = false;
-    for (c of t)
-    {
-
-        if(c.riga == BOARDHIDDENROWS)
-        { // caso sconfitta
-            termina = true;
-        }
-        getCell(c.riga, c.colonna).classList.remove("inMovimento");
-        getCell(c.riga, c.colonna).classList.add("Caduto"); // serve alla collision detection
-    }
-    if(termina)
-    {
-        scriviStatus("Hai perso :(", STATUS_SCONFITTA);
-        terminaPartita(true);
-    }
-    Game.holdAllowed = true;
-    // todo timeout intervalDuration+10ms per dare tempo di muoversi e poi riparte 
-}
-
-function scriviStatus(msg, color)
-{
-    if(color !== "")
-    {
-        document.getElementById("Status").className = color;
-    }
-    document.getElementById("Status").innerText = msg;
-}
-
-function pulisciBoard(brd)
-{
-    for(let i = 0; i < brd.length; i++)
-    {
-        for(let j = 0; j < brd[0].length; j++)
-        {
-            brd[i][j].className = "cell";
-        }
-    }
-}
-
-function scriviHold(tipo)
-{
-    const coordinate = POSIZIONI_TETRAMINI[tipo][0];
-    for(let i = 0; i < 4; i++)
-    {
-        let r, c;
-        switch(tipo)
-        {
-            case TETRA_I: 
-                r = coordinate[i][0] + 1;
-                c = coordinate[i][1];
-            break;
-            default:
-                r = coordinate[i][0] + 1;
-                c = coordinate[i][1] + 1;
-        }
-        Game.holdArray[r][c].classList.add(tipo);
-    }
-}
-
-function scriviPreview(tipo)
-{
-    const coordinate = POSIZIONI_TETRAMINI[tipo][0];
-    for(let i = 0; i < 4; i++)
-    {
-        let r, c;
-        switch(tipo)
-        {
-            case TETRA_I: 
-                r = coordinate[i][0] + 1;
-                c = coordinate[i][1];
-            break;
-            default:
-                r = coordinate[i][0] + 1;
-                c = coordinate[i][1] + 1;
-        }
-        Game.previewArray[r][c].classList.add(tipo);
-    }
-}
-
-// non si preoccupa di preview, tipoPossimo
-function nuovoTetramino(tipo)
+function nuovoTetramino(tipo) // Logica di gioco perchè "lo mette" in movimento
 {
     SevenBag.tipoCorrente = tipo;
     Game.statoRotazione = 0;
@@ -293,19 +26,8 @@ function nuovoTetramino(tipo)
     }
 }
 
-// mescola gli elementi di a, da ini a fin
-// (algoritmo 7-bag)
-function shuffle(a, ini, fin)
-{
-    for(let i = fin - 1; i >= ini; i--)
-    {
-        let aux = ini + Math.floor(Math.random() * (i - ini + 1));
-        // scambio elemento i-esimo con elemento casuale
-        [a[i], a[aux]] = [a[aux], a[i]]; 
-    }
-}
 
-function generateBoard()
+function generateBoard() // Modulo init?
 {
     document.getElementById("Start").addEventListener("click", startGame);
     document.getElementById("Restart").classList.add("Nascosto");
@@ -366,7 +88,7 @@ function generatePreview(){
     }
 }
 
-function generateHold(){
+function generateHold(){ // modulo init?
     // genero la cella di hold
     let holdSquare = document.getElementById("Hold");
     for (let i = 0; i < 4; i++)
@@ -387,7 +109,7 @@ function generateHold(){
     }
 }
 
-function terminaPartita(postaPartita)
+function terminaPartita(postaPartita) // Logica di gioco
 {
     clearInterval(Game.intervalId);
     clearInterval(Game.moveIntervalId);
@@ -413,7 +135,7 @@ function terminaPartita(postaPartita)
     }
 }
 
-function trovaRigheRipulite()
+function trovaRigheRipulite() // Utility
 {
     let arrayRigheRipulite = new Array();
     let guardate = new Array();
@@ -446,27 +168,7 @@ function trovaRigheRipulite()
     return arrayRigheRipulite;
 }
 
-function scorriColonna(r, c) // scorro la colonna c a partire dalla riga r
-{
-    for(let i = r; i > 0; i--)
-    {
-        getCell(i, c).className = getCell(i - 1, c).className;
-    }
-}
-
-function scorriRighe(righe)
-{
-    for (r of righe)
-    {
-        for(let c = 0; c < BOARDCOLUMNS; c++)
-        {
-            svuotaCella(r, c);
-            scorriColonna(r, c);
-        }
-    }
-}
-
-function refreshPunteggio()
+function refreshPunteggio() // Logica di gioco (cambia livello effettivo)
 {
     document.getElementById("Punti").innerText = Game.punti;
     document.getElementById("Lines").innerText = Game.lineeLiberate;
@@ -476,25 +178,15 @@ function refreshPunteggio()
     {
         Game.intervalDuration = Game.intervalDuration - LVL_STEP; // tolgo 30 msec all'intervallo
         clearInterval(Game.intervalId);
-        Game.intervalId = setInterval(muoviTetra, Game.intervalDuration);
+        Game.intervalId = setInterval(gameIter, Game.intervalDuration);
         document.getElementById("Livello").innerText = Game.livello;
         scriviStatus(`Nuovo livello!`, STATUS_NUOVO_LIVELLO);
         setTimeout(scriviStatus, 3000, "", "");
     }
 }
 
-function copiaTetramino(Obj)
-{
-    copia = [];
-    for(let i of Obj)
-    {
-        copia.push({riga: i.riga, colonna: i.colonna});
-    }
-    return copia;
-}
-
-// gameIter più che muoviTetra...
-function muoviTetra(incc = 0, incr = 1)
+// iterazione del gioco con tetramino che si sposta in direzione (incc, incr)
+function gameIter(incc = 0, incr = 1) // Logica di gioco
 {
     aux = copiaTetramino(Game.tetramino);
     for(let sqr of aux)
@@ -529,7 +221,7 @@ function muoviTetra(incc = 0, incr = 1)
 
     }
     // se il tetramino può spostarsi...
-    let count = 0; 
+    let count = 0;  // TODO rendi funzione da usare anche in ruota
     for(let sqr of Game.tetramino)
     {
         svuotaCella(sqr.riga, sqr.colonna);
@@ -544,7 +236,7 @@ function muoviTetra(incc = 0, incr = 1)
 }
 
 // valuta se il tetramino t passato collide con qualcosa di fermo sotto.
-function caduto(t)
+function caduto(t) // Utility
 {
     for(c of t)
     {
@@ -562,13 +254,13 @@ function caduto(t)
     return false;
 }
 
-function hardDrop()
+function hardDrop() //Logica di gioco
 {
     Game.hardDropped = true;
-    while(!muoviTetra(0, 1));
+    while(!gameIter(0, 1));
 }
 
-function keyDownHandler(event)
+function keyDownHandler(event) // Key handle (forse da spezzettare)
 {
     if(event.code !== "KeyA" && event.code !== "KeyD" && event.code !== "ShiftRight" 
         && event.code !== "KeyW" && event.code !== "KeyS" && event.code !== "Enter")
@@ -592,7 +284,7 @@ function keyDownHandler(event)
             }
             KeyState.SDown = true;
            clearInterval(Game.intervalId);
-            Game.intervalId = setInterval(muoviTetra, MOVEMENT_SPEED);
+            Game.intervalId = setInterval(gameIter, MOVEMENT_SPEED);
             return;
         case "Enter":
             if(KeyState.EnterDown)
@@ -634,12 +326,12 @@ function keyDownHandler(event)
             KeyState.keyDDown = true;
             let increment = ((event.code === "KeyD")? +1 : -1);
             Game.moveIntervalId = setInterval( ()=>{
-                muoviTetra(increment, 0);
+                gameIter(increment, 0);
                 }, MOVEMENT_SPEED);
     }
 }
 
-function keyUpHandler(event)
+function keyUpHandler(event) //Key handler
 {
     if(event.code !== "KeyA" && event.code !== "KeyD" && event.code !== "KeyW" && event.code !== "KeyS" && event.code !== "Enter")
     {
@@ -651,7 +343,7 @@ function keyUpHandler(event)
     case "KeyS":
         KeyState.SDown = false;
         clearInterval(Game.intervalId);
-        Game.intervalId = setInterval(muoviTetra, Game.intervalDuration);
+        Game.intervalId = setInterval(gameIter, Game.intervalDuration);
         break;
     case "KeyW":
         KeyState.WDown = false;
@@ -669,8 +361,8 @@ function keyUpHandler(event)
 
 }
 
-function calcolaPunteggio(righeRipulite)
-{
+function calcolaPunteggio(righeRipulite)  //Utility / gamelogic
+{ //TODO aggiungi costanti
     Game.lineeLiberate += righeRipulite.length;
     switch(righeRipulite.length)
     {
@@ -702,7 +394,7 @@ function calcolaPunteggio(righeRipulite)
     }
 }
 
-function calcolaRootRotazione()
+function calcolaRootRotazione() // Utility
 {
     let root = {};
     if(SevenBag.tipoCorrente != TETRA_I)
@@ -750,7 +442,7 @@ function calcolaRootRotazione()
 }
 
 // ritorna la posizione di dove ruoterebbe il tetramino se non ci fossero conflitti
-function provaRotazione(root)
+function provaRotazione(root) // Utility
 {
     let tryTetra = new Array();
     for (let i = 0; i < 4; i++)
@@ -764,7 +456,7 @@ function provaRotazione(root)
     return tryTetra;
 }
 
-function ruota()
+function ruota() // Logica di gioco
 {
     if( SevenBag.tipoCorrente === TETRA_O)
     { // inutile provare
@@ -796,7 +488,7 @@ function ruota()
     }
     Game.statoRotazione = (Game.statoRotazione + 1) % 4;
     // coloro quello nuovo e aggiorno tetramino
-    let count = 0; 
+    let count = 0; //TODO rendi funzione
     for(let sqr of tryTetra) // copio aux in tetramino e coloro le celle
     {
         Game.tetramino[count].riga = sqr.riga;
@@ -806,7 +498,7 @@ function ruota()
     }
 }
 
-function clearBoard()
+function clearBoard() // Utility
 {
     for (c of document.getElementsByClassName("cell"))
     {
@@ -814,7 +506,7 @@ function clearBoard()
     }
 }
 
-function startGame()
+function startGame() // Init (?)
 {
     document.getElementById("Start").classList.add("Nascosto");
     document.getElementById("Restart").classList.remove("Nascosto");
@@ -839,5 +531,5 @@ function startGame()
     nuovoTetramino(tetraminoCasuale());
     SevenBag.tipoProssimo = tetraminoCasuale();
     scriviPreview(SevenBag.tipoProssimo);
-    Game.intervalId = setInterval(muoviTetra, Game.intervalDuration);
+    Game.intervalId = setInterval(gameIter, Game.intervalDuration);
 }

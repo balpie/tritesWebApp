@@ -8,6 +8,8 @@
         <link rel="stylesheet" href="../css/navbar.css">
         <link rel="stylesheet" href="../css/tetracolors.css">
         <link rel="stylesheet" href="../css/footer.css">
+        <script src="../js/datastruct.js"></script>
+        <script src="../js/utility.js"></script>
         <script src="../js/game.js"></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
