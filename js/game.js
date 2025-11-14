@@ -498,14 +498,6 @@ function ruota() // Logica di gioco
     }
 }
 
-function clearBoard() // Utility
-{
-    for (c of document.getElementsByClassName("cell"))
-    {
-        c.className = "cell";
-    }
-}
-
 function startGame() // Init (?)
 {
     document.getElementById("Start").classList.add("Nascosto");
@@ -516,6 +508,9 @@ function startGame() // Init (?)
 
 // per quando ricomincia la partita
     clearBoard();
+    pulisciBoard(Game.cellArray);
+    pulisciBoard(Game.holdArray);
+    pulisciBoard(Game.previewArray);
     PostInfo.postSent = false;
     Game.hardDropped = 0;
     Game.livello = 1; 
