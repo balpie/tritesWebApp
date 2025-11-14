@@ -221,18 +221,10 @@ function gameIter(incc = 0, incr = 1) // Logica di gioco
 
     }
     // se il tetramino può spostarsi...
-    let count = 0;  // TODO rendi funzione da usare anche in ruota
-    for(let sqr of Game.tetramino)
-    {
-        svuotaCella(sqr.riga, sqr.colonna);
-    }
-    for(let sqr of aux) // copio aux in tetramino e coloro le celle
-    {
-        Game.tetramino[count].riga = sqr.riga;
-        Game.tetramino[count].colonna = sqr.colonna;
-        coloraCella(sqr.riga, sqr.colonna, SevenBag.tipoCorrente);
-        count++;
-    }
+    let count = 0;  
+    killTetra();
+    
+    cambiaTetra(aux);
 }
 
 // valuta se il tetramino t passato collide con qualcosa di fermo sotto.
@@ -480,22 +472,10 @@ function ruota() // Logica di gioco
     {
         return;
     }
-    // se il tetramino può spostarsi...
-    // riesco a colorarlo quindi cancello quello vecchio
-    for(let c of Game.tetramino)
-    {
-        svuotaCella(c.riga, c.colonna);
-    }
+    killTetra();
     Game.statoRotazione = (Game.statoRotazione + 1) % 4;
-    // coloro quello nuovo e aggiorno tetramino
-    let count = 0; //TODO rendi funzione
-    for(let sqr of tryTetra) // copio aux in tetramino e coloro le celle
-    {
-        Game.tetramino[count].riga = sqr.riga;
-        Game.tetramino[count].colonna = sqr.colonna;
-        coloraCella(sqr.riga, sqr.colonna, SevenBag.tipoCorrente);
-        count++;
-    }
+
+    cambiaTetra(tryTetra);
 }
 
 function startGame() // Init (?)
@@ -507,7 +487,6 @@ function startGame() // Init (?)
 
 
 // per quando ricomincia la partita
-    clearBoard();
     pulisciBoard(Game.cellArray);
     pulisciBoard(Game.holdArray);
     pulisciBoard(Game.previewArray);

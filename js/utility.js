@@ -67,6 +67,17 @@ function killTetra()
         svuotaCella(i.riga, i.colonna);
     }
 }
+function cambiaTetra(newTetra)
+{
+    let count = 0; //TODO Cambiatetra?
+    for(let sqr of newTetra) 
+    {
+        Game.tetramino[count].riga = sqr.riga;
+        Game.tetramino[count].colonna = sqr.colonna;
+        coloraCella(sqr.riga, sqr.colonna, SevenBag.tipoCorrente);
+        count++;
+    }
+}
 
 function bloccaTetra(t)
 {
