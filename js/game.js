@@ -1,6 +1,3 @@
-document.addEventListener("DOMContentLoaded", generateBoard);
-document.addEventListener("DOMContentLoaded", generatePreview);
-document.addEventListener("DOMContentLoaded", generateHold);
 
 function nuovoTetramino(tipo) // Logica di gioco perchè "lo mette" in movimento
 {
@@ -26,88 +23,6 @@ function nuovoTetramino(tipo) // Logica di gioco perchè "lo mette" in movimento
     }
 }
 
-
-function generateBoard() // Modulo init?
-{
-    document.getElementById("Start").addEventListener("click", startGame);
-    document.getElementById("Restart").classList.add("Nascosto");
-    document.getElementById("Restart").addEventListener("click", ()=> {
-            document.getElementById("Restart").classList.add("Nascosto");
-            document.getElementById("Restart").blur();
-            terminaPartita(false);
-            startGame();
-        });
-    for(let i = 0; i < 14; i++)
-    {
-        SevenBag.codaTetramini.push(arrayTipiTetramini[i%7]);
-    }
-    shuffle(SevenBag.codaTetramini, 0, 6);
-    shuffle(SevenBag.codaTetramini, 7, 13);
-    SevenBag.currTetra_ind = 0;
-
-    board = document.getElementById("gameBoard");
-    for(let i = 0; i < BOARDROWS; i++)
-    {
-        const cellArrRow = [];
-        row = document.createElement("div");
-        row.classList.add("row");
-        if(i < BOARDHIDDENROWS)
-        {
-            row.classList.add("Nascosto"); // righe sopra nascoste
-        }
-        board.appendChild(row);
-        for(let j = 0; j < BOARDCOLUMNS; j++)
-        {
-            cell = document.createElement("div");
-            cell.classList.add("cell");
-            cell.id = `cell-${i}-${j}`;
-            cellArrRow.push(cell);
-            row.appendChild(cell);
-        }
-        Game.cellArray.push(cellArrRow);
-    }
-}
-function generatePreview(){
-    // genero la cella di preview
-    let previewSquare = document.getElementById("Preview");
-    for (let i = 0; i < 4; i++)
-    {
-        let previewArrayRow = [];
-        let row = document.createElement("div");
-        row.classList.add("row");
-        previewSquare.appendChild(row);
-        for(let j = 0; j < 4; j++)
-        {
-            cell = document.createElement("div");
-            cell.classList.add("cell");
-            cell.id = `preview-${i}-${j}`;
-            previewArrayRow.push(cell);
-            row.append(cell);
-        }
-        Game.previewArray.push(previewArrayRow);
-    }
-}
-
-function generateHold(){ // modulo init?
-    // genero la cella di hold
-    let holdSquare = document.getElementById("Hold");
-    for (let i = 0; i < 4; i++)
-    {
-        let holdArrayRow = [];
-        let row = document.createElement("div");
-        row.classList.add("row");
-        holdSquare.appendChild(row);
-        for(let j = 0; j < 4; j++)
-        {
-            cell = document.createElement("div");
-            cell.classList.add("cell");
-            cell.id = `hold-${i}-${j}`;
-            holdArrayRow.push(cell);
-            row.append(cell);
-        }
-        Game.holdArray.push(holdArrayRow);
-    }
-}
 
 function terminaPartita(postaPartita) // Logica di gioco
 {
@@ -135,38 +50,6 @@ function terminaPartita(postaPartita) // Logica di gioco
     }
 }
 
-function trovaRigheRipulite() // Utility
-{
-    let arrayRigheRipulite = new Array();
-    let guardate = new Array();
-    for (let sqr of Game.tetramino)
-    {
-        if(guardate.indexOf(sqr.riga) !== -1)
-        { // non aggiungo righe duplicate
-            continue;
-        }
-        console.log("guardo riga: "+sqr.riga); 
-        guardate.push(sqr.riga);
-        let trovatoVuoto = false;
-        for(let i = 0; i < BOARDCOLUMNS; i++)
-        {
-            if(!getCell(sqr.riga, i).classList.contains("Caduto"))
-            {
-                console.log("Trovato vuoto in riga"+ sqr.riga);
-                trovatoVuoto = true;
-                break;
-            }
-        }
-        if(trovatoVuoto)
-        {
-            continue;
-        }
-        console.log("trovato riga ripulita: ", sqr.riga);
-        arrayRigheRipulite.push(sqr.riga);
-    }
-    arrayRigheRipulite.sort();
-    return arrayRigheRipulite;
-}
 
 function refreshPunteggio() // Logica di gioco (cambia livello effettivo)
 {
@@ -194,7 +77,7 @@ function gameIter(incc = 0, incr = 1) // Logica di gioco
         sqr.riga += incr;
         sqr.colonna += incc;
     }
-    if(caduto(aux))
+    if(collide(aux))
     {
         if(incr === 1) // caso caduta
         {
@@ -227,24 +110,29 @@ function gameIter(incc = 0, incr = 1) // Logica di gioco
     cambiaTetra(aux);
 }
 
-// valuta se il tetramino t passato collide con qualcosa di fermo sotto.
-function caduto(t) // Utility
+
+function bloccaTetra(t)
 {
-    for(c of t)
+    let termina = false;
+    for (c of t)
     {
-        // caduto in fondo
-        if(!isInBound(c.riga, c.colonna)) 
-        {
-            return true;
+
+        if(c.riga == BOARDHIDDENROWS)
+        { // caso sconfitta
+            termina = true;
         }
-        // collide con un altro caduto
-        if(getCell(c.riga, c.colonna).classList.contains("Caduto")) 
-        {
-            return true;
-        }
+        getCell(c.riga, c.colonna).classList.remove("inMovimento");
+        getCell(c.riga, c.colonna).classList.add("Caduto"); // serve alla collision detection
     }
-    return false;
+    if(termina)
+    {
+        scriviStatus("Hai perso :(", STATUS_SCONFITTA);
+        terminaPartita(true);
+    }
+    Game.holdAllowed = true;
+    // todo timeout intervalDuration+10ms per dare tempo di muoversi e poi riparte 
 }
+
 
 function hardDrop() //Logica di gioco
 {
@@ -275,7 +163,7 @@ function keyDownHandler(event) // Key handle (forse da spezzettare)
                 return;
             }
             KeyState.SDown = true;
-           clearInterval(Game.intervalId);
+            clearInterval(Game.intervalId);
             Game.intervalId = setInterval(gameIter, MOVEMENT_SPEED);
             return;
         case "Enter":
@@ -286,7 +174,7 @@ function keyDownHandler(event) // Key handle (forse da spezzettare)
             hardDrop();
             return;
         case "ShiftRight":
-            if(!Game.holdAllowed)
+            if(!Game.holdAllowed) // TODO Funzione hold
             {
                 return;
             }
@@ -309,7 +197,7 @@ function keyDownHandler(event) // Key handle (forse da spezzettare)
             pulisciBoard(Game.holdArray);
             scriviHold(Game.tetraminoInHold);
             return;
-        default: // keyA o keyD
+        default: // TODO: Separa
             if(KeyState.ADown || KeyState.DDown)
             {
                 return;
@@ -353,100 +241,39 @@ function keyUpHandler(event) //Key handler
 
 }
 
-function calcolaPunteggio(righeRipulite)  //Utility / gamelogic
-{ //TODO aggiungi costanti
+function calcolaPunteggio(righeRipulite)  
+{ 
     Game.lineeLiberate += righeRipulite.length;
     switch(righeRipulite.length)
     {
         case 4:
-        Game.punti += 800*Game.livello;
+        Game.punti += PTS_TETRIS*Game.livello;
         break;
         case 3:
-        Game.punti += 500*Game.livello;
+        Game.punti += PTS_TRIPLE*Game.livello;
         break;
         case 2: 
-        Game.punti += 300*Game.livello;
+        Game.punti += PTS_DOUBLE*Game.livello;
         break;
         case 1: 
-        Game.punti += 100*Game.livello;
+        Game.punti += PTS_SINGLE*Game.livello;
         break;
     }
     if(Game.hardDropped)
     {
         Game.hardDropped = false;
-        Game.punti += 10*Game.livello;
+        Game.punti += PTS_HARD_DROP_MULT*Game.livello;
     }
     if(KeyState.SDown)
     {
-        Game.punti += 5*Game.livello;
+        Game.punti += PTS_SOFT_DROP_MULT*Game.livello;
     }
-    if(Game.livello < 15 && Math.floor(Game.lineeLiberate/TO_NEXT_LEVEL) > Game.livello - 1)
+    if(Game.livello < MAX_LEVEL && Math.floor(Game.lineeLiberate/TO_NEXT_LEVEL) > Game.livello - 1)
     {
         Game.livello++;
     }
 }
 
-function calcolaRootRotazione() // Utility
-{
-    let root = {};
-    if(SevenBag.tipoCorrente != TETRA_I)
-    {
-        root = {
-            riga: Game.tetramino[0].riga - 1,
-            colonna: Game.tetramino[0].colonna - 1
-        };
-    }
-    else
-    {
-        switch(Game.statoRotazione)
-        {
-            case 0:
-                root = 
-                {
-                    riga: Game.tetramino[0].riga,
-                    colonna: Game.tetramino[0].colonna
-                }
-            break;
-            case 1:
-                root = 
-                {
-                    riga: Game.tetramino[0].riga + 1,
-                    colonna: Game.tetramino[0].colonna - 2
-                }
-            break;
-            case 2:
-                root =
-                {
-                    riga: Game.tetramino[0].riga - 1,
-                    colonna: Game.tetramino[0].colonna 
-                }
-            break;
-            case 3:
-                root =
-                {
-                    riga: Game.tetramino[0].riga + 1,
-                    colonna: Game.tetramino[0].colonna -1
-                }
-            break;
-        }
-    }
-    return root;
-}
-
-// ritorna la posizione di dove ruoterebbe il tetramino se non ci fossero conflitti
-function provaRotazione(root) // Utility
-{
-    let tryTetra = new Array();
-    for (let i = 0; i < 4; i++)
-    {
-        tryTetra.push(
-        {
-            riga: POSIZIONI_TETRAMINI[SevenBag.tipoCorrente][(Game.statoRotazione + 1) % 4][i][0] + root.riga,
-            colonna: POSIZIONI_TETRAMINI[SevenBag.tipoCorrente][(Game.statoRotazione + 1) % 4][i][1] + root.colonna
-        });
-    }
-    return tryTetra;
-}
 
 function ruota() // Logica di gioco
 {
@@ -462,7 +289,7 @@ function ruota() // Logica di gioco
         let root = calcolaRootRotazione();
         root.colonna += i;
         tryTetra = provaRotazione(root); 
-        if(isInBound(root.riga, root.colonna) && !caduto(tryTetra))
+        if(isInBound(root.riga, root.colonna) && !collide(tryTetra))
         { 
             canRotate = true;
             break; 
@@ -476,34 +303,4 @@ function ruota() // Logica di gioco
     Game.statoRotazione = (Game.statoRotazione + 1) % 4;
 
     cambiaTetra(tryTetra);
-}
-
-function startGame() // Init (?)
-{
-    document.getElementById("Start").classList.add("Nascosto");
-    document.getElementById("Restart").classList.remove("Nascosto");
-    document.addEventListener("keydown", keyDownHandler);
-    document.addEventListener("keyup", keyUpHandler);
-
-
-// per quando ricomincia la partita
-    pulisciBoard(Game.cellArray);
-    pulisciBoard(Game.holdArray);
-    pulisciBoard(Game.previewArray);
-    PostInfo.postSent = false;
-    Game.hardDropped = 0;
-    Game.livello = 1; 
-    document.getElementById("Livello").innerText = Game.livello;
-    Game.punti = 0;
-    Game.lineeLiberate = 0;
-    document.getElementById("Lines").innerText = 0;
-    document.getElementById("Punti").innerText = 0;
-    Game.intervalDuration = INIT_INTERVAL_DURATION;
-    document.getElementById("Status").innerText = "";
-    Game.holdAllowed = true;
-
-    nuovoTetramino(tetraminoCasuale());
-    SevenBag.tipoProssimo = tetraminoCasuale();
-    scriviPreview(SevenBag.tipoProssimo);
-    Game.intervalId = setInterval(gameIter, Game.intervalDuration);
 }

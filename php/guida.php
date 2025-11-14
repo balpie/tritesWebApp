@@ -28,7 +28,9 @@
         </nav>
         <main>
             <article>
-                <a href="index.php"><span class = "O">G</span><span class="I">i</span><span class="T">o</span><span class = "Z">c</span><span class="S">a</span>!</a>
+                <div id=GiocaWrapper>
+                <a href="index.php"><span class = "O">G</span><span class="I">i</span><span class="T">o</span><span class = "Z">c</span><span class="S">a</span><span class="J">!</span></a>
+                </div>
                 <h2>Guida all'utente</h2>
                 <h3>Tasti: </h3>
                     <dl class="UserGuide">

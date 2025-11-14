@@ -5,8 +5,8 @@
 
     $responseObj = new stdClass();
 
-    $passwordFilter = "/[a-zA-Z0-9_+#@<>'.',:;]{4,16}/";
-    $usernameFilter = "/[a-zA-Z0-9_]{4,16}/";
+    $passwordFilter = "/^[a-zA-Z0-9_+#@<>'.,:;]{4,16}$/";
+    $usernameFilter = "/^[a-zA-Z0-9_]{4,16}$/";
     if(!preg_match($passwordFilter, $_POST["password"]))
     {
         $responseObj->error = "Password non accettabile";

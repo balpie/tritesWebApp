@@ -11,6 +11,7 @@
         <script src="../js/datastruct.js"></script>
         <script src="../js/utility.js"></script>
         <script src="../js/game.js"></script>
+        <script src="../js/init.js"></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -61,7 +62,7 @@
                         </tr>
                     </table>
                     <button type="button" id="Start">Gioca</button>
-                    <button type="button" id="Restart">Ricomincia</button>
+                    <button type="button" tabindex="-1" id="Restart">Ricomincia</button>
                     <?php
                         session_start();
                         if(isset($_SESSION["login"]))

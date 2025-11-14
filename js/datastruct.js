@@ -27,6 +27,14 @@ const INIT_INTERVAL_DURATION = 450;
 const LVL_STEP = 27; // differenza di velocità tra un livello e un altro (ms)
 
 const TO_NEXT_LEVEL = 5; // linee da ripulire prima di arrivare al livello successivo
+const MAX_LEVEL = 15;
+
+const PTS_TETRIS = 800;
+const PTS_TRIPLE = 500;
+const PTS_DOUBLE = 300;
+const PTS_SINGLE = 100;
+const PTS_HARD_DROP_MULT = 10;
+const PTS_SOFT_DROP_MULT = 5;
 
 const MOVEMENT_SPEED = 50;
 // posizione dei tetramini (relative)

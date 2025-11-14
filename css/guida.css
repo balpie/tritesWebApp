@@ -3,13 +3,20 @@ h2, h3{
 }
 
 main a{
-    display: block;
+    display: inline-block;
+    margin: 0 auto;
     text-align: center;
-    color: white;
     text-decoration-thickness: 2px;
     font-size: 1.5em;
 }
 
+#GiocaWrapper{
+    text-align: center;
+}
+
+a:hover{
+    color: #c0c0c0;
+}
 a:visited{
     color: white;
 }

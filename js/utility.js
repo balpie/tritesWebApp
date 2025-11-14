@@ -69,7 +69,7 @@ function killTetra()
 }
 function cambiaTetra(newTetra)
 {
-    let count = 0; //TODO Cambiatetra?
+    let count = 0;
     for(let sqr of newTetra) 
     {
         Game.tetramino[count].riga = sqr.riga;
@@ -77,28 +77,6 @@ function cambiaTetra(newTetra)
         coloraCella(sqr.riga, sqr.colonna, SevenBag.tipoCorrente);
         count++;
     }
-}
-
-function bloccaTetra(t)
-{
-    let termina = false;
-    for (c of t)
-    {
-
-        if(c.riga == BOARDHIDDENROWS)
-        { // caso sconfitta
-            termina = true;
-        }
-        getCell(c.riga, c.colonna).classList.remove("inMovimento");
-        getCell(c.riga, c.colonna).classList.add("Caduto"); // serve alla collision detection
-    }
-    if(termina)
-    {
-        scriviStatus("Hai perso :(", STATUS_SCONFITTA);
-        terminaPartita(true);
-    }
-    Game.holdAllowed = true;
-    // todo timeout intervalDuration+10ms per dare tempo di muoversi e poi riparte 
 }
 
 function scriviStatus(msg, color)
@@ -189,4 +167,117 @@ function copiaTetramino(Obj)
         copia.push({riga: i.riga, colonna: i.colonna});
     }
     return copia;
+}
+
+function calcolaRootRotazione() 
+{
+    let root = {};
+    if(SevenBag.tipoCorrente != TETRA_I)
+    {
+        root = {
+            riga: Game.tetramino[0].riga - 1,
+            colonna: Game.tetramino[0].colonna - 1
+        };
+    }
+    else
+    {
+        switch(Game.statoRotazione)
+        {
+            case 0:
+                root = 
+                {
+                    riga: Game.tetramino[0].riga,
+                    colonna: Game.tetramino[0].colonna
+                }
+            break;
+            case 1:
+                root = 
+                {
+                    riga: Game.tetramino[0].riga + 1,
+                    colonna: Game.tetramino[0].colonna - 2
+                }
+            break;
+            case 2:
+                root =
+                {
+                    riga: Game.tetramino[0].riga - 1,
+                    colonna: Game.tetramino[0].colonna 
+                }
+            break;
+            case 3:
+                root =
+                {
+                    riga: Game.tetramino[0].riga + 1,
+                    colonna: Game.tetramino[0].colonna -1
+                }
+            break;
+        }
+    }
+    return root;
+}
+
+// ritorna la posizione di dove ruoterebbe il tetramino se non ci fossero conflitti
+function provaRotazione(root) // Utility
+{
+    let tryTetra = new Array();
+    for (let i = 0; i < 4; i++)
+    {
+        tryTetra.push(
+        {
+            riga: POSIZIONI_TETRAMINI[SevenBag.tipoCorrente][(Game.statoRotazione + 1) % 4][i][0] + root.riga,
+            colonna: POSIZIONI_TETRAMINI[SevenBag.tipoCorrente][(Game.statoRotazione + 1) % 4][i][1] + root.colonna
+        });
+    }
+    return tryTetra;
+}
+
+function trovaRigheRipulite() // Utility
+{
+    let arrayRigheRipulite = new Array();
+    let guardate = new Array();
+    for (let sqr of Game.tetramino)
+    {
+        if(guardate.indexOf(sqr.riga) !== -1)
+        { // non aggiungo righe duplicate
+            continue;
+        }
+        console.log("guardo riga: "+sqr.riga); 
+        guardate.push(sqr.riga);
+        let trovatoVuoto = false;
+        for(let i = 0; i < BOARDCOLUMNS; i++)
+        {
+            if(!getCell(sqr.riga, i).classList.contains("Caduto"))
+            {
+                console.log("Trovato vuoto in riga"+ sqr.riga);
+                trovatoVuoto = true;
+                break;
+            }
+        }
+        if(trovatoVuoto)
+        {
+            continue;
+        }
+        console.log("trovato riga ripulita: ", sqr.riga);
+        arrayRigheRipulite.push(sqr.riga);
+    }
+    arrayRigheRipulite.sort();
+    return arrayRigheRipulite;
+}
+// valuta se il tetramino t passato collide con qualcosa di fermo sotto.
+function collide(t) // Utility
+{
+    for(c of t)
+    {
+        // caduto in fondo
+        if(!isInBound(c.riga, c.colonna)) 
+        {
+            return true;
+        }
+        // collide con un altro caduto
+        if(getCell(c.riga, c.colonna).classList.contains("Caduto")) 
+        {
+            return true;
+        }
+    }
+    return false;
 }
