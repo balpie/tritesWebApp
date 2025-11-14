@@ -11,6 +11,7 @@
         <script src="../js/datastruct.js"></script>
         <script src="../js/utility.js"></script>
         <script src="../js/game.js"></script>
+        <script src="../js/keys.js"></script>
         <script src="../js/init.js"></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
