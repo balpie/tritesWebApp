@@ -2,26 +2,30 @@
 
 <html lang="it">
     <head>
-        <meta charset="utf-8">
         <meta name="author" content="Pietro Balestri">
         <link rel="stylesheet" href="../css/classifiche.css">
         <link rel="stylesheet" href="../css/tabelle.css">
         <link rel="stylesheet" href="../css/navbar.css">
         <link rel="stylesheet" href="../css/footer.css">
         <link rel="stylesheet" href="../css/tetracolors.css">
+
+        <!-- Codice preso da fonts.google.com -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+        <!-- fine codice di fonts.google.com -->
+        <link rel="icon" type="image/x-icon" href="../img/favicon.png">
         <title>Trites</title>
     </head>
     <body>
         <nav>
             <h1>
-                <a href="index.php">
+                <a href="gioca.php">
                 <span class="O">T</span><span class="I">r</span><span class="T">i</span><span class="Z">t</span><span class="S">e</span><span class="J">s</span>
                 </a>
             </h1>
             <ul>
+                <li><a href="gioca.php">Gioca</a></li>
                 <li><a href="guida.php">Guida</a></li>
                 <li><a href="classifiche.php" class="PaginaAttuale">Classifiche</a></li>
                 <li><a href="account.php">Account</a></li>

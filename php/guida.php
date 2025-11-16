@@ -2,25 +2,28 @@
 
 <html lang="it">
     <head>
-        <meta charset="utf-8">
         <meta name="author" content="Pietro Balestri">
         <link rel="stylesheet" href="../css/guida.css">
         <link rel="stylesheet" href="../css/navbar.css">
         <link rel="stylesheet" href="../css/tetracolors.css">
         <link rel="stylesheet" href="../css/footer.css">
+        <!-- Codice preso da fonts.google.com -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+        <!-- fine codice di fonts.google.com -->
+        <link rel="icon" type="image/x-icon" href="../img/favicon.png">
         <title>Trites</title>
     </head>
     <body>
         <nav>
             <h1>
-                <a href="index.php">
+                <a href="gioca.php">
                 <span class="O">T</span><span class="I">r</span><span class="T">i</span><span class="Z">t</span><span class="S">e</span><span class="J">s</span>
                 </a>
             </h1>
             <ul>
+                <li><a href="gioca.php">Gioca</a></li>
                 <li><a href="guida.php" class="PaginaAttuale">Guida</a></li>
                 <li><a href="classifiche.php">Classifiche</a></li>
                 <li><a href="account.php">Account</a></li>
@@ -28,9 +31,6 @@
         </nav>
         <main>
             <article>
-                <div id=GiocaWrapper>
-                <a href="index.php"><span class = "O">G</span><span class="I">i</span><span class="T">o</span><span class = "Z">c</span><span class="S">a</span><span class="J">!</span></a>
-                </div>
                 <h2>Guida all'utente</h2>
                 <h3>Tasti: </h3>
                     <dl class="UserGuide">
@@ -87,6 +87,9 @@
                             con un tetramino già caduto, o uscire dalla scatola, viene eseguita una traslazione.
                         </dd>
                 </dl>
+                <div id=GiocaWrapper>
+                <a href="gioca.php"><span class = "O">G</span><span class="I">i</span><span class="T">o</span><span class = "Z">c</span><span class="S">a</span><span class="J">!</span></a>
+                </div>
             </article>
         </main>
         <footer>Progetto creato da Pietro Balestri per il corso di Progettazione Web</footer>

@@ -1,3 +1,3 @@
 <?php
-    header("location: php/index.php")
+    header("location: php/guida.php")
 ?>

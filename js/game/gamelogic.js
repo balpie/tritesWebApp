@@ -69,6 +69,7 @@ function refreshPunteggio() // Logica di gioco (cambia livello effettivo)
 }
 
 // iterazione del gioco con tetramino che si sposta in direzione (incc, incr)
+// Ritorna true se il tetramino è caduto
 function gameIter(incc = 0, incr = 1) // Logica di gioco
 {
     aux = copiaTetramino(Game.tetramino);
@@ -104,7 +105,6 @@ function gameIter(incc = 0, incr = 1) // Logica di gioco
 
     }
     // se il tetramino può spostarsi...
-    let count = 0;  
     killTetra();
     
     cambiaTetra(aux);
