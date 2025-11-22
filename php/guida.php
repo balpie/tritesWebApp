@@ -19,7 +19,7 @@
         <nav>
             <h1>
                 <a href="gioca.php">
-                <span class="O">T</span><span class="I">r</span><span class="T">i</span><span class="Z">t</span><span class="S">e</span><span class="J">s</span>
+                    <span class="O">T</span><span class="I">r</span><span class="T">i</span><span class="Z">t</span><span class="S">e</span><span class="J">s</span>
                 </a>
             </h1>
             <ul>
@@ -32,7 +32,9 @@
         <main>
             <article>
                 <h2>Guida all'utente</h2>
-                <h3>Tasti: </h3>
+                    <h3>
+                        Tasti
+                    </h3>
                     <dl class="UserGuide">
                         <dt>A D</dt>
                             <dd>
@@ -58,16 +60,22 @@
                                 sarà il prossimo, visibile in "preview"
                             </dd>
                     </dl>
-                <h3>
-                    Meccaniche di gioco
-                </h3>
-                <dl>
-                    <dt>Tetramini</dt>
-                        <dd>
-                            In Tetris esistono 7 diversi tipi di pezzi, detti Tetramini, ognuno nominato 
-                            con la lettera alla quale somiglia: 
-                            <br>
-                <span class="O">O</span>, <span class="I">I</span>, <span class="T">T</span>, <span class="Z">Z</span>, <span class="S">S</span>, <span class="J">J</span>, <span class="L">L</span>
+                    <h3>
+                        Meccaniche di gioco
+                    </h3>
+                    <dl>
+                        <dt>Tetramini</dt>
+                            <dd>
+                                In Trites esistono 7 diversi tipi di pezzi, detti Tetramini, ognuno nominato 
+                                con la lettera alla quale somiglia: 
+                                <br>
+                            <span class="O">O</span>, 
+                            <span class="I">I</span>, 
+                            <span class="T">T</span>, 
+                            <span class="Z">Z</span>, 
+                            <span class="S">S</span>, 
+                            <span class="J">J</span>, 
+                            <span class="L">L</span>
                         <dd>
                     <dt>Punteggi</dt>
                         <dd>
@@ -88,7 +96,14 @@
                         </dd>
                 </dl>
                 <div id=GiocaWrapper>
-                <a href="gioca.php"><span class = "O">G</span><span class="I">i</span><span class="T">o</span><span class = "Z">c</span><span class="S">a</span><span class="J">!</span></a>
+                    <a href="gioca.php">
+                        <span class="O">G</span>
+                        <span class="I">i</span>
+                        <span class="T">o</span>
+                        <span class="Z">c</span>
+                        <span class="S">a</span>
+                        <span class="J">!</span>
+                    </a>
                 </div>
             </article>
         </main>

@@ -1,5 +1,4 @@
 <?php
-
     function getUserInfo($connection, $username)
     {
         $responseObj = new stdClass();
@@ -34,11 +33,16 @@
         }
         # Posizione in classifica giocatori
         $responseObj->mediaPunti = mysqli_fetch_assoc($result)["MediaPunti"];
-        $query = "WITH PosizMaxPts AS
+        $query = "WITH MaxPts AS
             (
-                SELECT RANK()OVER(ORDER BY Punti DESC) as Posizione, MAX(Punti) as MaxPunti, NomeUtente
+                SELECT MAX(Punti) as MaxPunti, NomeUtente
                 FROM Partite
                 GROUP BY NomeUtente
+            ),
+            PosizMaxPts AS
+            (
+                SELECT RANK()OVER(ORDER BY MaxPunti DESC) as Posizione, MaxPunti, NomeUtente
+                FROM MaxPts
             )
             SELECT Posizione, MaxPunti
             FROM PosizMaxPts
