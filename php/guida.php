@@ -82,27 +82,26 @@
                             Si vincono punti riempiendo intere righe della scatola. Maggiore è il livello, più punti vengono assegnati.
                             Un altro modo di vincere punti è far scendere velocemente i tetramini, col tasto <span class="T">S</span> o <span class="T">Enter</span>
                         </dd> 
+                    <dt>Livello</dt>
+                        <dd>
+                            Il livello aumenta di uno ogni volta che il giocatore ripulisce 5 linee
+                        </dd>
                     <dt>Scelta del prossimo tetramino</dt>
                         <dd>
                             La scelta del tetramino successivo non è completamente casuale, ma è
                             stato adottato l'algoritmo 7-bag: il prossimo tetramino viene estratto da 
-                            una lista da 7 tetramini, che viene rimescolata ogni volta che termina.
+                            una lista da 7 tetramini, che viene rimescolata ogni volta che termina
                         </dd>
                     <dt>Rotazione: Wall Kick</dt>
                         <dd>
                             La rotazione non è sempre una rotazione pura: quando il tetramino potrebbe ruotare se fosse spostato di 1 
                             casella a destra o sinistra, ma non può ruotare nella posizione attuale senza collidere
-                            con un tetramino già caduto, o uscire dalla scatola, viene eseguita una traslazione.
+                            con un tetramino già caduto, o uscire dalla scatola, viene eseguita una traslazione
                         </dd>
                 </dl>
                 <div id=GiocaWrapper>
                     <a href="gioca.php">
-                        <span class="O">G</span>
-                        <span class="I">i</span>
-                        <span class="T">o</span>
-                        <span class="Z">c</span>
-                        <span class="S">a</span>
-                        <span class="J">!</span>
+                        <span class="O">G</span><span class="I">i</span><span class="T">o</span><span class="Z">c</span><span class="S">a</span><span class="J">!</span>
                     </a>
                 </div>
             </article>

@@ -24,11 +24,9 @@
         $result = mysqli_stmt_get_result($statement);
         if(mysqli_num_rows($result) == 0)
         {
-            # l'utente non ha giocato partite
             $responseObj->mediaPunti = null;
             $responseObj->posizioneClassifica = null;
             $responseObj->maxPunti = null;
-            # $responseObj->partite = [];
             return $responseObj;
         }
         # Posizione in classifica giocatori
