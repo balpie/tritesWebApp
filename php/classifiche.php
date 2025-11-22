@@ -60,7 +60,7 @@
                     die("E' stato bello");
                 }
                 
-                $query = "SELECT * FROM Partite ORDER BY Punti DESC LIMIT 25";
+                $query = "SELECT * FROM Partite ORDER BY Punti DESC LIMIT 10";
                 if($result = mysqli_query($connessione, $query))
                 {
                     $header = ["Giocatore", "Punti", "Livello", "Linee", "Data", "Ora"];
@@ -86,7 +86,7 @@
                     "SELECT NomeUtente, MAX(Punti) AS MaxPunti 
                     FROM Partite 
                     GROUP BY NomeUtente 
-                    ORDER BY MaxPunti DESC LIMIT 25";
+                    ORDER BY MaxPunti DESC LIMIT 10";
                 if($result = mysqli_query($connessione, $query))
                 {
                     $header = ["Giocatore", "Massimo Punteggio"];

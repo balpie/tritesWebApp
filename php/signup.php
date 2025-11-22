@@ -1,9 +1,8 @@
 <?php
     session_start();
-    // verifica viabilità parametri
-
     $responseObj = new stdClass();
 
+    # verifica parametri
     $passwordFilter = "/^[a-zA-Z0-9_+#@<>'.,:;]{4,16}$/";
     $usernameFilter = "/^[a-zA-Z0-9_]{4,16}$/";
     if(!preg_match($passwordFilter, $_POST["password"]))
@@ -31,6 +30,7 @@
         echo json_encode($responseObj);
         return;
     }
+    # Controllo esistenza username
     $username = $_POST["username"];
     $query = "SELECT NomeUtente FROM Utenti WHERE NomeUtente = ?";
     $preparedQuery = mysqli_prepare($connessione, $query);
@@ -43,6 +43,7 @@
         echo json_encode($responseObj);
         return;
     }
+    # Inserisco nuovo utente 
     $insert = "INSERT INTO Utenti(NomeUtente, PasswordUtente, DataIscrizione)
         VALUES (?, ?, CURRENT_DATE)";
     $preparedInsert = mysqli_prepare($connessione, $insert);
@@ -54,6 +55,7 @@
         echo json_encode($responseObj);
         return;
     }
+    # aggiorno sessione
     $_SESSION["login"] = $_POST["username"];
     require_once("userinfo.php");
     $responseObj = getUserInfo($connessione, $_SESSION["login"]);

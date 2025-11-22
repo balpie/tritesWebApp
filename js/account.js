@@ -12,7 +12,7 @@ function checkSession()
         if(xmlhttp.readyState === 4 && xmlhttp.status === 200)
         {
             let response = xmlhttp.response;
-            switch(response.error) // Indica l'errore o se è stato fatto il login
+            switch(response.error) 
             {
                 case "no_err":
                     clearForms(true);
@@ -45,14 +45,14 @@ function tryLogIn()
         document.getElementById("Error").innerText = "Tutti i campi sono obbligatori";
     }
     let parameters = "username=" + usrName + "&password=" + password;
-        // apro un post verso insertPartita.php in modo asincrono:
+        
     xmlhttp.open("POST", url, true); 
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.onreadystatechange = function(){
         if(xmlhttp.readyState === 4 && xmlhttp.status === 200)
         {
             let response = xmlhttp.response;
-            switch(response.error) // Indica l'errore o se è stato fatto il login
+            switch(response.error) 
             {
                 case "no_err":
                     clearForms(true);
@@ -86,7 +86,7 @@ function trySignUp()
         if(xmlhttp.readyState === 4 && xmlhttp.status === 200)
         {
             let response = xmlhttp.response;
-            switch(response.error) // Indica l'errore o se è stato fatto il login
+            switch(response.error) 
             {
                 case "no_err":
                     clearForms(true);
@@ -99,7 +99,7 @@ function trySignUp()
         }
     }
     xmlhttp.responseType = "json";
-    xmlhttp.send(parameters); // asincrona di default
+    xmlhttp.send(parameters); 
 }
 
 function clearForms(hide)

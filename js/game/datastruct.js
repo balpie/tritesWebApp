@@ -1,7 +1,7 @@
 
 // DICHIARAZIONI DATI COSTANTI
 
-const TETRA_T = "T"; // tipi di tetramini
+const TETRA_T = "T"; 
 const TETRA_L = "L";
 const TETRA_J = "J";
 const TETRA_I = "I";
@@ -24,11 +24,14 @@ const BOARDROWS = 22;
 const BOARDHIDDENROWS = 2;
 const INIT_INTERVAL_DURATION = 450;
 
-const LVL_STEP = 27; // differenza di velocità tra un livello e un altro (ms)
+// differenza di velocità tra un livello e un altro (ms)
+const LVL_STEP = 27; 
 
-const TO_NEXT_LEVEL = 5; // linee da ripulire prima di arrivare al livello successivo
+// linee da ripulire prima di arrivare al livello successivo
+const TO_NEXT_LEVEL = 5; 
 const MAX_LEVEL = 15;
 
+// Assegnazione punti
 const PTS_TETRIS = 800;
 const PTS_TRIPLE = 500;
 const PTS_DOUBLE = 300;
@@ -37,48 +40,51 @@ const PTS_HARD_DROP_MULT = 10;
 const PTS_SOFT_DROP_MULT = 5;
 
 const MOVEMENT_SPEED = 50;
+
 // posizione dei tetramini (relative)
+// ogni riga è uno stato di rotazione
+// in ogni riga, i 4 array rappresentano ognuno una cella [riga, colonna] 
 const POSIZIONI_TETRAMINI = {
-    // contiene anche le posizioni relative alle rotazioni
+    
     "I": [
-            [[0, 0], [0, 1], [0, 2], [0, 3]], // stato iniziale 
+            [[0, 0], [0, 1], [0, 2], [0, 3]], 
             [[-1, 2], [0, 2], [1, 2], [2, 2]],
             [[1, 0], [1, 1], [1, 2], [1, 3]],
             [[-1, 1], [0, 1], [1, 1], [2, 1]]
          ],
     "L": [ 
-            [[1, 1], [1, 0], [1, 2], [0, 2]], // stato iniziale 
+            [[1, 1], [1, 0], [1, 2], [0, 2]], 
             [[1, 1], [0, 1], [2, 1], [2, 2]],
             [[1, 1], [1, 0], [1, 2], [2, 0]],
             [[1, 1], [0, 1], [0, 0], [2, 1]]
          ],
         
     "J": [
-            [[1, 1], [1, 0], [1, 2], [0, 0]], // stato iniziale 
+            [[1, 1], [1, 0], [1, 2], [0, 0]], 
             [[1, 1], [0, 1], [2, 1], [0, 2]],
             [[1, 1], [1, 0], [1, 2], [2, 2]],
             [[1, 1], [0, 1], [2, 1], [2, 0]]
          ],
     "T": [
-            [[1, 1], [0, 1], [1, 2], [1, 0]], // stato iniziale 
+            [[1, 1], [0, 1], [1, 2], [1, 0]], 
             [[1, 1], [0, 1], [2, 1], [1, 2]],
             [[1, 1], [1, 0], [1, 2], [2, 1]],
             [[1, 1], [1, 0], [0, 1], [2, 1]]
          ], 
     "O": [
-            [[0, 0], [0, 1], [1, 0], [1, 1]], // stato iniziale 
+            [[0, 0], [0, 1], [1, 0], [1, 1]], 
             [[0, 0], [0, 1], [1, 0], [1, 1]],
             [[0, 0], [0, 1], [1, 0], [1, 1]],
             [[0, 0], [0, 1], [1, 0], [1, 1]],
     ],
     "S": [
-            [[1, 1], [0, 2], [1, 0], [0, 1]], // stato iniziale 
+            [[1, 1], [0, 2], [1, 0], [0, 1]], 
             [[1, 1], [0, 1], [1, 2], [2, 2]],
             [[1, 1], [2, 0], [2, 1], [1, 2]],
             [[1, 1], [0, 0], [1, 0], [2, 1]]
     ],
     "Z": [
-            [[1, 1], [0, 1], [0, 0], [1, 2]], // stato iniziale 
+            [[1, 1], [0, 1], [0, 0], [1, 2]], 
             [[1, 1], [0, 2], [1, 2], [2, 1]],
             [[1, 1], [1, 0], [2, 1], [2, 2]],
             [[1, 1], [0, 1], [1, 0], [2, 0]]
@@ -87,7 +93,6 @@ const POSIZIONI_TETRAMINI = {
 const STATUS_SCONFITTA = "StatusSconfitta"
 const STATUS_NUOVO_LIVELLO = "StatusNuovoLivello"
 
-// DICHIARAZIONE OGGETTI GLOBALI
 const SevenBag = { 
     tipoProssimo: null, 
     tipoCorrente: null,
@@ -95,7 +100,6 @@ const SevenBag = {
     codaTetramini: []
 }
 
-// gameObj
 const Game = {
     tetramino : [ 
         {riga: null, colonna: null},
@@ -121,7 +125,6 @@ const PostInfo = {
     postSent: false
 };
 
-// indica se i tasti sono premuti
 const KeyState = 
 {
     SDown : false,

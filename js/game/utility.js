@@ -9,13 +9,11 @@ function getCell(row, col)
 }
 
 // mescola gli elementi di a, da ini a fin
-// (algoritmo 7-bag)
 function shuffle(a, ini, fin)
 {
     for(let i = fin - 1; i >= ini; i--)
     {
         let aux = ini + Math.floor(Math.random() * (i - ini + 1));
-        // scambio elemento i-esimo con elemento casuale
         [a[i], a[aux]] = [a[aux], a[i]]; 
     }
 }
@@ -215,7 +213,7 @@ function calcolaRootRotazione()
 }
 
 // ritorna la posizione di dove ruoterebbe il tetramino se non ci fossero conflitti
-function provaRotazione(root) // Utility
+function provaRotazione(root) 
 {
     let tryTetra = new Array();
     for (let i = 0; i < 4; i++)
@@ -229,7 +227,7 @@ function provaRotazione(root) // Utility
     return tryTetra;
 }
 
-function trovaRigheRipulite() // Utility
+function trovaRigheRipulite() 
 {
     let arrayRigheRipulite = new Array();
     let guardate = new Array();
@@ -258,17 +256,17 @@ function trovaRigheRipulite() // Utility
     arrayRigheRipulite.sort();
     return arrayRigheRipulite;
 }
-// valuta se il tetramino t passato collide con qualcosa di fermo sotto.
+// valuta se il tetramino t passato collide con qualcosa 
 function collide(t) // Utility
 {
     for(c of t)
     {
-        // caduto in fondo
+        // sarebbe fuori dalla scatola
         if(!isInBound(c.riga, c.colonna)) 
         {
             return true;
         }
-        // collide con un altro caduto
+        // collide con un altro caduto (sotto o laterale)
         if(getCell(c.riga, c.colonna).classList.contains("Caduto")) 
         {
             return true;

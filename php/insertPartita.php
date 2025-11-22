@@ -2,10 +2,10 @@
     session_start();
     require_once("database.php");
 
-    $connessione = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
-    if($connessione->connect_errno) {
+    $connessione = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
+    if(mysqli_connect_errno()) {
         echo "Failed to connect to MySQL: " . $connessione->connect_error;
-        die("E' stato bello");
+        return;
     }
     if(isset($_SESSION["login"]))
     {
@@ -13,7 +13,7 @@
     }
     else
     {
-        $username = "Anon";
+        return;
     }
     $query = "INSERT INTO Partite(NomeUtente, LineeRipulite, Punti, DataPartita)
               VALUES(?, ?, ?, NOW())";

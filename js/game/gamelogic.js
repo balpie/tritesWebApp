@@ -1,5 +1,5 @@
 
-function nuovoTetramino(tipo) // Logica di gioco perchè "lo mette" in movimento
+function nuovoTetramino(tipo) 
 {
     SevenBag.tipoCorrente = tipo;
     Game.statoRotazione = 0;
@@ -24,7 +24,7 @@ function nuovoTetramino(tipo) // Logica di gioco perchè "lo mette" in movimento
 }
 
 
-function terminaPartita(postaPartita) // Logica di gioco
+function terminaPartita(postaPartita) 
 {
     clearInterval(Game.intervalId);
     clearInterval(Game.moveIntervalId);
@@ -37,12 +37,12 @@ function terminaPartita(postaPartita) // Logica di gioco
         let http = new XMLHttpRequest();
         let url = "insertPartita.php";
         if (Game.hardDropped)
-        { // calcolo subito altrimenti non vengono conteggiati
+        { 
+            // calcolo qui altrimenti non vengono conteggiati in caso di fine partita
             Game.punti += 10 * Game.livello;
             Game.hardDropped = false;
         }
         let parameters = "Punti=" + Game.punti + "&LineeRipulite=" + Game.lineeLiberate;
-            // apro un post verso insertPartita.php in modo asincrono:
         http.open("POST", url, true); 
         http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         http.send(parameters);
@@ -50,7 +50,7 @@ function terminaPartita(postaPartita) // Logica di gioco
 }
 
 
-function refreshPunteggio() // Logica di gioco (cambia livello effettivo)
+function refreshPunteggio() 
 {
     document.getElementById("Punti").innerText = Game.punti;
     document.getElementById("Lines").innerText = Game.lineeLiberate;
@@ -58,7 +58,7 @@ function refreshPunteggio() // Logica di gioco (cambia livello effettivo)
 
     if(prevLiv !== Game.livello)
     {
-        Game.intervalDuration = Game.intervalDuration - LVL_STEP; // tolgo 30 msec all'intervallo
+        Game.intervalDuration = Game.intervalDuration - LVL_STEP; 
         clearInterval(Game.intervalId);
         Game.intervalId = setInterval(gameIter, Game.intervalDuration);
         document.getElementById("Livello").innerText = Game.livello;
@@ -69,7 +69,7 @@ function refreshPunteggio() // Logica di gioco (cambia livello effettivo)
 
 // iterazione del gioco con tetramino che si sposta in direzione (incc, incr)
 // Ritorna true se il tetramino è caduto
-function gameIter(incc = 0, incr = 1) // Logica di gioco
+function gameIter(incc = 0, incr = 1) 
 {
     aux = copiaTetramino(Game.tetramino);
     for(let sqr of aux)
@@ -84,8 +84,8 @@ function gameIter(incc = 0, incr = 1) // Logica di gioco
             bloccaTetra(Game.tetramino);
             coloraTetra(Game.tetramino, SevenBag.tipoCorrente);
 
-            let righeRipulite = trovaRigheRipulite(); // lista di righe ripulite
-            calcolaPunteggio(righeRipulite); // calcolo nuovo punteggio
+            let righeRipulite = trovaRigheRipulite(); 
+            calcolaPunteggio(righeRipulite); 
             refreshPunteggio();
             if(righeRipulite.length !== 0)
             {
@@ -104,7 +104,6 @@ function gameIter(incc = 0, incr = 1) // Logica di gioco
     }
     // se il tetramino può spostarsi...
     killTetra();
-    
     cambiaTetra(aux);
 }
 
@@ -116,7 +115,7 @@ function bloccaTetra(t)
     {
 
         if(c.riga == BOARDHIDDENROWS)
-        { // caso sconfitta
+        { // se il tetramino arriva qui è il caso sconfitta
             termina = true;
         }
         getCell(c.riga, c.colonna).classList.remove("inMovimento");
@@ -128,11 +127,10 @@ function bloccaTetra(t)
         terminaPartita(true);
     }
     Game.holdAllowed = true;
-    // todo timeout intervalDuration+10ms per dare tempo di muoversi e poi riparte 
 }
 
 
-function hardDrop() //Logica di gioco
+function hardDrop() 
 {
     Game.hardDropped = true;
     while(!gameIter(0, 1));
@@ -172,13 +170,12 @@ function calcolaPunteggio(righeRipulite)
 }
 
 
-function ruota() // Logica di gioco
+function ruota() 
 {
     if( SevenBag.tipoCorrente === TETRA_O)
-    { // inutile provare
+    { 
         return;
     }
-    //wallkick
     let tryTetra;
     let canRotate = false;
     for(let i of [0, -1, 1]) // prima provo nel suo posto, poi sinistra e dx

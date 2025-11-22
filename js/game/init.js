@@ -43,7 +43,6 @@ function generateBoard()
     }
 }
 function generatePreview(){
-    // genero la cella di preview
     let previewSquare = document.getElementById("Preview");
     for (let i = 0; i < 4; i++)
     {
@@ -64,7 +63,6 @@ function generatePreview(){
 }
 
 function generateHold(){ 
-    // genero la cella di hold
     let holdSquare = document.getElementById("Hold");
     for (let i = 0; i < 4; i++)
     {
@@ -92,7 +90,6 @@ function startGame()
     document.addEventListener("keyup", keyUpHandler);
 
 
-// per quando ricomincia la partita
     pulisciBoard(Game.cellArray);
     pulisciBoard(Game.holdArray);
     pulisciBoard(Game.previewArray);

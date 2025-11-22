@@ -1,4 +1,4 @@
-function keyDownHandler(event) // Key handle (forse da spezzettare)
+function keyDownHandler(event) 
 {
     if(event.code !== "KeyA" && event.code !== "KeyD" && event.code !== "ShiftRight" 
         && event.code !== "KeyW" && event.code !== "KeyS" && event.code !== "Enter")
@@ -32,13 +32,13 @@ function keyDownHandler(event) // Key handle (forse da spezzettare)
             hardDrop();
             return;
         case "ShiftRight":
-            if(!Game.holdAllowed) // TODO Funzione hold
+            if(!Game.holdAllowed) 
             {
                 return;
             }
             Game.holdAllowed = false;
             killTetra();
-            // fai funzionare come preview
+            
             let newTetraHold = SevenBag.tipoCorrente;
             if(Game.tetraminoInHold != null)
             {
@@ -55,7 +55,7 @@ function keyDownHandler(event) // Key handle (forse da spezzettare)
             pulisciBoard(Game.holdArray);
             scriviHold(Game.tetraminoInHold);
             return;
-        default: // TODO: Separa
+        default: 
             if(KeyState.ADown || KeyState.DDown)
             {
                 return;
@@ -69,7 +69,7 @@ function keyDownHandler(event) // Key handle (forse da spezzettare)
     }
 }
 
-function keyUpHandler(event) //Key handler
+function keyUpHandler(event) 
 {
     if(event.code !== "KeyA" && event.code !== "KeyD" && event.code !== "KeyW" && event.code !== "KeyS" && event.code !== "Enter")
     {

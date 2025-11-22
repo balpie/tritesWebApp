@@ -20,5 +20,4 @@
     
     echo json_encode($responseObj);
     mysqli_close($connessione);
-    // altrimenti fai query per roba utente
 ?>
