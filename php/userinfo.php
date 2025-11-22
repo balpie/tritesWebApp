@@ -3,7 +3,6 @@
     {
         $responseObj = new stdClass();
         $responseObj->username = $username;
-        error_log("[getUserInfo]: responseObj.proprietaACaso".$responseObj->proprietaACaso);
         # Data Iscrizione
         $query = "SELECT DataIscrizione
             FROM Utenti

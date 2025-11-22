@@ -21,7 +21,7 @@
         <nav>
             <h1>
                 <a href="gioca.php">
-                <span class="O">T</span><span class="I">r</span><span class="T">i</span><span class="Z">t</span><span class="S">e</span><span class="J">s</span>
+                    <span class="O">T</span><span class="I">r</span><span class="T">i</span><span class="Z">t</span><span class="S">e</span><span class="J">s</span>
                 </a>
             </h1>
             <ul>

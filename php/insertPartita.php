@@ -1,6 +1,5 @@
 <?php
     session_start();
-    error_log("Eseguo codice insertPartita\n", 0);
     require_once("database.php");
 
     $connessione = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
@@ -23,5 +22,4 @@
     mysqli_stmt_execute($preparedQuery);
 
     $result = $connessione->query($query);
-    error_log("Query: `" . $query . "`", 0);
 ?>

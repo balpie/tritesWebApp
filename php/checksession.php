@@ -1,6 +1,5 @@
 <?php
     session_start();
-    error_log("[userinfo.php]variabile \$_SESSION[\"login\"]: " . $_SESSION["login"]);
     $responseObj = new stdClass();
     if(!isset($_SESSION["login"]))
     {

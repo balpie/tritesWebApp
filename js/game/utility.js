@@ -26,12 +26,10 @@ function tetraminoCasuale()
     if(nuovoIndice === 0)
     {
         shuffle(SevenBag.codaTetramini, 7, 13);
-        console.log("[tetraminoCasuale] shuffle: ", SevenBag.codaTetramini);
     }
     if(nuovoIndice === 7)
     {
         shuffle(SevenBag.codaTetramini, 0, 6);
-        console.log("[tetraminoCasuale] shuffle: ", SevenBag.codaTetramini);
     }
     SevenBag.currTetra_ind = nuovoIndice;
     return SevenBag.codaTetramini[nuovoIndice];
@@ -241,14 +239,12 @@ function trovaRigheRipulite() // Utility
         { // non aggiungo righe duplicate
             continue;
         }
-        console.log("guardo riga: "+sqr.riga); 
         guardate.push(sqr.riga);
         let trovatoVuoto = false;
         for(let i = 0; i < BOARDCOLUMNS; i++)
         {
             if(!getCell(sqr.riga, i).classList.contains("Caduto"))
             {
-                console.log("Trovato vuoto in riga"+ sqr.riga);
                 trovatoVuoto = true;
                 break;
             }
@@ -257,7 +253,6 @@ function trovaRigheRipulite() // Utility
         {
             continue;
         }
-        console.log("trovato riga ripulita: ", sqr.riga);
         arrayRigheRipulite.push(sqr.riga);
     }
     arrayRigheRipulite.sort();

@@ -1,6 +1,5 @@
 <?php
     session_start();
-    error_log("Chiamato signup", 0);
     // verifica viabilità parametri
 
     $responseObj = new stdClass();
@@ -36,7 +35,6 @@
     $query = "SELECT NomeUtente FROM Utenti WHERE NomeUtente = ?";
     $preparedQuery = mysqli_prepare($connessione, $query);
     mysqli_stmt_bind_param($preparedQuery, "s", $username);
-    error_log($query);
     mysqli_stmt_execute($preparedQuery);
     $risultato = mysqli_stmt_get_result($preparedQuery);
     if(mysqli_num_rows($risultato) != 0)
@@ -50,7 +48,6 @@
     $preparedInsert = mysqli_prepare($connessione, $insert);
     mysqli_stmt_bind_param($preparedInsert, "ss", $_POST["username"], password_hash($_POST["password"], PASSWORD_DEFAULT));
     mysqli_stmt_execute($preparedInsert);
-    error_log($insert);
     if(mysqli_stmt_affected_rows($preparedInsert) != 1)
     {
         $responseObj->error = "Impossibile aggiungere l'utente";

@@ -34,7 +34,6 @@ function terminaPartita(postaPartita) // Logica di gioco
     if(postaPartita && !PostInfo.postSent)
     {
         PostInfo.postSent = true;
-        console.log("Invio POST");
         let http = new XMLHttpRequest();
         let url = "insertPartita.php";
         if (Game.hardDropped)
@@ -82,7 +81,6 @@ function gameIter(incc = 0, incr = 1) // Logica di gioco
     {
         if(incr === 1) // caso caduta
         {
-            console.log("Chiamo bloccatetra");
             bloccaTetra(Game.tetramino);
             coloraTetra(Game.tetramino, SevenBag.tipoCorrente);
 
