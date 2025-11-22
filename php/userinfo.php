@@ -50,12 +50,12 @@
         $row = mysqli_fetch_assoc($result);
         $responseObj->posizioneClassifica = $row["Posizione"];
         $responseObj->maxPunti = $row["MaxPunti"];
-        # Query migliori 10 partite dell'utente
+        # Query migliori 5 partite dell'utente
         $query = "SELECT NomeUtente, LineeRipulite, Punti, DataPartita
             FROM Partite
             WHERE NomeUtente = ?
             ORDER BY Punti DESC
-            LIMIT 10"; 
+            LIMIT 5"; 
         $statement = mysqli_prepare($connection, $query); 
         mysqli_stmt_bind_param($statement, "s", $username);
         mysqli_stmt_execute($statement);
