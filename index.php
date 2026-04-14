@@ -1,3 +1,69 @@
-<?php
-    header("location: php/guida.php")
-?>
+<!DOCTYPE html>
+
+<html lang="it">
+    <head>
+        <meta name="author" content="Pietro Balestri">
+        <link rel="stylesheet" href="css/game.css">
+        <link rel="stylesheet" href="css/navbar.css">
+        <link rel="stylesheet" href="css/tetracolors.css">
+        <link rel="stylesheet" href="css/footer.css">
+        <script src="js/game/datastruct.js"></script>
+        <script src="js/game/utility.js"></script>
+        <script src="js/game/gamelogic.js"></script>
+        <script src="js/game/keys.js"></script>
+        <script src="js/game/init.js"></script>
+        <!-- Codice preso da fonts.google.com -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+        <!-- fine codice di fonts.google.com -->
+        <link rel="icon" type="image/x-icon" href="../img/favicon.png">
+        <title>Trites</title>
+    </head>
+    <body>
+        <nav>
+            <h1>
+                <a href="gioca.php">
+                    <span class="O">T</span><span class="I">r</span><span class="T">i</span><span class="Z">t</span><span class="S">e</span><span class="J">s</span>
+                </a>
+            </h1>
+        </nav>
+        <div class="Center">
+            <main>
+                <aside>
+                    <div id="HoldPreview">
+                        <p>Preview:</p>
+                        <div id="Preview" class="gameBoard"></div>
+                        <p>Hold:</p>
+                        <div id="Hold" class="gameBoard"></div>
+                    </div>
+                </aside>
+                <div id="gameContainer">
+                    <div id="gameBoard" class="gameBoard"></div>
+                </div>
+                <aside>
+                    <table id="GameStats">
+                        <tr>
+                            <th>Livello: </th>
+                            <td id = "Livello" class="Stats">1</td>
+                        </tr>
+                        <tr>
+                            <th>Linee: </th>
+                            <td id = "Lines" class="Stats">0</td>
+                        </tr>
+                        <tr>
+                            <th>Punti: </th>
+                            <td id="Punti" class="Stats">0</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" id="Status"></td>
+                        </tr>
+                    </table>
+                    <button type="button" id="Start">Gioca</button>
+                    <button type="button" tabindex="-1" id="Restart">Ricomincia</button>
+                </aside>
+            </main>
+        </div>
+        <footer>Progetto creato da Pietro Balestri per il corso di Progettazione Web</footer>
+    </body>
+</html>
