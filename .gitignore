@@ -1,2 +1,3 @@
 # Ignora i file .xopp: annotazioni private
 *.xopp
+*vim
